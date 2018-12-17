@@ -1,6 +1,9 @@
-import React, { Component } from 'react';
+
 import logo from './logo.svg';
 import './App.css';
+import {Component} from "react";
+import React from 'react';
+import Button from "reactstrap/lib/Button";
 
 class App extends Component {
   render() {
@@ -17,8 +20,11 @@ class App extends Component {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn React
+            Learn uuuReact53300
           </a>
+          <Button>
+            уроды1
+          </Button>
         </header>
       </div>
     );
