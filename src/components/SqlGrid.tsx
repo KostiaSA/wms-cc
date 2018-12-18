@@ -12,6 +12,7 @@ export interface ISqlGridProps {
     style?: CSSProperties;
     sqlProcName: string;
     sqlProcParams: any[];
+    reloadCounter?: number;
 }
 
 
@@ -46,6 +47,29 @@ export class SqlGrid extends React.Component<ISqlGridProps, any> {
             this.gridColumnApi.autoSizeColumns(allColumnIds);
         }
     }
+
+    async reloadFromSql() {
+        if (appState.tsdKey == -1) // не было логина
+            return;
+
+        let recordsets: any;
+        try {
+            recordsets = await executeSqlStoredProc(this.props.sqlProcName, ...this.props.sqlProcParams);
+            this.gridApi.setRowData(recordsets[1]);
+
+        } catch (error) {
+            console.error(error);
+            showError("executeSqlStoredProc: " + this.props.sqlProcName, error);
+            //appState.closeActivePage();
+            return;
+        }
+        // this.autoSizeAll();
+        // if (this.gridApi) {
+        //     this.gridApi.sizeColumnsToFit();
+        //     this.gridApi.resetRowHeights();
+        // }
+
+    };
 
     async loadFromSql() {
         if (appState.tsdKey == -1) // не было логина
@@ -93,9 +117,11 @@ export class SqlGrid extends React.Component<ISqlGridProps, any> {
     };
 
     componentDidUpdate() {
+        console.log("sql grid didUpdate()");
         if (!this.loaded) {
             this.loadFromSql();
-        }
+        } else
+            this.reloadFromSql();
     };
 
     onColumnResized(event: any) {

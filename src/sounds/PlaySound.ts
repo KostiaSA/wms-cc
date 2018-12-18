@@ -139,12 +139,12 @@ export class PlaySound {
     }
 
     static async товар_подобран(barcode: string) {
-        showSnack("товар " + barcode + " подобран", "info");
+        showSnack("товар " + barcode + " подобран", "success");
         zebraTextToSpeech("товар " + barcodeToString_00_00(barcode) + " подобран");
     }
 
-    static async партия_товара_подобран(barcode: string) {
-        showSnack("партия товара " + barcode + " подобрана", "info");
-        zebraTextToSpeech("партия товара " + barcodeToString_00_00(barcode) + " подобрана");
+    static async партия_товара_подобрана(barcode: string) {
+        showSnack("партия товара " + barcode + " подобрана", "success");
+        zebraTextToSpeech("партия товара " + barcodeToString_00_00(barcode) + " подобран-а");
     }
 }

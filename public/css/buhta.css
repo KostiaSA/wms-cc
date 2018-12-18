@@ -22,16 +22,29 @@ html, body {
 
 
 /* цвета текста для ячеек, паллет, товара и т.п.*/
-.text-color-cell {
+
+.text-color-red {
+    color: red
+}
+
+.text-color-subconto-cell {
     color: MEDIUMVIOLETRED
 }
 
-.text-color-pallete {
+.text-color-subconto-pallete {
     color: seagreen
 }
 
-.text-color-tovar {
+.text-color-subconto-tovar {
     color: black
+}
+
+.text-color-subconto-part {
+    color: forestgreen;
+}
+
+.text-color-subconto-box {
+    color: blue
 }
 
 .text-color-kol {

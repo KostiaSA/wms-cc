@@ -31,6 +31,8 @@ import {PlaySound} from "../../sounds/PlaySound";
 import {TestBarcodesPage} from "../TestBarcodesPage";
 import {showErrorMessage} from "../../modals/ErrorMessageModal";
 import Button from "reactstrap/lib/Button";
+import {getSubcontoTextColorClass} from "../../utils/getSubcontoTextColorClass";
+import classNames from "classnames";
 
 export interface IPeakPageProps extends IAppPageProps {
 
@@ -45,7 +47,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
 
     activeTab: "Путь" | "Паллета" = "Путь";
 
-    taskId: number = 1468635;
+    taskId: number = 1468646;
 
     fromType: string = "";
     fromId: number = -1;
@@ -56,6 +58,14 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
     intoStr: string = "не выбрано";
 
     docHeader: any = null;
+
+    reloadTaskStateCounter: number = 0;
+
+    async reloadTaskState() {
+        await this.loadDocHeader();
+        this.reloadTaskStateCounter++;
+        this.forceUpdate();
+    }
 
     async loadDocHeader() {
         if (appState.tsdKey == -1) // не было логина
@@ -141,6 +151,21 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
         if (!this.docHeader)
             return null;
 
+        let fromInputClassName = classNames({
+            "form-control": true,
+            "text-color-red":this.fromType == "",
+            [getSubcontoTextColorClass(this.fromType)]:this.fromType != ""
+        });
+        let intoInputClassName = classNames({
+            "form-control": true,
+            "text-color-red":this.intoType == "",
+            [getSubcontoTextColorClass(this.intoType)]:this.intoType != ""
+        });
+        // if (this.fromType != "")
+        //     fromInputClassName += "text-color-red";
+        // else
+        //     fromInputClassName += getSubcontoTextColorClass(this.fromType);
+
         return (
 
             <div
@@ -153,7 +178,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                     flexDirection: "column",
 
                 }}>
-                <div style={{marginBottom:5}}>
+                <div style={{marginBottom: 5}}>
                         <span style={{color: "GOLDENROD"}}>
                             ПИК <strong>{this.docHeader.Номер}</strong>, горит
                         </span>
@@ -162,22 +187,22 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                         </span>
 
                 </div>
-                <div className="input-group input-group-sm" style={{marginBottom:5}}>
+                <div className="input-group input-group-sm" style={{marginBottom: 5}}>
                     <div className="input-group-prepend">
                         <span className="input-group-text" style={{width: 58}}>Откуда</span>
                     </div>
-                    <input id="username3" name="username3" className="form-control" value={this.fromStr}/>
+                    <input className={fromInputClassName} value={this.fromStr} style={{fontWeight: "bold"}}/>
                     <div className="input-group-append">
                         <span className="input-group-text">
                         <i className="far fa-bars"></i>
                         </span>
                     </div>
                 </div>
-                <div className="input-group input-group-sm" style={{marginBottom:5}}>
+                <div className="input-group input-group-sm" style={{marginBottom: 5}}>
                     <div className="input-group-prepend">
                         <span className="input-group-text" style={{width: 58}}>Куда</span>
                     </div>
-                    <input id="username3" name="username3" className="form-control" value={this.intoStr}/>
+                    <input className={intoInputClassName} value={this.intoStr} style={{fontWeight: "bold"}}/>
                     <div className="input-group-append">
                         <span className="input-group-text">
                         <i className="far far fa-plus"></i>
@@ -195,8 +220,11 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                             <span style={{textAlign: "center", color: "darkgray"}}>
                                 ПОРЯДОК ОБХОДА
                             </span>
-                        <SqlGrid style={{flex: 1}} sqlProcName={"ПИК_Лист_Порядок_обхода"}
-                                 sqlProcParams={[this.taskId]}/>
+                        <SqlGrid style={{flex: 1}}
+                                 sqlProcName={"ПИК_Лист_Порядок_обхода"}
+                                 sqlProcParams={[this.taskId]}
+                                 reloadCounter={this.reloadTaskStateCounter}
+                        />
                     </div>
                 </div>
                 <div style={{flex: 1, display: (this.activeTab == "Паллета" ? "" : "none")}}>
@@ -204,7 +232,8 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                             <span style={{textAlign: "center", color: "darkgray"}}>
                                 ПОДБОР С ПАЛЛЕТЫ
                             </span>
-                        <SqlGrid style={{flex: 1}} sqlProcName={"СписокТМЦ"} sqlProcParams={[]}/>
+                        <SqlGrid style={{flex: 1}} sqlProcName={"СписокТМЦ"} sqlProcParams={[]}
+                                 reloadCounter={this.reloadTaskStateCounter}/>
                     </div>
                 </div>
                 <div style={{
@@ -257,7 +286,12 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">
+                                <a className="nav-link" href="#"
+                                   onTouchStart={() => {
+                                       playSound_ButtonClick();
+                                       this.reloadTaskState();
+                                   }}
+                                >
                                     <i className="fa fa-cog"></i>
                                     Настр.
                                 </a>
