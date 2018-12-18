@@ -143,180 +143,154 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
 
         return (
 
-                <div
-                    className={"back-color-pik"}
-                    style={{
-                        height: "100%",
-                        paddingLeft: 5,
-                        paddingRight: 5,
-                        display: this.props.visible ? "flex" : "none",
-                        flexDirection: "column",
+            <div
+                className={"back-color-pik"}
+                style={{
+                    height: "100%",
+                    paddingLeft: 5,
+                    paddingRight: 5,
+                    display: this.props.visible ? "flex" : "none",
+                    flexDirection: "column",
 
-                    }}>
-                    <div>
-                        <span  style={{color: "GOLDENROD"}}>
+                }}>
+                <div style={{marginBottom:5}}>
+                        <span style={{color: "GOLDENROD"}}>
                             ПИК <strong>{this.docHeader.Номер}</strong>, горит
                         </span>
-                        <span   style={{color: "GOLDENROD"}}>
+                    <span style={{color: "GOLDENROD"}}>
                             Заявка Ч343, 12.01.2019, ООО "Серые костыли"
                         </span>
 
+                </div>
+                <div className="input-group input-group-sm" style={{marginBottom:5}}>
+                    <div className="input-group-prepend">
+                        <span className="input-group-text" style={{width: 58}}>Откуда</span>
                     </div>
-                    <table style={{width: "100%", borderSpacing: 2}}>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <span  style={{display: "inline", color: "darkgray"}}>
-                                    откуда
-                                </span>
-                            </td>
-                            <td style={{textAlign: "left"}}>
-                                <span  style={{display: "inline"}}>
-                                    {this.fromStr}
-                                </span>
-
-                            </td>
-                            {/*<td style={{textAlign: "right"}}>*/}
-                                {/*<Fab color="default" size="small" aria-label="Add" className={classes.fab}*/}
-                                     {/*style={{minHeight: 26, height: 26, width: 26}}*/}
-                                {/*>*/}
-
-                                    {/*<Icon style={{overflow: "visible", fontSize: 11}}*/}
-                                          {/*className={classNames('far fa-bars')}/>*/}
-                                {/*</Fab>*/}
-                            {/*</td>*/}
-                        </tr>
-                        <tr>
-                            <td style={{textAlign: "left"}}>
-                                <span  style={{display: "inline", color: "darkgray"}}>
-                                    куда
-                                </span>
-                            </td>
-                            <td style={{textAlign: "left"}}>
-                                <span  style={{display: "inline"}}>
-                                    {this.intoStr}
-                                </span>
-
-                            </td>
-                            {/*<td style={{textAlign: "right"}}>*/}
-                                {/*<Fab color="default" size="small" aria-label="Add" className={classes.fab}*/}
-                                     {/*style={{marginLeft: 5, minHeight: 26, height: 26, width: 26}}*/}
-                                {/*>*/}
-
-                                    {/*<Icon style={{overflow: "visible", fontSize: 11}}*/}
-                                          {/*className={classNames('far fa-box-check')}/>*/}
-                                {/*</Fab>*/}
-                                {/*<Fab color="default" size="small" aria-label="Add" className={classes.fab}*/}
-                                     {/*style={{marginLeft: 5, minHeight: 26, height: 26, width: 26}}*/}
-                                {/*>*/}
-
-                                    {/*<Icon style={{overflow: "visible", fontSize: 11}}*/}
-                                          {/*className={classNames('far fa-plus')}/>*/}
-                                {/*</Fab>*/}
-                                {/*<Fab color="default" size="small" aria-label="Add" className={classes.fab}*/}
-                                     {/*style={{marginLeft: 5, minHeight: 26, height: 26, width: 26}}*/}
-                                {/*>*/}
-
-                                    {/*<Icon style={{overflow: "visible", fontSize: 11}}*/}
-                                          {/*className={classNames('far fa-bars')}/>*/}
-                                {/*</Fab>*/}
-                            {/*</td>*/}
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div style={{flex: 1, display: (this.activeTab == "Путь" ? "" : "none")}}>
-                        <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
+                    <input id="username3" name="username3" className="form-control" value={this.fromStr}/>
+                    <div className="input-group-append">
+                        <span className="input-group-text">
+                        <i className="far fa-bars"></i>
+                        </span>
+                    </div>
+                </div>
+                <div className="input-group input-group-sm" style={{marginBottom:5}}>
+                    <div className="input-group-prepend">
+                        <span className="input-group-text" style={{width: 58}}>Куда</span>
+                    </div>
+                    <input id="username3" name="username3" className="form-control" value={this.intoStr}/>
+                    <div className="input-group-append">
+                        <span className="input-group-text">
+                        <i className="far far fa-plus"></i>
+                        </span>
+                        <span className="input-group-text">
+                        <i className="far fa-box-check"></i>
+                        </span>
+                        <span className="input-group-text">
+                        <i className="far fa-bars"></i>
+                        </span>
+                    </div>
+                </div>
+                <div style={{flex: 1, display: (this.activeTab == "Путь" ? "" : "none")}}>
+                    <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                             <span style={{textAlign: "center", color: "darkgray"}}>
                                 ПОРЯДОК ОБХОДА
                             </span>
-                            <SqlGrid style={{flex: 1}} sqlProcName={"ПИК_Лист_Порядок_обхода"}
-                                     sqlProcParams={[this.taskId]}/>
-                        </div>
+                        <SqlGrid style={{flex: 1}} sqlProcName={"ПИК_Лист_Порядок_обхода"}
+                                 sqlProcParams={[this.taskId]}/>
                     </div>
-                    <div style={{flex: 1, display: (this.activeTab == "Паллета" ? "" : "none")}}>
-                        <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
+                </div>
+                <div style={{flex: 1, display: (this.activeTab == "Паллета" ? "" : "none")}}>
+                    <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                             <span style={{textAlign: "center", color: "darkgray"}}>
                                 ПОДБОР С ПАЛЛЕТЫ
                             </span>
-                            <SqlGrid style={{flex: 1}} sqlProcName={"СписокТМЦ"} sqlProcParams={[]}/>
-                        </div>
+                        <SqlGrid style={{flex: 1}} sqlProcName={"СписокТМЦ"} sqlProcParams={[]}/>
                     </div>
-                    <div style={{
-                        flex: 0,
-                        //position: "fixed",
-                        //height: 70,
-                        //bottom: 0,
-                        //width: "100%"
-                    }}>
-                        <Button><i className="fa fa-user"></i><br/>Один</Button>
-                        <Button><i className="fa fa-user"></i>Два</Button>
-                    </div>
-                    {/*<BottomNavigation*/}
-                        {/*value="Меню"*/}
-                        {/*showLabels*/}
-                        {/*//className={classes.stickToBottom}*/}
-                        {/*// onChange={(event: any, value: any) => {*/}
-                        {/*//     appState.switchToPageByBottomBarIndex(value);*/}
-                        {/*//     this.forceUpdate();*/}
-                        {/*// }}*/}
-
-                    {/*>*/}
-                        {/*<BottomNavigationAction label="Назад"*/}
-                                                {/*style={{minWidth: 0}}*/}
-                                                {/*icon={<Icon style={iconStyle}*/}
-                                                            {/*className={classNames("far fa-arrow-alt-left")}/>}*/}
-                                                {/*onClick={() => {*/}
-                                                    {/*playSound_ButtonClick();*/}
-                                                    {/*appState.closeActivePage();*/}
-                                                {/*}}*/}
-                        {/*/>*/}
-                        {/*<BottomNavigationAction label="Обход"*/}
-                                                {/*style={{minWidth: 0}}*/}
-                                                {/*icon={<Icon style={iconStyle}*/}
-                                                            {/*className={classNames('far fa-person-dolly')}/>}*/}
-                                                {/*onClick={() => {*/}
-                                                    {/*playSound_ButtonClick();*/}
-                                                    {/*this.activeTab = "Путь";*/}
-                                                    {/*this.forceUpdate();*/}
-                                                {/*}}*/}
-                        {/*/>*/}
-                        {/*<BottomNavigationAction label="Паллета"*/}
-                                                {/*style={{minWidth: 0}}*/}
-                                                {/*icon={<Icon style={iconStyle}*/}
-                                                            {/*className={classNames('fa fa-question-circle')}/>}*/}
-                                                {/*onClick={() => {*/}
-                                                    {/*playSound_ButtonClick();*/}
-                                                    {/*this.activeTab = "Паллета";*/}
-                                                    {/*this.forceUpdate();*/}
-                                                {/*}}*/}
-                        {/*/>*/}
-                        {/*<BottomNavigationAction label="Настр." style={{minWidth: 0}}*/}
-                                                {/*icon={<Icon style={iconStyle} className={classNames('fa fa-cog')}*/}
-                                                            {/*onClick={() => {*/}
-                                                                {/*playSound_ButtonClick();*/}
-                                                                {/*showInfoMessage("привет!", "уроды");*/}
-                                                            {/*}}*/}
-                                                {/*/>}*/}
-                        {/*/>*/}
-                        {/*<BottomNavigationAction label="Тест" style={{minWidth: 0}}*/}
-                                                {/*icon={<Icon style={iconStyle} className={classNames('fas fa-barcode')}*/}
-                                                            {/*onClick={() => {*/}
-                                                                {/*playSound_ButtonClick();*/}
-                                                                {/*appState.openPage(TestBarcodesPage, {*/}
-                                                                    {/*pageId: TestBarcodesPage.PAGE_ID,*/}
-                                                                    {/*taskId: this.taskId*/}
-                                                                {/*})*/}
-                                                            {/*}}*/}
-                                                {/*/>}*/}
-                        {/*/>*/}
-                        {/*<BottomNavigationAction label="Готово" style={{minWidth: 0}}*/}
-                                                {/*icon={<Icon style={iconStyle}*/}
-                                                            {/*className={classNames('far fa-check-circle')}/>}/>*/}
-                    {/*</BottomNavigation>*/}
-
                 </div>
+                <div style={{
+                    flex: 0,
+                    //position: "fixed",
+                    //height: 70,
+                    //bottom: 0,
+                    //width: "100%"
+                }}>
+                    <nav className="navbar navbar-icon-top navbar-expand" style={{padding: 0}}>
+
+                        <ul className="navbar-nav mr-auto">
+                            <li className="nav-item">
+                                <a className="nav-link" href="#"
+                                   onClick={() => {
+                                       playSound_ButtonClick();
+                                       appState.closeActivePage();
+                                   }}
+                                >
+                                    <i className="far fa-arrow-alt-left"></i>
+                                    Назад
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="#"
+                                   onClick={() => {
+                                       playSound_ButtonClick();
+                                       this.activeTab = "Путь";
+                                       this.forceUpdate();
+                                   }}
+                                >
+                                    <i className="far fa-person-dolly">
+                                        {/*<span className="badge badge-danger">11</span>*/}
+                                    </i>
+                                    Обход
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link disabled" href="#"
+                                   onClick={() => {
+                                       playSound_ButtonClick();
+                                       this.activeTab = "Паллета";
+                                       this.forceUpdate();
+                                   }}
+                                >
+                                    <i className="fa fa-question-circle">
+
+                                    </i>
+                                    Паллета
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="#">
+                                    <i className="fa fa-cog"></i>
+                                    Настр.
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="#"
+                                   onClick={() => {
+                                       playSound_ButtonClick();
+                                       appState.openPage(TestBarcodesPage, {
+                                           pageId: TestBarcodesPage.PAGE_ID,
+                                           taskId: this.taskId
+                                       })
+                                   }}
+                                >
+                                    <i className="fas fa-barcode"></i>
+                                    Тест
+                                </a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="#">
+                                    <i className="far fa-check-circle"></i>
+                                    Готово
+                                </a>
+                            </li>
+                        </ul>
+
+                    </nav>
+                </div>
+
+            </div>
 
         )
     }
 }
+
 //
