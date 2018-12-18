@@ -1,4 +1,6 @@
- import {ComponentType, ReactNode} from "react";
+import * as  React from "react";
+import {ComponentType, ReactNode} from "react";
+import {Slide, toast, ToastOptions} from "react-toastify";
 // import {getRandomString} from "../utils/getRandomString";
 // import {appState} from "../AppState";
 // import {IInfoMessageModalProps} from "../modals/InfoMessageModal";
@@ -6,7 +8,18 @@
 // import Snackbar, {SnackbarProps} from "@material-ui/core/Snackbar/Snackbar";
 //
 //
- export function showSnack(message: ReactNode, type: "info" | "warning" | "error" = "info", duration: number = 1500) {
+export function showSnack(message: ReactNode, type: "info" | "warning" | "error" | "success" = "info", duration: number = 2000) {
+    let options: ToastOptions = {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: duration,
+        closeButton: false,
+        transition:Slide,
+        type:type,
+        hideProgressBar:true
+    };
+
+
+    toast(<div style={{textAlign:"center",fontSize:"1.1em"}}>{message}</div> ,options);
 //     let backColor: string = "DEEPSKYBLUE";
 //     if (type == "warning")
 //         backColor = "DARKORANGE";
@@ -30,4 +43,4 @@
 //     };
 //     appState.snack = snack;
 //     appState.forceUpdate();
- }
+}

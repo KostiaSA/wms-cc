@@ -121,7 +121,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                     <Col xs="6">
                                         <Button color="primary" disabled={this.loginButtonDisabled}
                                                 className="px-4"
-                                                onClick={
+                                                onTouchStart={
                                                     this.loginButtonHandler
                                                 }
                                         >

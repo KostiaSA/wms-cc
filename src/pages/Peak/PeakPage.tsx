@@ -219,7 +219,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
                                 <a className="nav-link" href="#"
-                                   onClick={() => {
+                                   onTouchStart={() => {
                                        playSound_ButtonClick();
                                        appState.closeActivePage();
                                    }}
@@ -230,7 +230,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link" href="#"
-                                   onClick={() => {
+                                   onTouchStart={() => {
                                        playSound_ButtonClick();
                                        this.activeTab = "Путь";
                                        this.forceUpdate();
@@ -244,7 +244,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link disabled" href="#"
-                                   onClick={() => {
+                                   onTouchStart={() => {
                                        playSound_ButtonClick();
                                        this.activeTab = "Паллета";
                                        this.forceUpdate();
@@ -264,7 +264,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link" href="#"
-                                   onClick={() => {
+                                   onTouchStart={() => {
                                        playSound_ButtonClick();
                                        appState.openPage(TestBarcodesPage, {
                                            pageId: TestBarcodesPage.PAGE_ID,
