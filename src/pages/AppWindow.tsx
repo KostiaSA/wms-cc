@@ -37,6 +37,15 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
 
                         </page.content>);
                 })}
+                {appState.modals.map((modal: IOpenedPage, index: number) => {
+                    return (
+                        <modal.content
+                            key={modal.props.pageId}
+                            visible
+                            {...modal.props}>
+
+                        </modal.content>);
+                })}
                 <ToastContainer autoClose={2000}/>
             </div>
 

@@ -10,6 +10,8 @@ import {playSound} from "./utils/playSound";
 import {showSnack} from "./ui/showSnack";
 import {PlaySound} from "./sounds/PlaySound";
 import {registerBuhtaObject} from "./registerBuhtaObject";
+import {showErrorMessage} from "./modals/ErrorMessageModal";
+import {showAppError} from "./pages/ErrorMessagePage";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
@@ -38,6 +40,7 @@ export class AppState {
     // mainMenuPage: IAppPage;
     windowId: string;
     pages: IOpenedPage[] = [];
+    modals: IOpenedPage[] = [];
 
     errorMessageVisible: boolean = false;
     errorMessageMode: string = "";
@@ -81,6 +84,23 @@ export class AppState {
     //     }
     //     this.forceUpdate();
     // }
+
+    openModal<AppPageProps extends IAppPageProps>(content: ComponentType<AppPageProps>, props: AppPageProps) {
+        let page: IOpenedPage = {
+            props, content
+        } as any;
+
+        if (!page.props.pageId)
+            throw  "openModal(): не заполнен props.pageId";
+
+        this.modals.unshift(page);
+        this.forceUpdate();
+    }
+
+    closeActiveModal() {
+        this.modals.shift();
+        this.forceUpdate();
+    }
 
     openPage<AppPageProps extends IAppPageProps>(content: ComponentType<AppPageProps>, props: AppPageProps) {
         let page: IOpenedPage = {
@@ -245,3 +265,21 @@ export class AppState {
 export const appState = new AppState();
 (window as any).appSate = appState;
 registerBuhtaObject();
+
+window.onerror = function (event: Event | string, source?: string, fileno?: number, columnNumber?: number, error?: Error) {
+
+    // react сам перехватывает ошибки и спамит "Script error."
+    if (event.toString() == "Script error.")
+        return;
+
+    console.error(event);
+    showAppError(event);
+
+    var suppressErrorAlert = true;
+    return suppressErrorAlert;
+};
+
+window.addEventListener("unhandledrejection", function (promiseRejectionEvent) {
+    console.error(promiseRejectionEvent.reason.toString());
+    showAppError(promiseRejectionEvent.reason.toString());
+});

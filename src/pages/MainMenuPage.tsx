@@ -3,6 +3,7 @@ import {IAppPageProps} from "./AppWindow";
 import {appState} from "../AppState";
 import {playSound_ButtonClick} from "../utils/playSound";
 import {PeakPage} from "./Peak/PeakPage";
+import {showAppError} from "./ErrorMessagePage";
 // import TextField from "@material-ui/core/TextField/TextField";
 // import withRoot from "../withRoot";
 // import withStyles from "@material-ui/core/styles/withStyles";
@@ -99,9 +100,16 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
 
                     >
                         <i className="fa fa-user"></i>
-                        ПИК 39373489
+                        ПИК 39373489 showAppError
                     </li>
-                    <li className="list-group-item">Dapibus ac facilisis in</li>
+                    <li className="list-group-item"
+                        onClick={() => {
+
+                        showAppError("Top 100 Cryptocurrencies by Market Capitalization");
+                    }}
+                    >
+                        test ошибки
+                    </li>
                     <li className="list-group-item">Morbi leo risus</li>
                     <li className="list-group-item">Dapibus ac facilisis in</li>
                     <li className="list-group-item">Dapibus ac facilisis in</li>

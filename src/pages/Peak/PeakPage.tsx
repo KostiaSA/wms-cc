@@ -28,11 +28,16 @@ import {playSound, playSound_ButtonClick} from "../../utils/playSound";
 import {showInfoMessage} from "../../modals/InfoMessageModal";
 import {showSnack} from "../../ui/showSnack";
 import {PlaySound} from "../../sounds/PlaySound";
-import {TestBarcodesPage} from "../TestBarcodesPage";
+import {I_ПИК_Лист_тестовые_штрихкоды, TestBarcodesPage} from "../TestBarcodesPage";
 import {showErrorMessage} from "../../modals/ErrorMessageModal";
 import Button from "reactstrap/lib/Button";
 import {getSubcontoTextColorClass} from "../../utils/getSubcontoTextColorClass";
 import classNames from "classnames";
+import {
+    I_ПИК_Лист_Поступил_ШтрихКод_req,
+    I_ПИК_Лист_Поступил_ШтрихКод_ans, ПИК_Лист_Поступил_ШтрихКод_proc
+} from "../../wmsapi/ПИК_Лист_Поступил_ШтрихКод";
+import {call_wmsapi} from "../../utils/call_wmsapi";
 
 export interface IPeakPageProps extends IAppPageProps {
 
@@ -51,11 +56,11 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
 
     fromType: string = "";
     fromId: number = -1;
-    fromStr: string = "не выбрано";
+    fromName: string = "не выбрано";
 
     intoType: string = "";
     intoId: number = -1;
-    intoStr: string = "не выбрано";
+    intoName: string = "не выбрано";
 
     docHeader: any = null;
 
@@ -91,37 +96,92 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
         let barcode = appState.getNextBarcodeFromQueue(this.props.pageId);
         if (!barcode) return;
 
-        let script = await executeSqlStoredProc_FirstValue(
-            "ПИК_Лист_Поступил_ШтрихКод",
-            this.taskId,
-            barcode.barcode,
-            barcode.barcodeType,
-            this.fromType,
-            this.fromId,
-            this.intoType,
-            this.intoId,
-        );
-        try {
-            await eval("(()=>{" + script + "})()");
+        let req: I_ПИК_Лист_Поступил_ШтрихКод_req = {
+            taskId: this.taskId,
+            barcode: barcode.barcode,
+            barcodeType: barcode.barcodeType,
+            fromType: this.fromType,
+            fromId: this.fromId,
+            intoType: this.intoType,
+            intoId: this.intoId,
+        };
+
+
+        let ans = await call_wmsapi<I_ПИК_Лист_Поступил_ШтрихКод_ans>(ПИК_Лист_Поступил_ШтрихКод_proc, req);
+
+        if (ans.error) {
+            PlaySound.ошибка("ошибка");
+        } else if (ans.неизвестный_штрих_код) {
+            PlaySound.неизвестный_штрих_код();
+        } else if (ans.штрихкод_не_подходит) {
+            PlaySound.штрихкод_не_подходит(barcode.barcodeType, barcode.barcode);
+        } else if (ans.не_выбрана_паллета_откуда) {
+            PlaySound.не_выбрана_паллета_откуда();
+        } else if (ans.не_выбрана_паллета_куда) {
+            PlaySound.не_выбрана_паллета_куда();
+        } else if (ans.паллета_куда) {
+            this.intoType = ans.паллета_куда.intoType;
+            this.intoId = ans.паллета_куда.intoId;
+            this.intoName = ans.паллета_куда.intoName;
+            PlaySound.паллета_куда(barcode.barcode);
             this.forceUpdate();
-        } catch (e) {
-            showErrorMessage(
-                " sql-процедура '" + "ПИК_Лист_Поступил_ШтрихКод" + "' вернула скрипт с ошибкой:",
-                e.message,
-                "{\n" + script + "\n}"
-            );
+        } else if (ans.паллета_откуда) {
+            this.fromType = ans.паллета_откуда.fromType;
+            this.fromId = ans.паллета_откуда.fromId;
+            this.fromName = ans.паллета_откуда.fromName;
+            PlaySound.паллета_откуда(barcode.barcode);
+            this.forceUpdate();
+        } else if (ans.паллета_коробка_взята_в_подбор) {
+            this.intoType = ans.паллета_коробка_взята_в_подбор.palboxType;
+            this.intoId = ans.паллета_коробка_взята_в_подбор.palboxId;
+            this.intoName = ans.паллета_коробка_взята_в_подбор.palboxName;
+            if (this.intoType == "PAL")
+                PlaySound.паллета_взята_в_подбор(barcode.barcode);
+            else if (this.intoType == "BOX")
+                PlaySound.коробка_взята_в_подбор(barcode.barcode);
+            else
+                throw "barcodeProcessor(): неизвестный тип " + this.fromType;
+
+            this.forceUpdate();
+
+            throw "проверка";
+
         }
+        else
+            console.error("ошибка",ans)
 
-
-        // let row = await executeSqlStoredProc_FirstRowOrNull("ШтрихКод_Инфо", barcode.barcode);
-        // console.log("barcode--------", barcode, row);
-        // //PlaySound.неизвестный_штрих_код();
-        // PlaySound.паллета(barcode.barcode);
-        //
-        // //showSnack("неизвестный штрих-код","error");
-        // //playSound("unknown-barcode");
 
     }
+
+
+    // async barcodeProcessor() {
+    //     if (!this.props.visible) return;
+    //     let barcode = appState.getNextBarcodeFromQueue(this.props.pageId);
+    //     if (!barcode) return;
+    //
+    //     let script = await executeSqlStoredProc_FirstValue(
+    //         "ПИК_Лист_Поступил_ШтрихКод",
+    //         this.taskId,
+    //         barcode.barcode,
+    //         barcode.barcodeType,
+    //         this.fromType,
+    //         this.fromId,
+    //         this.intoType,
+    //         this.intoId,
+    //     );
+    //     try {
+    //         await eval("(()=>{" + script + "})()");
+    //         this.forceUpdate();
+    //     } catch (e) {
+    //         showErrorMessage(
+    //             " sql-процедура '" + "ПИК_Лист_Поступил_ШтрихКод" + "' вернула скрипт с ошибкой:",
+    //             e.message,
+    //             "{\n" + script + "\n}"
+    //         );
+    //     }
+    //
+    //
+    // }
 
     componentDidMount() {
         this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
@@ -153,13 +213,13 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
 
         let fromInputClassName = classNames({
             "form-control": true,
-            "text-color-red":this.fromType == "",
-            [getSubcontoTextColorClass(this.fromType)]:this.fromType != ""
+            "text-color-red": this.fromType == "",
+            [getSubcontoTextColorClass(this.fromType)]: this.fromType != ""
         });
         let intoInputClassName = classNames({
             "form-control": true,
-            "text-color-red":this.intoType == "",
-            [getSubcontoTextColorClass(this.intoType)]:this.intoType != ""
+            "text-color-red": this.intoType == "",
+            [getSubcontoTextColorClass(this.intoType)]: this.intoType != ""
         });
         // if (this.fromType != "")
         //     fromInputClassName += "text-color-red";
@@ -191,7 +251,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                     <div className="input-group-prepend">
                         <span className="input-group-text" style={{width: 58}}>Откуда</span>
                     </div>
-                    <input className={fromInputClassName} value={this.fromStr} style={{fontWeight: "bold"}}/>
+                    <input className={fromInputClassName} value={this.fromName} style={{fontWeight: "bold"}}/>
                     <div className="input-group-append">
                         <span className="input-group-text">
                         <i className="far fa-bars"></i>
@@ -202,7 +262,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                     <div className="input-group-prepend">
                         <span className="input-group-text" style={{width: 58}}>Куда</span>
                     </div>
-                    <input className={intoInputClassName} value={this.intoStr} style={{fontWeight: "bold"}}/>
+                    <input className={intoInputClassName} value={this.intoName} style={{fontWeight: "bold"}}/>
                     <div className="input-group-append">
                         <span className="input-group-text">
                         <i className="far far fa-plus"></i>

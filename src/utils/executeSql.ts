@@ -20,6 +20,10 @@ export async function executeSql(sql: string): Promise<any[]> {
 
 
             xhr.onload = function () {
+                if (this.status != 200) {
+                    reject(this.statusText + " " + this.status);
+                    return
+                }
                 let ansBody = XJSON_parse((this as XMLHttpRequest).responseText) as any;
                 if (ansBody.error)
                     reject(ansBody.error);
@@ -41,6 +45,14 @@ export async function executeSql(sql: string): Promise<any[]> {
                     resolve(ansBody.recordsets);
                 }
             };
+
+            // xhr.onreadystatechange = function () {
+            //     if (xhr.readyState == 4) {
+            //         if (xhr.status != 200) {
+            //             reject("ошибка сервера " + xhr.status);
+            //         }
+            //     }
+            // };
 
             xhr.onerror = function (ev: Event) {
                 reject("нет связи с сервером");

@@ -20,6 +20,13 @@ export class PlaySound {
         zebraTextToSpeech(text);
     }
 
+    static async ошибка_приложения(text:string) {
+        showSnack(text, "error");
+        playSound("error");
+        await sleep(700);
+        zebraTextToSpeech(text);
+    }
+
     static async неизвестный_штрих_код() {
         showSnack("неизвестный штрих-код", "error");
         playSound("error");
@@ -54,14 +61,14 @@ export class PlaySound {
         zebraTextToSpeech("товар " + barcodeToString_00_00(barcode));
     }
 
-    static async не_выбрана_паллета_откуда(barcode: string) {
+    static async не_выбрана_паллета_откуда() {
         showSnack("не выбрана паллета откуда", "error");
         playSound("error");
         await sleep(700);
         zebraTextToSpeech("не выбрана палета откуда");
     }
 
-    static async не_выбрана_паллета_куда(barcode: string) {
+    static async не_выбрана_паллета_куда() {
         showSnack("не выбрана паллета куда", "error");
         playSound("error");
         await sleep(700);

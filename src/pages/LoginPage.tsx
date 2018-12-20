@@ -22,6 +22,7 @@ import InputGroupText from "reactstrap/lib/InputGroupText";
 import Col from "reactstrap/lib/Col";
 import Button from "reactstrap/lib/Button";
 import {MainMenuPage} from "./MainMenuPage";
+import {showAppError} from "./ErrorMessagePage";
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -54,9 +55,6 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
         zebraTextToSpeech("введите пароль");
     };
 
-    audio = new Audio('sounds/tovar-podobran.mp3');
-    audio2 = new Audio('sounds/served.mp3');
-
     loginButtonHandler = async (event: any): Promise<void> => {
         this.loginButtonDisabled = true;
         this.forceUpdate();
@@ -80,7 +78,11 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
             appState.podrId = row.podrId;
 
             appState.openPage(MainMenuPage, {pageId: MainMenuPage.PAGE_ID});
-        } finally {
+        }
+        catch (e) {
+            showAppError(e);
+        }
+        finally {
             this.loginButtonDisabled = false;
         }
 
