@@ -20,6 +20,13 @@ export async function showAppError(message: ReactNode, title: ReactNode = "Ош�
     zebraTextToSpeech("Ошибка приложения");
 }
 
+export async function showError(message: ReactNode, title: ReactNode = "Ошибка") {
+    appState.openModal(ErrorMessagePage, {pageId: getRandomString(), message, title});
+    playSound("error");
+    await sleep(700);
+    zebraTextToSpeech("Ошибка");
+}
+
 
 interface IErrorMessagePageProps extends IAppPageProps {
     title: ReactNode;
