@@ -6,13 +6,13 @@ import {
     zebraShowToast,
     zebraReloadWebView
 } from "../zebra/ZebraApi";
-import {appState} from "../AppState";
-import {executeSql} from "../utils/executeSql";
-import {stringAsSql} from "../utils/stringAsSql";
-import {IAppPageProps} from "./AppWindow";
+import { appState } from "../AppState";
+import { executeSql } from "../utils/executeSql";
+import { stringAsSql } from "../utils/stringAsSql";
+import { IAppPageProps } from "./AppWindow";
 //import {MainMenuPage} from "./MainMenuPage";
-import {playSound_ButtonClick} from "../utils/playSound";
-import {CardBody, Container, Input, InputGroup} from "reactstrap";
+import { playSound_ButtonClick } from "../utils/playSound";
+import { CardBody, Container, Input, InputGroup } from "reactstrap";
 import Row from "reactstrap/lib/Row";
 import CardGroup from "reactstrap/lib/CardGroup";
 import Card from "reactstrap/lib/Card";
@@ -21,8 +21,8 @@ import InputGroupAddon from "reactstrap/lib/InputGroupAddon";
 import InputGroupText from "reactstrap/lib/InputGroupText";
 import Col from "reactstrap/lib/Col";
 import Button from "reactstrap/lib/Button";
-import {MainMenuPage} from "./MainMenuPage";
-import {showAppError} from "./ErrorMessagePage";
+import { MainMenuPage } from "./MainMenuPage";
+import { showAppError } from "../modals/ErrorMessagePage";
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -77,7 +77,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
             appState.kadrId = row.kadrId;
             appState.podrId = row.podrId;
 
-            appState.openPage(MainMenuPage, {pageId: MainMenuPage.PAGE_ID});
+            appState.openPage(MainMenuPage, { pageId: MainMenuPage.PAGE_ID });
         }
         catch (e) {
             showAppError(e);
@@ -93,8 +93,8 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
 
     render(): React.ReactNode {
         return (
-            <div className="app flex-row align-items-top" style={{display: this.props.visible ? "" : "none"}}>
-                <Container style={{backgroundColor: "ALICEBLUE"}}>
+            <div className="app flex-row align-items-top" style={{ display: this.props.visible ? "" : "none" }}>
+                <Container style={{ backgroundColor: "ALICEBLUE" }}>
 
                     <Col md="8">
 
@@ -102,14 +102,14 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                         <CardBody>
                             <div>
                                 <h2>БУХта WMS</h2>
-                                <p className="text-muted">Авторизация</p>
+                                <p className="text-muted">Авторизац ия</p>
                                 <InputGroup className="mb-3">
                                     <InputGroupAddon addonType="prepend">
                                         <InputGroupText>
                                             <i className="fa fa-user"></i>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input type="text" placeholder="логин"/>
+                                    <Input type="text" placeholder="логин" />
                                 </InputGroup>
                                 <InputGroup className="mb-4">
                                     <InputGroupAddon addonType="prepend">
@@ -117,25 +117,25 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                             <i className="fa fa-unlock"></i>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input type="password" placeholder="пароль"/>
+                                    <Input type="password" placeholder="пароль" />
                                 </InputGroup>
                                 <Row>
                                     <Col xs="6">
                                         <Button color="primary" disabled={this.loginButtonDisabled}
-                                                className="px-4"
-                                                onTouchStart={
-                                                    this.loginButtonHandler
-                                                }
+                                            className="px-4"
+                                            onTouchStart={
+                                                this.loginButtonHandler
+                                            }
                                         >
                                             Войти
                                         </Button>
                                     </Col>
                                     <Col xs="6">
                                         <Button className="px-4" outline
-                                                onTouchStart={() => {
-                                                    playSound_ButtonClick();
-                                                    zebraReloadWebView()
-                                                }}>
+                                            onTouchStart={() => {
+                                                playSound_ButtonClick();
+                                                zebraReloadWebView()
+                                            }}>
                                             Reload
                                         </Button>
                                     </Col>

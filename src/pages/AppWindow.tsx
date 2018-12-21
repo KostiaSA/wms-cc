@@ -2,6 +2,7 @@ import * as  React from "react";
 import {appState, IOpenedPage} from "../AppState";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Button from "reactstrap/lib/Button";
 
 interface IAppWindowProps {
     classes?: any;
@@ -46,7 +47,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
 
                         </modal.content>);
                 })}
-                <ToastContainer autoClose={2000}/>
+                <ToastContainer autoClose={2000} />
             </div>
 
 

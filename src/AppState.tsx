@@ -10,8 +10,8 @@ import {playSound} from "./utils/playSound";
 import {showSnack} from "./ui/showSnack";
 import {PlaySound} from "./sounds/PlaySound";
 import {registerBuhtaObject} from "./registerBuhtaObject";
-import {showErrorMessage} from "./modals/ErrorMessageModal";
-import {showAppError} from "./pages/ErrorMessagePage";
+//import {showErrorMessage} from "./modals/ErrorMessageModal";
+import {showAppError} from "./modals/ErrorMessagePage";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
@@ -34,10 +34,6 @@ export class AppState {
     userName: string = "";
 
     activePageId: string[] = [];
-    // infoPage: IAppPage;
-    // loginPage: IAppPage;
-    // taskPage: IAppPage;
-    // mainMenuPage: IAppPage;
     windowId: string;
     pages: IOpenedPage[] = [];
     modals: IOpenedPage[] = [];
@@ -66,24 +62,6 @@ export class AppState {
 
 
     }
-
-
-    // openPage(page: IOpenedPage) {
-    //     if (!page.props.pageId)
-    //         throw  "openPage(): не заполнен props.pageId";
-    //
-    //     let pageIndex = this.pages.map((p: IOpenedPage) => p.props.pageId).indexOf(page.props.pageId);
-    //     if (pageIndex == -1) {
-    //         // нет такой, добавляем
-    //         this.pages.push(page);
-    //         this.activePageId.unshift(page.props.pageId);
-    //     } else {
-    //         // передвигаем в топ
-    //         this.activePageId.splice(pageIndex, 1);
-    //         this.activePageId.unshift(page.props.pageId);
-    //     }
-    //     this.forceUpdate();
-    // }
 
     openModal<AppPageProps extends IAppPageProps>(content: ComponentType<AppPageProps>, props: AppPageProps) {
         let page: IOpenedPage = {
@@ -139,13 +117,6 @@ export class AppState {
         this.closeActivePage();
     }
 
-    // switchToPageByBottomBarIndex(bottomBarIndex: number) {
-    //     this.pages.forEach((page: IAppPage) => {
-    //         if (page.bottomBarIndex == bottomBarIndex)
-    //             this.activePage[0] = page;
-    //     })
-    // }
-
     onReadBarcodeHandler(barcode: string, barcodeType: string) {
         barcode = atob(barcode);
         let pageId = this.activePageId[0];
@@ -185,8 +156,6 @@ export class AppState {
             return this.barcodesQueue[pageId].shift()!;
     }
 
-
-//    public desktop: Desktop;
 
 
 // get userId(): string {
@@ -261,9 +230,11 @@ export class AppState {
     }
 }
 
-//export const appState = store(new AppState());
+
 export const appState = new AppState();
+
 (window as any).appSate = appState;
+
 registerBuhtaObject();
 
 window.onerror = function (event: Event | string, source?: string, fileno?: number, columnNumber?: number, error?: Error) {

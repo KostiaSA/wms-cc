@@ -25,11 +25,11 @@ import {SqlGrid} from "../../components/SqlGrid";
 
 
 import {playSound, playSound_ButtonClick} from "../../utils/playSound";
-import {showInfoMessage} from "../../modals/InfoMessageModal";
+//import {showInfoMessage} from "../../modals/InfoMessageModal";
 import {showSnack} from "../../ui/showSnack";
 import {PlaySound} from "../../sounds/PlaySound";
 import {I_ПИК_Лист_тестовые_штрихкоды, TestBarcodesPage} from "../TestBarcodesPage";
-import {showErrorMessage} from "../../modals/ErrorMessageModal";
+//import {showErrorMessage} from "../../modals/ErrorMessageModal";
 import Button from "reactstrap/lib/Button";
 import {getSubcontoTextColorClass} from "../../utils/getSubcontoTextColorClass";
 import classNames from "classnames";
@@ -243,7 +243,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                             ПИК <strong>{this.docHeader.Номер}</strong>, горит
                         </span>
                     <span style={{color: "GOLDENROD"}}>
-                            Заявка Ч343, 12.01.2019, ООО "Серые костыли"
+                            {"Заявка Ч343, 12.01.2019, ООО 'Серые костыли'"}
                         </span>
 
                 </div>
@@ -278,7 +278,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                 <div style={{flex: 1, display: (this.activeTab == "Путь" ? "" : "none")}}>
                     <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                             <span style={{textAlign: "center", color: "darkgray"}}>
-                                ПОРЯДОК ОБХОДА
+                                {"ПОРЯДОК ОБХОДА"}
                             </span>
                         <SqlGrid style={{flex: 1}}
                                  sqlProcName={"ПИК_Лист_Порядок_обхода"}
@@ -290,7 +290,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                 <div style={{flex: 1, display: (this.activeTab == "Паллета" ? "" : "none")}}>
                     <div style={{display: "flex", height: "100%", flexDirection: "column"}}>
                             <span style={{textAlign: "center", color: "darkgray"}}>
-                                ПОДБОР С ПАЛЛЕТЫ
+                                {"ПОДБОР С ПАЛЛЕТЫ"}
                             </span>
                         <SqlGrid style={{flex: 1}} sqlProcName={"СписокТМЦ"} sqlProcParams={[]}
                                  reloadCounter={this.reloadTaskStateCounter}/>
@@ -342,7 +342,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                                     <i className="fa fa-question-circle">
 
                                     </i>
-                                    Паллета
+                                    {"Паллета"}
                                 </a>
                             </li>
                             <li className="nav-item">
@@ -373,7 +373,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
                             <li className="nav-item">
                                 <a className="nav-link" href="#">
                                     <i className="far fa-check-circle"></i>
-                                    Готово
+                                    {"Готово"}
                                 </a>
                             </li>
                         </ul>

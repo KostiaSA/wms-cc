@@ -81,7 +81,7 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     appState.closeAndDestroyActivePage();
                     appState.pushTestBarcode("8463943749437202383", "");
                 }}>
-                    неизвестный штрих-код
+                    {"неизвестный штрих-код"}
                 </Button>
                 <br/>
                 {

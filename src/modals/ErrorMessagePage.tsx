@@ -1,7 +1,7 @@
 import * as  React from "react";
 import {zebraTextToSpeech} from "../zebra/ZebraApi";
 import {appState} from "../AppState";
-import {IAppPageProps} from "./AppWindow";
+import {IAppPageProps} from "../pages/AppWindow";
 import Button from "reactstrap/lib/Button";
 import Modal from "reactstrap/lib/Modal";
 import ModalHeader from "reactstrap/lib/ModalHeader";

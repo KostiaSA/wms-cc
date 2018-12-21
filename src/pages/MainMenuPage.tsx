@@ -3,7 +3,7 @@ import {IAppPageProps} from "./AppWindow";
 import {appState} from "../AppState";
 import {playSound_ButtonClick} from "../utils/playSound";
 import {PeakPage} from "./Peak/PeakPage";
-import {showAppError} from "./ErrorMessagePage";
+import {showAppError} from "../modals/ErrorMessagePage";
 // import TextField from "@material-ui/core/TextField/TextField";
 // import withRoot from "../withRoot";
 // import withStyles from "@material-ui/core/styles/withStyles";
