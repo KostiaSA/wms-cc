@@ -23,6 +23,7 @@ import Col from "reactstrap/lib/Col";
 import Button from "reactstrap/lib/Button";
 import { MainMenuPage } from "./MainMenuPage";
 import { showAppError } from "../modals/ErrorMessagePage";
+import { _wms_android_Логин } from "../generated-api";
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -64,23 +65,26 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
         let _this = this;
 
         try {
-            let recordsets = await executeSql("Логин " + stringAsSql(this.login) + ",''," + stringAsSql(zebraGetDeviceId()) + "," + stringAsSql(zebraGetDeviceNum()));
-            let row = recordsets[0][0];
+
+            let row = await _wms_android_Логин(this.login, '', zebraGetDeviceId(), zebraGetDeviceNum());
+            //let recordsets = await executeSql("Логин " + stringAsSql(this.login) + ",''," + stringAsSql(zebraGetDeviceId()) + "," + stringAsSql(zebraGetDeviceNum()));
+            //let row = recordsets[0][0];
 
             if (row.error) {
-                console.log(row.error);
+                console.error(row.error);
+                showAppError(row.error);
                 return;
             }
 
             appState.tsdKey = row.tsdKey;
-            appState.userName = row.fullUserName;
-            appState.kadrId = row.kadrId;
-            appState.podrId = row.podrId;
+            appState.userName = row.FullUserName;
+            appState.kadrId = row.KadrId;
+            appState.podrId = row.PodrId;
 
             appState.openPage(MainMenuPage, { pageId: MainMenuPage.PAGE_ID });
         }
         catch (e) {
-            showAppError(e);
+            showAppError(e.toString());
         }
         finally {
             this.loginButtonDisabled = false;
@@ -102,7 +106,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                         <CardBody>
                             <div>
                                 <h2>БУХта WMS</h2>
-                                <p className="text-muted">Авторизац ия</p>
+                                <p className="text-muted">Авторизация</p>
                                 <InputGroup className="mb-3">
                                     <InputGroupAddon addonType="prepend">
                                         <InputGroupText>
@@ -124,6 +128,9 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                         <Button color="primary" disabled={this.loginButtonDisabled}
                                             className="px-4"
                                             onTouchStart={
+                                                this.loginButtonHandler
+                                            }
+                                            onClick={
                                                 this.loginButtonHandler
                                             }
                                         >

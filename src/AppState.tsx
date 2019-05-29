@@ -1,17 +1,17 @@
-import {getRandomString} from "./utils/getRandomString";
-import {Guid} from "./utils/guid";
-import {XJSON_stringify} from "./utils/xjson";
+import { getRandomString } from "./utils/getRandomString";
+import { Guid } from "./utils/guid";
+import { XJSON_stringify } from "./utils/xjson";
 import * as React from "react";
-import {IZebraApi} from "./zebra/ZebraApi";
-import {AppWindow, IAppPageProps} from "./pages/AppWindow";
-import {ComponentType} from "react";
-import {LoginPage} from "./pages/LoginPage";
-import {playSound} from "./utils/playSound";
-import {showSnack} from "./ui/showSnack";
-import {PlaySound} from "./sounds/PlaySound";
-import {registerBuhtaObject} from "./registerBuhtaObject";
+import { IZebraApi } from "./zebra/ZebraApi";
+import { AppWindow, IAppPageProps } from "./pages/AppWindow";
+import { ComponentType } from "react";
+import { LoginPage } from "./pages/LoginPage";
+import { playSound } from "./utils/playSound";
+import { showSnack } from "./ui/showSnack";
+import { PlaySound } from "./sounds/PlaySound";
+import { registerBuhtaObject } from "./registerBuhtaObject";
 //import {showErrorMessage} from "./modals/ErrorMessageModal";
-import {showAppError} from "./modals/ErrorMessagePage";
+import { showAppError } from "./modals/ErrorMessagePage";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
@@ -57,19 +57,19 @@ export class AppState {
     constructor() {
         this.windowId = getRandomString(10);
 
-        this.pages.push({props: {pageId: LoginPage.PAGE_ID}, content: LoginPage});
+        this.pages.push({ props: { pageId: LoginPage.PAGE_ID }, content: LoginPage });
         this.activePageId.push(LoginPage.PAGE_ID);
 
 
     }
 
-    openModal<AppPageProps extends IAppPageProps>(content: ComponentType<AppPageProps>, props: AppPageProps) {
+    openModal<AppPageProps extends IAppPageProps>(content: any /*ComponentType<AppPageProps>*/, props: AppPageProps) {
         let page: IOpenedPage = {
             props, content
         } as any;
 
         if (!page.props.pageId)
-            throw  "openModal(): не заполнен props.pageId";
+            throw "openModal(): не заполнен props.pageId";
 
         this.modals.unshift(page);
         this.forceUpdate();
@@ -86,7 +86,7 @@ export class AppState {
         } as any;
 
         if (!page.props.pageId)
-            throw  "openPage(): не заполнен props.pageId";
+            throw "openPage(): не заполнен props.pageId";
 
         let pageIndex = this.pages.map((p: IOpenedPage) => p.props.pageId).indexOf(page.props.pageId);
         if (pageIndex == -1) {
@@ -128,7 +128,7 @@ export class AppState {
             } else {
                 if (!this.barcodesQueue[pageId])
                     this.barcodesQueue[pageId] = [];
-                this.barcodesQueue[pageId].push({barcode, barcodeType});
+                this.barcodesQueue[pageId].push({ barcode, barcodeType });
                 console.log("получен штрих-код", barcode, barcodeType);
             }
         }
@@ -143,7 +143,7 @@ export class AppState {
             } else {
                 if (!this.barcodesQueue[pageId])
                     this.barcodesQueue[pageId] = [];
-                this.barcodesQueue[pageId].push({barcode, barcodeType});
+                this.barcodesQueue[pageId].push({ barcode, barcodeType });
                 console.log("получен штрих-код", barcode, barcodeType);
             }
         }
@@ -158,36 +158,36 @@ export class AppState {
 
 
 
-// get userId(): string {
-//
-//     let userIdStr= localStorage.getItem("buhta-userId");
-//     if (userIdStr)
-//         return XJSON_parse(userIdStr);
-//     else
-//         throwError("нет userId");
-//     throw "fake";
-// }
-//
-// get sessionIdAsStr(): string {
-//     return guidToHex(this.sessionId);
-// }
-//
+    // get userId(): string {
+    //
+    //     let userIdStr= localStorage.getItem("buhta-userId");
+    //     if (userIdStr)
+    //         return XJSON_parse(userIdStr);
+    //     else
+    //         throwError("нет userId");
+    //     throw "fake";
+    // }
+    //
+    // get sessionIdAsStr(): string {
+    //     return guidToHex(this.sessionId);
+    // }
+    //
 
-// private cachedSessionId: Guid;
-//
-// get sessionId(): Guid {
-//     if (!this.cachedSessionId) {
-//         let sessionIdStr = localStorage.getItem("buhta-sessionId");
-//         if (sessionIdStr) {
-//             this.cachedSessionId = XJSON_parse(sessionIdStr);
-//         }
-//         else {
-//             this.cachedSessionId = newGuid();
-//             localStorage.setItem("buhta-sessionId", XJSON_stringify(this.cachedSessionId));
-//         }
-//     }
-//     return this.cachedSessionId;
-// }
+    // private cachedSessionId: Guid;
+    //
+    // get sessionId(): Guid {
+    //     if (!this.cachedSessionId) {
+    //         let sessionIdStr = localStorage.getItem("buhta-sessionId");
+    //         if (sessionIdStr) {
+    //             this.cachedSessionId = XJSON_parse(sessionIdStr);
+    //         }
+    //         else {
+    //             this.cachedSessionId = newGuid();
+    //             localStorage.setItem("buhta-sessionId", XJSON_stringify(this.cachedSessionId));
+    //         }
+    //     }
+    //     return this.cachedSessionId;
+    // }
 
     isLoggedIn()
         :
@@ -208,12 +208,12 @@ export class AppState {
     }
 
     setAuthToken(token
-                     :
-                     string, login
-                     :
-                     string, userId
-                     :
-                     Guid
+        :
+        string, login
+            :
+            string, userId
+            :
+            Guid
     ) {
         localStorage.setItem("buhta-authToken", token);
         localStorage.setItem("buhta-login", login);

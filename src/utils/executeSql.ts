@@ -1,8 +1,9 @@
-import {XJSON_clone, XJSON_parse} from "./xjson";
+import { XJSON_clone, XJSON_parse } from "./xjson";
 import * as moment from "moment";
+import { appState } from '../AppState';
 
 interface IExecuteSqlReq {
-    sessionId: string,
+    tsdKey: number,
     userName: string,
     sqlBatch: string
 
@@ -59,8 +60,8 @@ export async function executeSql(sql: string): Promise<any[]> {
             };
 
             let fullReq: IExecuteSqlReq = {
-                sessionId: "sessionId4729083023",
-                userName: "kostiasa",
+                tsdKey: appState.tsdKey || -1,  // -1 в случае логина
+                userName: appState.userName || "login",
                 sqlBatch: sql
             };
 
@@ -68,5 +69,5 @@ export async function executeSql(sql: string): Promise<any[]> {
 
         });
 
- 
+
 }
