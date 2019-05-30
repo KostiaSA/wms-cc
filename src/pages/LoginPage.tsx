@@ -23,7 +23,7 @@ import Col from "reactstrap/lib/Col";
 import Button from "reactstrap/lib/Button";
 import { MainMenuPage } from "./MainMenuPage";
 import { showAppError } from "../modals/ErrorMessagePage";
-import { _wms_android_Логин } from "../generated-api";
+import { _wms_android_Логин, _wms_android_Доступы } from "../generated-api";
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -67,8 +67,6 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
         try {
 
             let row = await _wms_android_Логин(this.login, '', zebraGetDeviceId(), zebraGetDeviceNum());
-            //let recordsets = await executeSql("Логин " + stringAsSql(this.login) + ",''," + stringAsSql(zebraGetDeviceId()) + "," + stringAsSql(zebraGetDeviceNum()));
-            //let row = recordsets[0][0];
 
             if (row.error) {
                 console.error(row.error);
@@ -80,6 +78,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
             appState.userName = row.FullUserName;
             appState.kadrId = row.KadrId;
             appState.podrId = row.PodrId;
+            appState.доступы = await _wms_android_Доступы(this.login);
 
             appState.openPage(MainMenuPage, { pageId: MainMenuPage.PAGE_ID });
         }

@@ -14,6 +14,7 @@ export async function executeSql(sql: string): Promise<any[]> {
     return new Promise<any>(
         (resolve: (obj: any) => void, reject: (error: string) => void) => {
 
+            console.log(sql);
             var xhr = new XMLHttpRequest();
             let url = "executeSql";
             xhr.open("POST", url, true);

@@ -12,6 +12,7 @@ import { PlaySound } from "./sounds/PlaySound";
 import { registerBuhtaObject } from "./registerBuhtaObject";
 //import {showErrorMessage} from "./modals/ErrorMessageModal";
 import { showAppError } from "./modals/ErrorMessagePage";
+import { IResult_wms_android_Доступы } from "./generated-api";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
@@ -32,6 +33,7 @@ export class AppState {
     kadrId: number = -1;
     podrId: number = -1;
     userName: string = "";
+    доступы: IResult_wms_android_Доступы[] = [];
 
     activePageId: string[] = [];
     windowId: string;
