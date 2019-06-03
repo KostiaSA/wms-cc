@@ -1,27 +1,27 @@
 import * as  React from "react";
-import {zebraTextToSpeech} from "../zebra/ZebraApi";
-import {appState} from "../AppState";
-import {IAppPageProps} from "../pages/AppWindow";
+import { zebraTextToSpeech } from "../zebra/ZebraApi";
+import { appState } from "../AppState";
+import { IAppPageProps } from "../pages/AppWindow";
 import Button from "reactstrap/lib/Button";
 import Modal from "reactstrap/lib/Modal";
 import ModalHeader from "reactstrap/lib/ModalHeader";
 import ModalBody from "reactstrap/lib/ModalBody";
 import ModalFooter from "reactstrap/lib/ModalFooter";
-import {getRandomString} from "../utils/getRandomString";
-import {ReactNode} from "react";
-import {playSound} from "../utils/playSound";
-import {sleep} from "../utils/sleep";
+import { getRandomString } from "../utils/getRandomString";
+import { ReactNode } from "react";
+import { playSound } from "../utils/playSound";
+import { sleep } from "../utils/sleep";
 
 
 export async function showAppError(message: ReactNode, title: ReactNode = "Ошибка приложения") {
-    appState.openModal(ErrorMessagePage, {pageId: getRandomString(), message, title});
+    appState.openModal(ErrorMessagePage, { pageId: getRandomString(), message, title });
     playSound("error");
     await sleep(700);
     zebraTextToSpeech("Ошибка приложения");
 }
 
 export async function showError(message: ReactNode, title: ReactNode = "Ошибка") {
-    appState.openModal(ErrorMessagePage, {pageId: getRandomString(), message, title});
+    appState.openModal(ErrorMessagePage, { pageId: getRandomString(), message, title });
     playSound("error");
     await sleep(700);
     zebraTextToSpeech("Ошибка");
@@ -47,7 +47,7 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
 
     render(): React.ReactNode {
         return (
-            <div className="app" style={{display: this.props.visible ? "" : "none"}}>
+            <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
                     <ModalHeader className={"text-danger"}>{this.props.title}</ModalHeader>
                     <ModalBody>
@@ -55,7 +55,7 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="danger"
-                                onClick={() => appState.closeActiveModal()}>
+                            onClick={() => appState.closeActiveModal()}>
                             Закрыть
                         </Button>
                     </ModalFooter>

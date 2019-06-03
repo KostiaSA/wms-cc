@@ -1,14 +1,15 @@
 import * as  React from "react";
 import { IAppPageProps } from "./AppWindow";
-import { appState } from "../AppState";
+import { appState } from '../AppState';
 import { playSound_ButtonClick } from "../utils/playSound";
 import { PeakPage } from "./Peak/PeakPage";
 import { showAppError } from "../modals/ErrorMessagePage";
 import { ReactNode } from "react";
-import { _wms_android_Главное_меню_Список_Новых_Заданий } from "../generated-api";
+import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание } from "../generated-api";
 import { ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ } from "../const";
 import { ПИК_1_меню_Page, ПИК_1_меню_Page_ModalResult, I_ПИК_1_меню_PageProps } from "../modals/ПИК_1_меню";
 import { getRandomString } from "../utils/getRandomString";
+import { showInfo } from "../modals/InfoMessagePage";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -40,6 +41,18 @@ let mainMenuItems: IMainMenuItem[] = [
         onClick: async () => {
             playSound_ButtonClick();
             let res = await appState.getModalResult<I_ПИК_1_меню_PageProps, ПИК_1_меню_Page_ModalResult>(ПИК_1_меню_Page, { pageId: getRandomString() });
+            if (res == "Выбрать задание (вручную)") {
+
+            }
+            else if (res == "Выбрать по маршруту") {
+
+            }
+            else if (res == "Получить задание (авто)") {
+                let res = await _wms_android_ПИК_получить_задание(appState.kadrId);
+                if (res.taskId == 0)
+                    showInfo("Нет заданий для исполнения");
+            }
+
             console.log(res);
         }
     },
