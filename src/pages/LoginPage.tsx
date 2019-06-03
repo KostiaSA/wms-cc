@@ -6,7 +6,7 @@ import {
     zebraShowToast,
     zebraReloadWebView
 } from "../zebra/ZebraApi";
-import { appState } from "../AppState";
+import { appState } from '../AppState';
 import { executeSql } from "../utils/executeSql";
 import { stringAsSql } from "../utils/stringAsSql";
 import { IAppPageProps } from "./AppWindow";
@@ -23,7 +23,7 @@ import Col from "reactstrap/lib/Col";
 import Button from "reactstrap/lib/Button";
 import { MainMenuPage } from "./MainMenuPage";
 import { showAppError } from "../modals/ErrorMessagePage";
-import { _wms_android_Логин, _wms_android_Доступы } from "../generated-api";
+import { _wms_android_Логин, _wms_android_Доступы, _wms_android_Главное_меню_Список_Новых_Заданий } from "../generated-api";
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -79,6 +79,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
             appState.kadrId = row.KadrId;
             appState.podrId = row.PodrId;
             appState.доступы = await _wms_android_Доступы(this.login);
+            appState.новыеЗадания = await _wms_android_Главное_меню_Список_Новых_Заданий(appState.kadrId, appState.podrId);
 
             appState.openPage(MainMenuPage, { pageId: MainMenuPage.PAGE_ID });
         }

@@ -21,13 +21,13 @@ export async function _wms_android_Логин(userName: string, password: string
     if (lastRecordset.length > 1) return { error: "_wms_android_Логин: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
     for (let row of lastRecordset) {
         if (!row.error) {
-            if (!row.tsdKey) throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'tsdKey'");
+            if (typeof(row.tsdKey) == "undefined") throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'tsdKey'");
             if (typeof row.tsdKey != "number") throw new Error("результат выполнения '_wms_android_Логин': значение в колонке 'tsdKey' должно быть числом");
-            if (!row.FullUserName) throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'FullUserName'");
+            if (typeof(row.FullUserName) == "undefined") throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'FullUserName'");
             if (typeof row.FullUserName != "string") throw new Error("результат выполнения '_wms_android_Логин': значение в колонке 'FullUserName' должно быть строкой");
-            if (!row.KadrId) throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'KadrId'");
+            if (typeof(row.KadrId) == "undefined") throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'KadrId'");
             if (typeof row.KadrId != "number") throw new Error("результат выполнения '_wms_android_Логин': значение в колонке 'KadrId' должно быть числом");
-            if (!row.PodrId) throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'PodrId'");
+            if (typeof(row.PodrId) == "undefined") throw new Error("результат выполнения '_wms_android_Логин': не заполнена колонка 'PodrId'");
             if (typeof row.PodrId != "number") throw new Error("результат выполнения '_wms_android_Логин': значение в колонке 'PodrId' должно быть числом");            
         }
     }
@@ -48,15 +48,15 @@ export async function _wms_android_Главное_меню_Список_Новы
     if (typeof PodrId != "number") throw new Error("вызов '_wms_android_Главное_меню_Список_Новых_Заданий': параметр 'PodrId' должен быть числом");
     let recordsets = await executeSql("_wms_android_Главное_меню_Список_Новых_Заданий " + KadrId.toString() + "," + PodrId.toString());
     let lastRecordset = recordsets[recordsets.length - 1];
-    if (!lastRecordset) return { error: "_wms_android_Главное_меню_Список_Новых_Заданий: не вернула результатов" } as any;
+
 
     for (let row of lastRecordset) {
         if (!row.error) {
-            if (!row.Тип) throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': не заполнена колонка 'Тип'");
+            if (typeof(row.Тип) == "undefined") throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': не заполнена колонка 'Тип'");
             if (typeof row.Тип != "string") throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': значение в колонке 'Тип' должно быть строкой");
-            if (!row.Новых) throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': не заполнена колонка 'Новых'");
+            if (typeof(row.Новых) == "undefined") throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': не заполнена колонка 'Новых'");
             if (typeof row.Новых != "number") throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': значение в колонке 'Новых' должно быть числом");
-            if (!row.ВРаботе) throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': не заполнена колонка 'ВРаботе'");
+            if (typeof(row.ВРаботе) == "undefined") throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': не заполнена колонка 'ВРаботе'");
             if (typeof row.ВРаботе != "number") throw new Error("результат выполнения '_wms_android_Главное_меню_Список_Новых_Заданий': значение в колонке 'ВРаботе' должно быть числом");            
         }
     }
@@ -80,11 +80,11 @@ export async function _wms_android_Доступы(login: string): Promise<IResul
 
     for (let row of lastRecordset) {
         if (!row.error) {
-            if (!row.UserGroup) throw new Error("результат выполнения '_wms_android_Доступы': не заполнена колонка 'UserGroup'");
+            if (typeof(row.UserGroup) == "undefined") throw new Error("результат выполнения '_wms_android_Доступы': не заполнена колонка 'UserGroup'");
             if (typeof row.UserGroup != "string") throw new Error("результат выполнения '_wms_android_Доступы': значение в колонке 'UserGroup' должно быть строкой");
-            if (!row.TableName) throw new Error("результат выполнения '_wms_android_Доступы': не заполнена колонка 'TableName'");
+            if (typeof(row.TableName) == "undefined") throw new Error("результат выполнения '_wms_android_Доступы': не заполнена колонка 'TableName'");
             if (typeof row.TableName != "string") throw new Error("результат выполнения '_wms_android_Доступы': значение в колонке 'TableName' должно быть строкой");
-            if (!row.Access) throw new Error("результат выполнения '_wms_android_Доступы': не заполнена колонка 'Access'");
+            if (typeof(row.Access) == "undefined") throw new Error("результат выполнения '_wms_android_Доступы': не заполнена колонка 'Access'");
             if (typeof row.Access != "string") throw new Error("результат выполнения '_wms_android_Доступы': значение в колонке 'Access' должно быть строкой");            
         }
     }

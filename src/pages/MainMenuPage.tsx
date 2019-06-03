@@ -5,6 +5,8 @@ import { playSound_ButtonClick } from "../utils/playSound";
 import { PeakPage } from "./Peak/PeakPage";
 import { showAppError } from "../modals/ErrorMessagePage";
 import { ReactNode } from "react";
+import { _wms_android_Главное_меню_Список_Новых_Заданий } from "../generated-api";
+import { ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ } from "../const";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -59,7 +61,7 @@ let mainMenuItems: IMainMenuItem[] = [
         code: "ОТГР",
     },
     {
-        group: "ПРОЧИЕ",
+        group: "ПРОЧИЕ ОПЕРАЦИИ",
         label: "ИНВ",
         code: "ИНВ",
     },
@@ -96,18 +98,42 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
     //     };
     //
 
+    private timer_новыеЗадания: any;
+    componentDidMount() {
+        this.timer_новыеЗадания = setInterval(async () => {
+            appState.новыеЗадания = await _wms_android_Главное_меню_Список_Новых_Заданий(appState.kadrId, appState.podrId);
+            this.forceUpdate();
+        }, ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ);
+
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer_новыеЗадания);
+    }
+
+
+
+
     renderGroup(group: string): ReactNode[] {
         let ret: ReactNode[] = [];
         for (let item of mainMenuItems) {
-            ret.push(
-                <li
-                    className="list-group-item"
-                    onClick={item.onClick}
-                >
-                    {item.icon}
-                    {item.label}
-                </li>
-            );
+            if (item.group == group && appState.isUsersHasAccessToRasdel(item.code)) {
+                let новыеЗадания = appState.новыеЗадания.find((x) => x.Тип == item.code);
+                let newStr = "";
+                if (новыеЗадания && (новыеЗадания.Новых > 0 || новыеЗадания.ВРаботе > 0)) {
+                    newStr = новыеЗадания.Новых + "/" + новыеЗадания.ВРаботе;
+                }
+                ret.push(
+                    <li
+                        key={mainMenuItems.indexOf(item)}
+                        className="list-group-item"
+                        onClick={item.onClick}
+                    >
+                        {item.icon}
+                        {item.label} <span style={{ color: "dodgerblue", marginLeft: 10 }}>{newStr}</span>
+                    </li>
+                );
+            }
         }
         return ret;
     }
@@ -129,7 +155,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                 <h5 className={"text-center"} style={titleStyle}>ОСНОВНЫЕ ОПЕРАЦИИ</h5>
                 <ul className="list-group">
                     {this.renderGroup("ОСНОВНЫЕ ОПЕРАЦИИ")}
-                    <li
+                    {/* <li
                         className="list-group-item"
                         onClick={() => {
                             playSound_ButtonClick();
@@ -147,14 +173,24 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                         }}
                     >
                         test ошибки
-                    </li>
-                    <li className="list-group-item">Morbi leo risus</li>
-                    <li className="list-group-item">Dapibus ac facilisis in</li>
-                    <li className="list-group-item">Dapibus ac facilisis in</li>
-                    <li className="list-group-item">Morbi leo risus</li>
-                    <li className="list-group-item">Dapibus ac facilisis in</li>
+                    </li> */}
                 </ul>
-                <h5 className={"text-center"} style={titleStyle}>ЗАДАНИЯ ОЖИДАЮТ</h5>
+                <h5 className={"text-center"} style={titleStyle}>ПРОЧИЕ ОПЕРАЦИИ</h5>
+                <ul className="list-group">
+                    {this.renderGroup("ПРОЧИЕ ОПЕРАЦИИ")}
+                </ul>
+                <h5 className={"text-center"} style={titleStyle}>КОНЕЦ РАБОТЫ</h5>
+                <ul className="list-group">
+                    <li className="list-group-item"
+                        onClick={() => {
+                            playSound_ButtonClick();
+                            appState.closeActivePage()
+                        }}
+
+                    ><i className="fa fa-user"></i>Выход
+                    </li>
+                </ul>
+                {/* <h5 className={"text-center"} style={titleStyle}>ЗАДАНИЯ ОЖИДАЮТ</h5>
                 <ul className="list-group">
                     <li
                         className="list-group-item disabled"
@@ -200,7 +236,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
 
                     ><i className="fa fa-user"></i>Выход
                     </li>
-                </ul>
+                </ul> */}
             </div>
             //             <MuiThemeProvider theme={buhtaTheme}>
             //                 <div style={{

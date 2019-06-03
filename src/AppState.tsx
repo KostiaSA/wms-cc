@@ -12,7 +12,7 @@ import { PlaySound } from "./sounds/PlaySound";
 import { registerBuhtaObject } from "./registerBuhtaObject";
 //import {showErrorMessage} from "./modals/ErrorMessageModal";
 import { showAppError } from "./modals/ErrorMessagePage";
-import { IResult_wms_android_Доступы } from "./generated-api";
+import { IResult_wms_android_Доступы, IResult_wms_android_Главное_меню_Список_Новых_Заданий } from "./generated-api";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
@@ -34,6 +34,7 @@ export class AppState {
     podrId: number = -1;
     userName: string = "";
     доступы: IResult_wms_android_Доступы[] = [];
+    новыеЗадания: IResult_wms_android_Главное_меню_Список_Новых_Заданий[] = [];
 
     activePageId: string[] = [];
     windowId: string;
@@ -158,7 +159,30 @@ export class AppState {
             return this.barcodesQueue[pageId].shift()!;
     }
 
+    isUsersHasAccessToRasdel(rasdel: string): boolean {
+        rasdel = rasdel.toUpperCase();
+        if (!rasdel.startsWith("MOBILE_"))
+            rasdel = "MOBILE_" + rasdel;
 
+        if (rasdel == "MOBILE_ИНФО")
+            return true;
+
+        // сначала перебираем доступы конкретного юзера
+        for (let acc of this.доступы) {
+            if (acc.UserGroup == this.login && acc.TableName == rasdel) {
+                return acc.Access == "Полный";
+            }
+        }
+
+        // сначала перебираем доступы в группах юзера
+        for (let acc of this.доступы) {
+            if (acc.TableName == rasdel) {
+                if (acc.Access == "Полный")
+                    return true;
+            }
+        }
+        return false;
+    }
 
     // get userId(): string {
     //
