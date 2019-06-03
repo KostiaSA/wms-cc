@@ -7,7 +7,7 @@ import { showAppError } from "../modals/ErrorMessagePage";
 import { ReactNode } from "react";
 import { _wms_android_Главное_меню_Список_Новых_Заданий } from "../generated-api";
 import { ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ } from "../const";
-import { ПИК_1_меню_Page } from "../modals/ПИК_1_меню";
+import { ПИК_1_меню_Page, ПИК_1_меню_Page_ModalResult, I_ПИК_1_меню_PageProps } from "../modals/ПИК_1_меню";
 import { getRandomString } from "../utils/getRandomString";
 
 export interface IMainMenuPageProps extends IAppPageProps {
@@ -39,7 +39,8 @@ let mainMenuItems: IMainMenuItem[] = [
         code: "ПИК",
         onClick: async () => {
             playSound_ButtonClick();
-            let xxx = await appState.openModal(ПИК_1_меню_Page, { pageId: getRandomString() });
+            let res = await appState.getModalResult<I_ПИК_1_меню_PageProps, ПИК_1_меню_Page_ModalResult>(ПИК_1_меню_Page, { pageId: getRandomString() });
+            console.log(res);
         }
     },
     {

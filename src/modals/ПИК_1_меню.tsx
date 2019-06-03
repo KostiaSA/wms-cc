@@ -6,7 +6,10 @@ import Modal from "reactstrap/lib/Modal";
 import ModalHeader from "reactstrap/lib/ModalHeader";
 import ModalBody from "reactstrap/lib/ModalBody";
 import ModalFooter from "reactstrap/lib/ModalFooter";
+import { playSound_ButtonClick } from "../utils/playSound";
 
+
+export type ПИК_1_меню_Page_ModalResult = "Выбрать по маршруту" | "Выбрать задание (вручную)" | "Получить задание (авто)" | "Нет";
 
 export interface I_ПИК_1_меню_PageProps extends IAppPageProps {
 
@@ -30,23 +33,35 @@ export class ПИК_1_меню_Page extends React.Component<I_ПИК_1_меню_
                     <ModalHeader className={"text-danger22"}>{"выбор задания ПИК"}</ModalHeader>
                     <ModalBody>
                         <Button color="primary" style={{ marginBottom: 10 }}
-                            onClick={() => appState.setModalResult(true)}>
+                            onClick={() => {
+                                playSound_ButtonClick();
+                                appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Выбрать по маршруту");
+                            }}>
                             Выбрать по маршруту
                         </Button>
                         <br />
                         <Button color="primary" style={{ marginBottom: 10 }}
-                            onClick={() => appState.setModalResult(true)}>
+                            onClick={() => {
+                                playSound_ButtonClick();
+                                appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Выбрать задание (вручную)");
+                            }}>
                             Выбрать задание (вручную)
                         </Button>
                         <br />
                         <Button color="primary" style={{ marginBottom: 10 }}
-                            onClick={() => appState.setModalResult(true)}>
+                            onClick={() => {
+                                playSound_ButtonClick();
+                                appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Получить задание (авто)")
+                            }}>
                             Получить задание (авто)
                         </Button>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="secondary"
-                            onClick={() => appState.setModalResult(false)}>
+                            onClick={() => {
+                                playSound_ButtonClick();
+                                appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Нет")
+                            }}>
                             Отмена
                         </Button>
                     </ModalFooter>

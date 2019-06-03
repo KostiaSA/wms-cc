@@ -86,14 +86,14 @@ export class AppState {
 
     private modalResult: any;
 
-    setModalResult(res: any) {
+    setModalResult<R>(res: R) {
         if (typeof (this.modalResult) != "undefined")
             throw new Error("internal error in setModalResult(): this.modalResult) != 'undefined'");
         this.modalResult = res;
         this.closeActiveModal()
     }
 
-    async getModalResult<AppPageProps extends IAppPageProps>(content: any, props: AppPageProps): Promise<any> {
+    async getModalResult<AppPageProps extends IAppPageProps, R>(content: any, props: AppPageProps): Promise<R> {
         this.modalResult = undefined;
         this.openModal(content, props);
         return new Promise<any>(
@@ -239,32 +239,19 @@ export class AppState {
     //     return this.cachedSessionId;
     // }
 
-    isLoggedIn()
-        :
-        boolean {
+    isLoggedIn(): boolean {
         return this.authToken !== "none";
     }
 
-    get authToken()
-        :
-        string {
+    get authToken(): string {
         return localStorage.getItem("buhta-authToken") || "none";
     }
 
-    get login()
-        :
-        string {
+    get login(): string {
         return localStorage.getItem("buhta-login") || "";
     }
 
-    setAuthToken(token
-        :
-        string, login
-            :
-            string, userId
-            :
-            Guid
-    ) {
+    setAuthToken(token: string, login: string, userId: Guid) {
         localStorage.setItem("buhta-authToken", token);
         localStorage.setItem("buhta-login", login);
         localStorage.setItem("buhta-userId", XJSON_stringify(userId));
