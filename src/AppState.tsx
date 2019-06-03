@@ -13,6 +13,7 @@ import { registerBuhtaObject } from "./registerBuhtaObject";
 //import {showErrorMessage} from "./modals/ErrorMessageModal";
 import { showAppError } from "./modals/ErrorMessagePage";
 import { IResult_wms_android_Доступы, IResult_wms_android_Главное_меню_Список_Новых_Заданий } from "./generated-api";
+import { sleep } from "./utils/sleep";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
@@ -82,6 +83,29 @@ export class AppState {
         this.modals.shift();
         this.forceUpdate();
     }
+
+    private modalResult: any;
+
+    setModalResult(res: any) {
+        if (typeof (this.modalResult) != "undefined")
+            throw new Error("internal error in setModalResult(): this.modalResult) != 'undefined'");
+        this.modalResult = res;
+        this.closeActiveModal()
+    }
+
+    async getModalResult<AppPageProps extends IAppPageProps>(content: any, props: AppPageProps): Promise<any> {
+        this.modalResult = undefined;
+        this.openModal(content, props);
+        return new Promise<any>(
+            async (resolve: (res: any) => void, reject: (error: string) => void) => {
+                while (typeof (this.modalResult) == "undefined")
+                    await sleep(10);
+                let this_modalResult = this.modalResult;
+                this.modalResult = undefined;
+                resolve(this_modalResult);
+            });
+    }
+
 
     openPage<AppPageProps extends IAppPageProps>(content: ComponentType<AppPageProps>, props: AppPageProps) {
         let page: IOpenedPage = {
