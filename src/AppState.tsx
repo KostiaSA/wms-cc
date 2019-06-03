@@ -84,7 +84,7 @@ export class AppState {
         this.forceUpdate();
     }
 
-    private modalResult: any;
+    modalResult: any;
 
     setModalResult<R>(res: R) {
         if (typeof (this.modalResult) != "undefined")

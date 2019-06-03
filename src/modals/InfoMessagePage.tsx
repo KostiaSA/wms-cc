@@ -42,12 +42,12 @@ class InfoMessagePage extends React.Component<IInfoMessagePageProps, any> {
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
-                    <ModalHeader>{this.props.title}</ModalHeader>
+                    <ModalHeader className={"text-secondary"}>{this.props.title}</ModalHeader>
                     <ModalBody className={"text-info"}>
                         {this.props.message}
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary"
+                        <Button color="light"
                             onClick={() => appState.closeActiveModal()}>
                             Закрыть
                         </Button>

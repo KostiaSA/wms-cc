@@ -57,7 +57,7 @@ export class ПИК_1_меню_Page extends React.Component<I_ПИК_1_меню_
                         </Button>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary"
+                        <Button color="light"
                             onClick={() => {
                                 playSound_ButtonClick();
                                 appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Нет")
