@@ -175,16 +175,15 @@ export class Информация_о_задании_Page extends React.Component
                     <tr>
                         <td style={{ ...labelStyle, paddingTop: 10 }}></td>
                         <td style={{ paddingTop: 10 }}>
-                            <Button
-                                className="btn-sm"
+                            <BuhtaButton
                                 color="info"
                                 outline
-                                onTouchStart={() => {
-                                    playSound_ButtonClick();
+                                onClick={() => {
+                                    //playSound_ButtonClick();
                                 }}
                             >
                                 открыть состав задания
-                            </Button>
+                            </BuhtaButton>
                         </td>
                     </tr>
                 </React.Fragment>
@@ -192,7 +191,7 @@ export class Информация_о_задании_Page extends React.Component
         }
 
         let пропустьУпаковку = null;
-        if (this.task.ПропускУпакРазрешен == 0) {
+        if (this.task.ПропускУпакРазрешен == 1) {
             пропустьУпаковку = (
                 <BuhtaButton
                     className="btn-sm"
@@ -248,7 +247,7 @@ export class Информация_о_задании_Page extends React.Component
                             //     playSound_ButtonClick();
                             // }}
                             onClick={() => {
-                                //playSound_ButtonClick();
+                                appState.closeActivePage();
                             }}
                         >
                             отмена
