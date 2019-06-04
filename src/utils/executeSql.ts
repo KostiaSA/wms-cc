@@ -22,6 +22,9 @@ export async function executeSql(sql: string): Promise<any[]> {
 
 
             xhr.onload = function () {
+                appState.sqlWaitPanelVisible = false;
+                appState.appWindow.forceUpdate();
+
                 if (this.status != 200) {
                     reject(this.statusText + " " + this.status);
                     return
@@ -57,6 +60,8 @@ export async function executeSql(sql: string): Promise<any[]> {
             // };
 
             xhr.onerror = function (ev: Event) {
+                appState.sqlWaitPanelVisible = false;
+                appState.appWindow.forceUpdate();
                 reject("нет связи с сервером");
             };
 
@@ -66,6 +71,8 @@ export async function executeSql(sql: string): Promise<any[]> {
                 sqlBatch: sql
             };
 
+            appState.sqlWaitPanelVisible = true;
+            appState.appWindow.forceUpdate();
             xhr.send(JSON.stringify(fullReq));
 
         });

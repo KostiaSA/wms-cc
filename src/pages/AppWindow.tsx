@@ -26,6 +26,22 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
         // if (appState.snack) {
         //     snack = <Snackbar {...appState.snack}></Snackbar>
         // }
+
+        let sqlWaitPanel = null;
+        if (appState.sqlWaitPanelVisible) {
+
+            let sqlWaitPanelIcon: HTMLElement;
+            sqlWaitPanel = (
+                <div style={{ border: "0px solid red", left: 0, top: 0, right: 0, bottom: 0, position: "absolute", background: "#ffffff3b", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <span ref={(e) => sqlWaitPanelIcon = e} style={{ display: "none" }}>
+                        <i className="fas fa-spinner fa-spin" style={{ fontSize: 30, color: "brown" }}></i>
+                    </span>
+                </div>
+            );
+
+            setTimeout(() => { if (sqlWaitPanelIcon) sqlWaitPanelIcon.style.display = "initial" }, 1000);
+        }
+
         return (
 
             <div style={{ height: "100%" }}>
@@ -48,6 +64,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
                         </modal.content>);
                 })}
                 <ToastContainer autoClose={2000} />
+                {sqlWaitPanel}
             </div>
 
 

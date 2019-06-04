@@ -54,6 +54,8 @@ export class AppState {
 
     //snack: SnackbarProps | null = null;
 
+    sqlWaitPanelVisible: boolean = false;
+
     forceUpdate() {
         this.appWindow!.forceUpdate();
     }
