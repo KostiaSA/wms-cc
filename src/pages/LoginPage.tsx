@@ -20,10 +20,11 @@ import Form from "reactstrap/lib/Form";
 import InputGroupAddon from "reactstrap/lib/InputGroupAddon";
 import InputGroupText from "reactstrap/lib/InputGroupText";
 import Col from "reactstrap/lib/Col";
-import Button from "reactstrap/lib/Button";
+
 import { MainMenuPage } from "./MainMenuPage";
 import { showAppError } from "../modals/ErrorMessagePage";
 import { _wms_android_Логин, _wms_android_Доступы, _wms_android_Главное_меню_Список_Новых_Заданий } from "../generated-api";
+import { BuhtaButton } from "../ui/BuhtaButton";
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -125,26 +126,22 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                 </InputGroup>
                                 <Row>
                                     <Col xs="6">
-                                        <Button color="primary" disabled={this.loginButtonDisabled}
+                                        <BuhtaButton color="primary" disabled={this.loginButtonDisabled}
                                             className="px-4"
-                                            onTouchStart={
-                                                this.loginButtonHandler
-                                            }
                                             onClick={
                                                 this.loginButtonHandler
                                             }
                                         >
                                             Войти
-                                        </Button>
+                                        </BuhtaButton>
                                     </Col>
                                     <Col xs="6">
-                                        <Button className="px-4" outline
-                                            onTouchStart={() => {
-                                                playSound_ButtonClick();
+                                        <BuhtaButton className="px-4" outline
+                                            onClick={() => {
                                                 zebraReloadWebView()
                                             }}>
                                             Reload
-                                        </Button>
+                                        </BuhtaButton>
                                     </Col>
                                 </Row>
                             </div>
@@ -158,78 +155,5 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
         )
     }
 
-    // render() {
-    //     return (
-    //         <div style={{
-    //             paddingTop: 30,
-    //             paddingLeft: 15,
-    //             paddingRight: 15,
-    //             display: this.props.visible ? "" : "none"
-    //         }}>
-    //
-    //             <Typography variant="h5" gutterBottom>
-    //                 БУХта WMS
-    //             </Typography>
-    //             <TextField
-    //                 label="Логин"
-    //                 value={state.login}
-    //                 onChange={(event: any) => {
-    //                     state.login = event.target.value;
-    //                     this.forceUpdate();
-    //                 }}
-    //                 margin="dense"
-    //                 variant="outlined"
-    //             />
-    //             <TextField
-    //                 id="outlined-adornment-password"
-    //                 margin="dense"
-    //                 variant="outlined"
-    //                 type={state.showPassword ? 'text' : 'password'}
-    //                 label="Пароль"
-    //                 value={state.password}
-    //                 onChange={(event: any) => {
-    //                     state.password = event.target.value;
-    //                     this.forceUpdate();
-    //                 }}
-    //                 InputProps={{
-    //                     endAdornment: (
-    //                         <InputAdornment position="end">
-    //                             <IconButton
-    //                                 onTouchStart={() => {
-    //                                     state.showPassword = !state.showPassword;
-    //                                     this.forceUpdate();
-    //                                 }}
-    //                             >
-    //                                 {state.showPassword ?
-    //                                     <Icon style={{overflow: "visible"}}
-    //                                           className={classNames('fa fa-eye-slash')}/> :
-    //                                     <Icon style={{overflow: "visible"}}
-    //                                           className={classNames('fa fa-eye')}/>
-    //                                 }
-    //                             </IconButton>
-    //                         </InputAdornment>
-    //                     ),
-    //                 }}
-    //             />
-    //             <div style={{padding: 20, textAlign: "center"}}>
-    //                 <Button variant="contained" color="primary" style={{marginRight: 10}}
-    //                         onTouchStart={
-    //                             this.loginButtonHandler}
-    //                 >
-    //                     ВОЙТИ
-    //                 </Button>
-    //                 <Button variant="contained" style={{marginRight: 10}}
-    //                         onTouchStart={() => {
-    //                             playSound_ButtonClick();
-    //                             zebraReloadWebView()
-    //                         }}
-    //                 >
-    //                     reload
-    //                 </Button>
-    //
-    //
-    //             </div>
-    //         </div>)
-    // }
 }
 

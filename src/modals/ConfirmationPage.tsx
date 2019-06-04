@@ -1,15 +1,16 @@
 import * as  React from "react";
 import { appState } from "../AppState";
 import { IAppPageProps } from "../pages/AppWindow";
-import Button from "reactstrap/lib/Button";
+
 import Modal from "reactstrap/lib/Modal";
 import ModalHeader from "reactstrap/lib/ModalHeader";
 import ModalBody from "reactstrap/lib/ModalBody";
 import ModalFooter from "reactstrap/lib/ModalFooter";
-import { playSound_ButtonClick } from "../utils/playSound";
+
 import { sleep } from "../utils/sleep";
 import { getRandomString } from "../utils/getRandomString";
 import { ReactNode } from "react";
+import { BuhtaButton } from "../ui/BuhtaButton";
 
 
 
@@ -53,20 +54,18 @@ export class Confirmation_Page extends React.Component<I_Confirmation_PageProps,
                         {this.props.message}
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="light"
+                        <BuhtaButton color="light"
                             onClick={() => {
-                                playSound_ButtonClick();
                                 appState.setModalResult<boolean>(false);
                             }}>
                             Отмена
-                        </Button>
-                        <Button color="primary"
+                        </BuhtaButton>
+                        <BuhtaButton color="primary"
                             onClick={() => {
-                                playSound_ButtonClick();
                                 appState.setModalResult<boolean>(true);
                             }}>
                             {this.props.buttonText}
-                        </Button>
+                        </BuhtaButton>
                     </ModalFooter>
                 </Modal>
             </div>

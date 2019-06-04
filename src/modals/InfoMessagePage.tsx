@@ -2,7 +2,7 @@ import * as  React from "react";
 import { zebraTextToSpeech } from "../zebra/ZebraApi";
 import { appState } from "../AppState";
 import { IAppPageProps } from "../pages/AppWindow";
-import Button from "reactstrap/lib/Button";
+
 import Modal from "reactstrap/lib/Modal";
 import ModalHeader from "reactstrap/lib/ModalHeader";
 import ModalBody from "reactstrap/lib/ModalBody";
@@ -11,6 +11,7 @@ import { getRandomString } from "../utils/getRandomString";
 import { ReactNode } from "react";
 import { playSound } from "../utils/playSound";
 import { sleep } from "../utils/sleep";
+import { BuhtaButton } from "../ui/BuhtaButton";
 
 
 export async function showInfo(message: ReactNode, title: ReactNode = "Инфо") {
@@ -47,10 +48,10 @@ class InfoMessagePage extends React.Component<IInfoMessagePageProps, any> {
                         {this.props.message}
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="light"
+                        <BuhtaButton color="light"
                             onClick={() => appState.closeActiveModal()}>
                             Закрыть
-                        </Button>
+                        </BuhtaButton>
                     </ModalFooter>
                 </Modal>
             </div>

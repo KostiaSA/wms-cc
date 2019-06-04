@@ -38,7 +38,7 @@ export async function executeSql(sql: string): Promise<any[]> {
                             let col = cols[c];
                             if (col.type == "datetime" || col.type == "smalldatetime") {
                                 rs.forEach((row: any) => {
-                                    row[col.name] = (moment as any)(row[col.name]);
+                                    row[col.name] = (moment as any)(row[col.name].toString().toUpperCase().replace("Z", ""));
                                 });
                             }
                         }

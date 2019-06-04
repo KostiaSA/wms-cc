@@ -2,7 +2,6 @@ import * as  React from "react";
 import { zebraTextToSpeech } from "../zebra/ZebraApi";
 import { appState } from "../AppState";
 import { IAppPageProps } from "../pages/AppWindow";
-import Button from "reactstrap/lib/Button";
 import Modal from "reactstrap/lib/Modal";
 import ModalHeader from "reactstrap/lib/ModalHeader";
 import ModalBody from "reactstrap/lib/ModalBody";
@@ -11,6 +10,7 @@ import { getRandomString } from "../utils/getRandomString";
 import { ReactNode } from "react";
 import { playSound } from "../utils/playSound";
 import { sleep } from "../utils/sleep";
+import { BuhtaButton } from "../ui/BuhtaButton";
 
 
 export async function showAppError(message: ReactNode, title: ReactNode = "Ошибка приложения") {
@@ -54,10 +54,10 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
                         {this.props.message}
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="danger"
+                        <BuhtaButton color="danger"
                             onClick={() => appState.closeActiveModal()}>
                             Закрыть
-                        </Button>
+                        </BuhtaButton>
                     </ModalFooter>
                 </Modal>
             </div>
@@ -118,20 +118,20 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
     //                 }}
     //             />
     //             <div style={{padding: 20, textAlign: "center"}}>
-    //                 <Button variant="contained" color="primary" style={{marginRight: 10}}
+    //                 <BuhtaButton variant="contained" color="primary" style={{marginRight: 10}}
     //                         onTouchStart={
     //                             this.loginButtonHandler}
     //                 >
     //                     ВОЙТИ
-    //                 </Button>
-    //                 <Button variant="contained" style={{marginRight: 10}}
+    //                 </BuhtaButton>
+    //                 <BuhtaButton variant="contained" style={{marginRight: 10}}
     //                         onTouchStart={() => {
     //                             playSound_ButtonClick();
     //                             zebraReloadWebView()
     //                         }}
     //                 >
     //                     reload
-    //                 </Button>
+    //                 </BuhtaButton>
     //
     //
     //             </div>

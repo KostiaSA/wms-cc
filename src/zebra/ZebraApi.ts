@@ -37,7 +37,7 @@ let i = setInterval(() => {
 }, 1000);
 
 
-function zebraOk(): boolean {
+export function zebraOk(): boolean {
     return typeof zebra !== "undefined";
 }
 

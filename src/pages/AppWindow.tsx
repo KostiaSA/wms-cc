@@ -1,8 +1,8 @@
 import * as  React from "react";
-import {appState, IOpenedPage} from "../AppState";
-import {ToastContainer} from "react-toastify";
+import { appState, IOpenedPage } from "../AppState";
+import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import Button from "reactstrap/lib/Button";
+
 
 interface IAppWindowProps {
     classes?: any;
@@ -28,7 +28,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
         // }
         return (
 
-            <div style={{height: "100%"}}>
+            <div style={{ height: "100%" }}>
                 {appState.pages.map((page: IOpenedPage, index: number) => {
                     return (
                         <page.content

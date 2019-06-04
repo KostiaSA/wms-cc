@@ -1,12 +1,13 @@
 import * as  React from "react";
 import { appState } from "../AppState";
 import { IAppPageProps } from "../pages/AppWindow";
-import Button from "reactstrap/lib/Button";
+
 import Modal from "reactstrap/lib/Modal";
 import ModalHeader from "reactstrap/lib/ModalHeader";
 import ModalBody from "reactstrap/lib/ModalBody";
 import ModalFooter from "reactstrap/lib/ModalFooter";
-import { playSound_ButtonClick } from "../utils/playSound";
+import { BuhtaButton } from "../ui/BuhtaButton";
+
 
 
 export type ПИК_1_меню_Page_ModalResult = "Выбрать по маршруту" | "Выбрать задание (вручную)" | "Получить задание (авто)" | "Нет";
@@ -32,38 +33,34 @@ export class ПИК_1_меню_Page extends React.Component<I_ПИК_1_меню_
                 <Modal isOpen centered fade={false}>
                     <ModalHeader className={"text-danger22"}>{"выбор задания ПИК"}</ModalHeader>
                     <ModalBody>
-                        <Button color="primary" style={{ marginBottom: 10 }}
+                        <BuhtaButton color="primary" style={{ marginBottom: 10 }}
                             onClick={() => {
-                                playSound_ButtonClick();
                                 appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Выбрать по маршруту");
                             }}>
                             Выбрать по маршруту
-                        </Button>
+                        </BuhtaButton>
                         <br />
-                        <Button color="primary" style={{ marginBottom: 10 }}
+                        <BuhtaButton color="primary" style={{ marginBottom: 10 }}
                             onClick={() => {
-                                playSound_ButtonClick();
                                 appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Выбрать задание (вручную)");
                             }}>
                             Выбрать задание (вручную)
-                        </Button>
+                        </BuhtaButton>
                         <br />
-                        <Button color="primary" style={{ marginBottom: 10 }}
+                        <BuhtaButton color="primary" style={{ marginBottom: 10 }}
                             onClick={() => {
-                                playSound_ButtonClick();
                                 appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Получить задание (авто)")
                             }}>
                             Получить задание (авто)
-                        </Button>
+                        </BuhtaButton>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="light"
+                        <BuhtaButton color="light"
                             onClick={() => {
-                                playSound_ButtonClick();
                                 appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Нет")
                             }}>
                             Отмена
-                        </Button>
+                        </BuhtaButton>
                     </ModalFooter>
                 </Modal>
             </div>

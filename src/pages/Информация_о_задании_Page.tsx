@@ -5,6 +5,11 @@ import { _wms_android_Главное_меню_Список_Новых_Задан
 import Container from "reactstrap/lib/Container";
 import CardBody from "reactstrap/lib/CardBody";
 import { CSSProperties } from 'react';
+import { getTaskConst } from '../taskConst';
+import { element } from "prop-types";
+import { Button } from "reactstrap";
+import { playSound_ButtonClick } from "../utils/playSound";
+import { BuhtaButton } from "../ui/BuhtaButton";
 
 export interface IИнформация_о_задании_PageProps extends IAppPageProps {
     taskId: number;
@@ -69,10 +74,11 @@ export class Информация_о_задании_Page extends React.Component
 
         let времяНачала = (
             <tr>
-                <td style={labelStyle}>время начала</td>
-                <td style={{ ...textStyle, color: "dodgerblue" }} > {this.task.ВремяНачалаПлан.format("DD.MM.YYYY HH:mm")}</td>
+                <td style={{ ...labelStyle, paddingTop: 10 }}>время начала</td>
+                <td style={{ ...textStyle, color: "dodgerblue", paddingTop: 10 }} > {this.task.ВремяНачалаПлан.format("DD.MM.YYYY HH:mm")}</td>
             </tr>
         )
+
         let времяКонца = (
             <tr>
                 <td style={labelStyle}>время конца</td>
@@ -80,13 +86,136 @@ export class Информация_о_задании_Page extends React.Component
             </tr>
         )
 
+        let зона: any = null;
+        if (getTaskConst(this.task.Тип).показыватьЗонуВИнфо) {
+            зона = (
+                <tr>
+                    <td style={{ ...labelStyle, paddingTop: 10 }}>зона ПРР</td>
+                    <td style={{ ...textStyle, paddingTop: 10 }}>{this.task.Зона}</td>
+                </tr>
+            )
+        }
+
+        let автомобиль: any = null;
+        if (getTaskConst(this.task.Тип).показыватьАвтомобильВИнфо) {
+            автомобиль = (
+                <React.Fragment>
+                    <tr>
+                        <td style={labelStyle}>автомобиль</td>
+                        <td style={textStyle}>{this.task.Автомобиль}</td>
+                    </tr>
+                    <tr>
+                        <td style={labelStyle}>водитель</td>
+                        <td style={textStyle}>{this.task.Водитель}</td>
+                    </tr>
+                </React.Fragment>
+            )
+        }
+
+
+        let заявка: any = null;
+        if (getTaskConst(this.task.Тип).показыватьЗаявкуВИнфо) {
+            let zstyle = { ...textStyle, color: "brown" };
+            заявка = (
+                <React.Fragment>
+                    <tr>
+                        <td style={{ ...labelStyle, paddingTop: 10 }}>заявка N</td>
+                        <td style={{ ...zstyle, paddingTop: 10 }}>{this.task.ЗаявкаНомер}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ ...labelStyle, paddingLeft: 15 }}>дата</td>
+                        <td style={zstyle}>{this.task.ЗаявкаДата}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ ...labelStyle, paddingLeft: 15 }}>прим.</td>
+                        <td style={zstyle}>{this.task.ЗаявкаПримечание.substr(0, 120)}</td>
+                    </tr>
+                </React.Fragment>
+            )
+        }
+
+        let откудаКуда: any = null;
+        if (getTaskConst(this.task.Тип).показыватьОткудаКудаВИнфо) {
+            let zstyle = { ...textStyle, color: "peru" };
+            заявка = (
+                <React.Fragment>
+                    <tr>
+                        <td style={{ ...labelStyle, paddingTop: 10 }}>откуда</td>
+                        <td style={{ ...zstyle, paddingTop: 10 }}>{this.task.Откуда}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ ...labelStyle, paddingLeft: 15 }}>куда</td>
+                        <td style={zstyle}>{this.task.Куда}</td>
+                    </tr>
+                </React.Fragment>
+            )
+        }
+
+        let паллета: any = null;
+        if (getTaskConst(this.task.Тип).показыватьПаллетуВИнфо) {
+            let zstyle = { ...textStyle, color: "cadetblue" };
+            заявка = (
+                <React.Fragment>
+                    <tr>
+                        <td style={{ ...labelStyle, paddingTop: 10 }}>паллета</td>
+                        <td style={{ ...zstyle, paddingTop: 10 }}>{this.task.Паллета}</td>
+                    </tr>
+                </React.Fragment>
+            )
+        }
+
+        let объединенная = null;
+        if (this.task.Объединенная > 0)
+            объединенная = <div style={{ color: "brown" }}>Объединенная заявка!</div>;
+
+        let спецификация = null;
+        if (this.task.ЕстьСпецификация) {
+            спецификация = (
+                <React.Fragment>
+                    <tr>
+                        <td style={{ ...labelStyle, paddingTop: 10 }}></td>
+                        <td style={{ paddingTop: 10 }}>
+                            <Button
+                                className="btn-sm"
+                                color="info"
+                                outline
+                                onTouchStart={() => {
+                                    playSound_ButtonClick();
+                                }}
+                            >
+                                открыть состав задания
+                            </Button>
+                        </td>
+                    </tr>
+                </React.Fragment>
+            )
+        }
+
+        let пропустьУпаковку = null;
+        if (this.task.ПропускУпакРазрешен == 0) {
+            пропустьУпаковку = (
+                <BuhtaButton
+                    className="btn-sm"
+                    color="warning"
+                    outline
+                    onClick={() => {
+                        //playSound_ButtonClick();
+                    }}
+                >
+                    пропустить упак.
+                </BuhtaButton>
+            )
+        }
+
+
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "ALICEBLUE", padding: 10, width: "100%" }}>
+            <div className={"app"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
 
 
-                <div className="card">
-                    <div className="card-header">
-                        {this.task.НазваниеЗадания}
+                <div className="card" style={{ marginBottom: 0 }}>
+                    <div className="card-header" style={{ backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
+                        <div>{this.task.НазваниеЗадания}</div>
+                        {объединенная}
                     </div>
                     <div className="card-body" style={{ padding: 10 }}>
                         <table>
@@ -95,8 +224,45 @@ export class Информация_о_задании_Page extends React.Component
                                 {исполнитель}
                                 {времяНачала}
                                 {времяКонца}
+                                {зона}
+                                {автомобиль}
+                                {откудаКуда}
+                                {паллета}
+                                {заявка}
+                                {спецификация}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                    <div style={{ marginTop: 10 }}>
+                        {пропустьУпаковку}
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                        <BuhtaButton
+                            style={{ marginLeft: 10 }}
+                            className="btn-sm"
+                            color="secondary"
+                            outline
+                            // onTouchStart={() => {
+                            //     playSound_ButtonClick();
+                            // }}
+                            onClick={() => {
+                                //playSound_ButtonClick();
+                            }}
+                        >
+                            отмена
+                    </BuhtaButton>
+                        <BuhtaButton
+                            style={{ marginLeft: 10 }}
+                            className="btn-sm"
+                            color="success"
+                            onClick={() => {
+                                //playSound_ButtonClick();
+                            }}
+                        >
+                            выполнить зад.
+                    </BuhtaButton>
                     </div>
                 </div>
 

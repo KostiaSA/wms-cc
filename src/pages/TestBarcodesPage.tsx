@@ -3,8 +3,9 @@ import { executeSqlStoredProc, executeSqlStoredProc_FirstRecordset } from "../ut
 import { IAppPageProps } from "./AppWindow";
 import { appState } from "../AppState";
 import { playSound, playSound_ButtonClick } from "../utils/playSound";
-import Button from "reactstrap/lib/Button";
+
 import { call_wmsapi } from "../utils/call_wmsapi";
+import { BuhtaButton } from "../ui/BuhtaButton";
 
 export interface ITestBarcodesPageProps extends IAppPageProps {
     taskId: number;
@@ -70,31 +71,28 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     display: this.props.visible ? "" : "none",
                     backgroundColor: "white"
                 }}>
-                    <Button outline size="small" style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                        playSound_ButtonClick();
+                    <BuhtaButton outline style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
                         appState.closeAndDestroyActivePage();
                     }}>
                         Закрыть
-                </Button>
-                    <Button outline size="small" style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                        playSound_ButtonClick();
+                </BuhtaButton>
+                    <BuhtaButton outline style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
                         appState.closeAndDestroyActivePage();
                         appState.pushTestBarcode("8463943749437202383", "");
                     }}>
                         {"неизвестный штрих-код"}
-                    </Button>
+                    </BuhtaButton>
                     <br />
                     {
                         (this.data.palletesKuda || []).map((row: any, index: number) => {
                             return ([
-                                <Button key={index + 1000000} outline size="small"
+                                <BuhtaButton key={index + 1000000} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.Паллета_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-pallete"}>в-подборе-{row.Паллета_Номер}</span>
-                                </Button>,
+                                </BuhtaButton>,
                                 <br key={index + 2000000} />
                             ]
                             )
@@ -103,14 +101,13 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     {
                         (this.data.newPalletes || []).map((row: any, index: number) => {
                             return ([
-                                <Button key={index + 1000000} outline size="small"
+                                <BuhtaButton key={index + 1000000} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.Паллета_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-pallete"}>нов.{row.Паллета_Номер}</span>
-                                </Button>,
+                                </BuhtaButton>,
                                 <br key={index + 2000000} />
                             ]
                             )
@@ -119,22 +116,20 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     {
                         (this.data.palletesOutOfTask || []).map((row: any, index: number) => {
                             return ([
-                                <Button key={index} outline size="small"
+                                <BuhtaButton key={index} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.Ячейка_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-cell"}>{row.Ячейка_Номер}</span>
-                                </Button>,
-                                <Button key={index + 1000000} outline size="small"
+                                </BuhtaButton>,
+                                <BuhtaButton key={index + 1000000} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.Паллета_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-pallete"}>левая {row.Паллета_Номер}</span>
-                                </Button>,
+                                </BuhtaButton>,
                                 <br key={index + 2000000} />
                             ]
                             )
@@ -143,22 +138,20 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     {
                         (this.data.palletesInTask || []).map((row: any, index: number) => {
                             return ([
-                                <Button key={index} outline size="small"
+                                <BuhtaButton key={index} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.Ячейка_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-cell"}>{row.Ячейка_Номер}</span>
-                                </Button>,
-                                <Button key={index + 1000000} outline size="small"
+                                </BuhtaButton>,
+                                <BuhtaButton key={index + 1000000} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.Паллета_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-pallete"}>{row.Паллета_Номер}</span>
-                                </Button>,
+                                </BuhtaButton>,
                                 <br key={index + 2000000} />
                             ]
                             )
@@ -167,38 +160,35 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     {
                         (this.data.tovarInTask || []).map((row: any, index: number) => {
                             return ([
-                                <Button key={index} outline size="small"
+                                <BuhtaButton key={index} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.Паллета_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-pallete"}>{row.Паллета_Номер}</span>
-                                </Button>,
-                                <Button key={index + 1000000} outline size="small"
+                                </BuhtaButton>,
+                                <BuhtaButton key={index + 1000000} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                        playSound_ButtonClick();
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.ТМЦ_ШтрихКод, "");
                                     }}>
                                     <span className={"text-color-subconto-tovar"}>{row.ТМЦ_Название.substr(0, 60)}</span>
                                     {}
-                                </Button>,
+                                </BuhtaButton>,
                                 (() => {
                                     if (!row.Партия_Название)
                                         return null;
                                     else
                                         return (
-                                            <Button key={index + 5000000} outline size="small"
+                                            <BuhtaButton key={index + 5000000} outline
                                                 style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                                                    playSound_ButtonClick();
                                                     appState.closeAndDestroyActivePage();
                                                     appState.pushTestBarcode(row.Партия_ШтрихКод, "");
                                                 }}>
                                                 <span
                                                     className={"text-color-part"}> партия: {row.Партия_Название.substr(0, 50)}</span>
                                                 {}
-                                            </Button>
+                                            </BuhtaButton>
                                         )
                                 })()
                                 ,
