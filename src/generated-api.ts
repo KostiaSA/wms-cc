@@ -1,6 +1,7 @@
 
 import { executeSql } from "./utils/executeSql";
 import { stringAsSql } from "./utils/stringAsSql";
+import { Moment } from "moment";
 
 export interface IResult_wms_android_Логин {
     error:string;
@@ -119,8 +120,8 @@ export interface IResult_wms_android_Информация_о_задании {
     error:string;
     РучнаяПогрузка: number;
     СрочнаяОтгрузка: number;
-    ВремяНачалаПлан: string;
-    ВремяОкончанияПлан: string;
+    ВремяНачалаПлан: Moment;
+    ВремяОкончанияПлан: Moment;
     Автомобиль: string;
     Водитель: string;
     Подразделение2: string;
@@ -152,9 +153,9 @@ export async function _wms_android_Информация_о_задании(taskId
             if (typeof(row.СрочнаяОтгрузка) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'СрочнаяОтгрузка'");
             if (typeof row.СрочнаяОтгрузка != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'СрочнаяОтгрузка' должно быть числом");
             if (typeof(row.ВремяНачалаПлан) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ВремяНачалаПлан'");
-            if (typeof row.ВремяНачалаПлан != "string") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяНачалаПлан' должно быть строкой");
+            if (!row.ВремяНачалаПлан.constructor || row.ВремяНачалаПлан.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяНачалаПлан' должно быть датой");
             if (typeof(row.ВремяОкончанияПлан) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ВремяОкончанияПлан'");
-            if (typeof row.ВремяОкончанияПлан != "string") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяОкончанияПлан' должно быть строкой");
+            if (!row.ВремяОкончанияПлан.constructor || row.ВремяОкончанияПлан.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяОкончанияПлан' должно быть датой");
             if (typeof(row.Автомобиль) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Автомобиль'");
             if (typeof row.Автомобиль != "string") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'Автомобиль' должно быть строкой");
             if (typeof(row.Водитель) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Водитель'");

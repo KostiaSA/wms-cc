@@ -107,7 +107,7 @@ export class AppState {
     }
 
 
-    openPage<AppPageProps extends IAppPageProps>(content: ComponentType<AppPageProps>, props: AppPageProps) {
+    openPage<AppPageProps extends IAppPageProps>(content: any /*ComponentType<AppPageProps>*/, props: AppPageProps) {
         let page: IOpenedPage = {
             props, content
         } as any;

@@ -12,6 +12,7 @@ import { getRandomString } from "../utils/getRandomString";
 import { showInfo } from "../modals/InfoMessagePage";
 import { I_ПИК_1_меню_PageProps, ПИК_1_меню_Page_ModalResult, ПИК_1_меню_Page } from "../modals/ПИК_2_меню";
 import { getConfirmation } from "../modals/ConfirmationPage";
+import { show_Информация_о_задании } from "./Информация_о_задании_Page";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -56,7 +57,8 @@ let mainMenuItems: IMainMenuItem[] = [
                     return;
                 }
                 if (await getConfirmation("Взять задание в работу?", "Найдено новое задание", "Взять")) {
-
+                    show_Информация_о_задании(res.taskId);
+                    return;
                 }
             }
 
