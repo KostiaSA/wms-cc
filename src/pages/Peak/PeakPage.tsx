@@ -17,7 +17,6 @@ import {
     WrapableInterface
 } from "ag-grid-community";
 import {createGridOptionsFromSqlRowsets} from "../../utils/createGridOptionsFromSqlRowsets";
-import {showError} from "../../utils/showError";
 import {appState} from "../../AppState";
 
 
@@ -38,6 +37,7 @@ import {
     I_ПИК_Лист_Поступил_ШтрихКод_ans, ПИК_Лист_Поступил_ШтрихКод_proc
 } from "../../wmsapi/ПИК_Лист_Поступил_ШтрихКод";
 import {call_wmsapi} from "../../utils/call_wmsapi";
+import { showError } from "../../modals/ErrorMessagePage";
 
 export interface IPeakPageProps extends IAppPageProps {
 
@@ -84,7 +84,7 @@ export class PeakPage extends React.Component<IPeakPageProps, any> {
 
         } catch (error) {
             console.error(error);
-            showError("executeSqlStoredProc: ПИК_Лист_Шапка", error);
+            showError("executeSqlStoredProc: ПИК_Лист_Шапка: "+ error.toString());
         }
 
     };

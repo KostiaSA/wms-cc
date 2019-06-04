@@ -1,11 +1,11 @@
 import * as React from "react";
-import {executeSqlStoredProc} from "../utils/executeSqlStoredProc";
-import {showError} from "../utils/showError";
-import {appState} from "../AppState";
-import {createGridOptionsFromSqlRowsets} from "../utils/createGridOptionsFromSqlRowsets";
-import {AgGridReact} from "ag-grid-react";
-import {GridOptions} from "ag-grid-community";
-import {CSSProperties} from "react";
+import { executeSqlStoredProc } from "../utils/executeSqlStoredProc";
+import { appState } from "../AppState";
+import { createGridOptionsFromSqlRowsets } from "../utils/createGridOptionsFromSqlRowsets";
+import { AgGridReact } from "ag-grid-react";
+import { GridOptions } from "ag-grid-community";
+import { CSSProperties } from "react";
+import { showError } from "../modals/ErrorMessagePage";
 
 
 export interface ISqlGridProps {
@@ -59,7 +59,7 @@ export class SqlGrid extends React.Component<ISqlGridProps, any> {
 
         } catch (error) {
             console.error(error);
-            showError("executeSqlStoredProc: " + this.props.sqlProcName, error);
+            showError("executeSqlStoredProc: " + this.props.sqlProcName + ": " + error.toString());
             //appState.closeActivePage();
             return;
         }
