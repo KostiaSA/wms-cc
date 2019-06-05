@@ -2,6 +2,7 @@ import * as  React from "react";
 import Button from "reactstrap/lib/Button";
 import { playSound_ButtonClick } from "../utils/playSound";
 import { zebraOk } from "../zebra/ZebraApi";
+import { CSSProperties } from 'react';
 
 export interface BuhtaButtonProps {
     style?: React.CSSProperties;
@@ -13,6 +14,7 @@ export interface BuhtaButtonProps {
     disabled?: boolean;
     onClick?: React.MouseEventHandler<any>;
     big?: boolean;
+    small?: boolean;
 };
 
 export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
@@ -20,10 +22,17 @@ export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
         let className = this.props.className || "";
         if (!this.props.big)
             className += " btn-sm";
-
+        let smallStyle: CSSProperties = {};
+        if (this.props.small)
+            smallStyle = {
+                padding: "0.15rem 0.15rem",
+                paddingBottom: "0.20rem",
+                lineHeight: 1.2,
+                fontSize:11,
+            };
         return (
             <Button
-                style={this.props.style}
+                style={{ ...this.props.style, ...smallStyle }}
                 className={className}
                 outline={this.props.outline}
                 active={this.props.active}

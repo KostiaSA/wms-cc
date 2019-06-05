@@ -3,9 +3,11 @@ import { IAppPageProps } from "./AppWindow";
 import { appState } from '../AppState';
 import { CSSProperties } from 'react';
 import { getTaskConst } from '../taskConst';
-import { BuhtaButton } from "../ui/BuhtaButton";
+import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
 import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании } from "../generated-api";
+import classNames from "classnames";
+import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -19,6 +21,14 @@ export function show_ПИК(taskId: number) {
 
 export class ПИК_Page extends React.Component<IПИК_PageProps> {
     task: IResult_wms_android_Информация_о_задании;
+
+    fromType: string = "";
+    fromId: number = -1;
+    fromName: string = "не выбрано";
+
+    intoType: string = "";
+    intoId: number = -1;
+    intoName: string = "не выбрано";
 
     async componentDidMount() {
         this.task = await _wms_android_Информация_о_задании(this.props.taskId);
@@ -54,142 +64,15 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         }
 
 
-        let подразделение = (
-            <tr>
-                <td style={labelStyle}>подраздел.</td>
-                <td style={textStyle}>{this.task.Подразделение2}</td>
-            </tr>
-        )
-
-        let исполнитель = (
-            <tr>
-                <td style={labelStyle}>исполнитель</td>
-                <td style={textStyle}>{this.task.Сотрудник}</td>
-            </tr>
-        )
-
-        let времяНачала = (
-            <tr>
-                <td style={{ ...labelStyle, paddingTop: 10 }}>время начала</td>
-                <td style={{ ...textStyle, color: "dodgerblue", paddingTop: 10 }} > {this.task.ВремяНачалаПлан.format("DD.MM.YYYY HH:mm")}</td>
-            </tr>
-        )
-
-        let времяКонца = (
-            <tr>
-                <td style={labelStyle}>время конца</td>
-                <td style={{ ...textStyle, color: "dodgerblue" }} > {this.task.ВремяОкончанияПлан.format("DD.MM.YYYY HH:mm")}</td>
-            </tr>
-        )
-
-        let зона: any = null;
-        if (getTaskConst(this.task.Тип).показыватьЗонуВИнфо) {
-            зона = (
-                <tr>
-                    <td style={{ ...labelStyle, paddingTop: 10 }}>зона ПРР</td>
-                    <td style={{ ...textStyle, paddingTop: 10 }}>{this.task.Зона}</td>
-                </tr>
-            )
-        }
-
-        let автомобиль: any = null;
-        if (getTaskConst(this.task.Тип).показыватьАвтомобильВИнфо) {
-            автомобиль = (
-                <React.Fragment>
-                    <tr>
-                        <td style={labelStyle}>автомобиль</td>
-                        <td style={textStyle}>{this.task.Автомобиль}</td>
-                    </tr>
-                    <tr>
-                        <td style={labelStyle}>водитель</td>
-                        <td style={textStyle}>{this.task.Водитель}</td>
-                    </tr>
-                </React.Fragment>
-            )
-        }
-
-
-        let заявка: any = null;
-        if (getTaskConst(this.task.Тип).показыватьЗаявкуВИнфо) {
-            let zstyle = { ...textStyle, color: "brown" };
-            заявка = (
-                <React.Fragment>
-                    <tr>
-                        <td style={{ ...labelStyle, paddingTop: 10 }}>заявка N</td>
-                        <td style={{ ...zstyle, paddingTop: 10 }}>{this.task.ЗаявкаНомер}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...labelStyle, paddingLeft: 15 }}>дата</td>
-                        <td style={zstyle}>{this.task.ЗаявкаДата}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...labelStyle, paddingLeft: 15 }}>прим.</td>
-                        <td style={zstyle}>{this.task.ЗаявкаПримечание.substr(0, 120)}</td>
-                    </tr>
-                </React.Fragment>
-            )
-        }
-
-        let откудаКуда: any = null;
-        if (getTaskConst(this.task.Тип).показыватьОткудаКудаВИнфо) {
-            let zstyle = { ...textStyle, color: "peru" };
-            заявка = (
-                <React.Fragment>
-                    <tr>
-                        <td style={{ ...labelStyle, paddingTop: 10 }}>откуда</td>
-                        <td style={{ ...zstyle, paddingTop: 10 }}>{this.task.Откуда}</td>
-                    </tr>
-                    <tr>
-                        <td style={{ ...labelStyle, paddingLeft: 15 }}>куда</td>
-                        <td style={zstyle}>{this.task.Куда}</td>
-                    </tr>
-                </React.Fragment>
-            )
-        }
-
-        let паллета: any = null;
-        if (getTaskConst(this.task.Тип).показыватьПаллетуВИнфо) {
-            let zstyle = { ...textStyle, color: "cadetblue" };
-            заявка = (
-                <React.Fragment>
-                    <tr>
-                        <td style={{ ...labelStyle, paddingTop: 10 }}>паллета</td>
-                        <td style={{ ...zstyle, paddingTop: 10 }}>{this.task.Паллета}</td>
-                    </tr>
-                </React.Fragment>
-            )
-        }
-
         let объединенная = null;
         if (this.task.Объединенная > 0)
             объединенная = <div style={{ color: "brown" }}>Объединенная заявка!</div>;
-
-        let спецификация = null;
-        if (this.task.ЕстьСпецификация) {
-            спецификация = (
-                <React.Fragment>
-                    <tr>
-                        <td style={{ ...labelStyle, paddingTop: 10 }}></td>
-                        <td style={{ paddingTop: 10 }}>
-                            <BuhtaButton
-                                color="info"
-                                outline
-                                onClick={() => {
-                                    //playSound_ButtonClick();
-                                }}
-                            >
-                                открыть состав задания
-                            </BuhtaButton>
-                        </td>
-                    </tr>
-                </React.Fragment>
-            )
-        }
 
         let паллета4 = null;
         if (true) {
             паллета4 = (
                 <BuhtaButton
+                    style={{ marginLeft: 10 }}
                     className="btn-sm"
                     color="warning"
                     outline
@@ -206,6 +89,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         if (true) {
             паллетаОткуда = (
                 <BuhtaButton
+                    style={{ marginLeft: 10 }}
                     className="btn-sm"
                     color="warning"
                     outline
@@ -222,6 +106,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         if (true) {
             паллетаКуда = (
                 <BuhtaButton
+                    style={{ marginLeft: 10 }}
                     className="btn-sm"
                     color="warning"
                     outline
@@ -234,8 +119,18 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             )
         }
 
+        let fromInputClassName = classNames({
+            "text-color-red": this.fromType == "",
+            [getSubcontoTextColorClass(this.fromType)]: this.fromType != ""
+        });
+
+        let intoInputClassName = classNames({
+            "text-color-red": this.intoType == "",
+            [getSubcontoTextColorClass(this.intoType)]: this.intoType != ""
+        });
+
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
+            <div className={"app"} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
 
 
                 <div className="card" style={{ marginBottom: 0, flex: "1" }}>
@@ -243,21 +138,25 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         <div>{this.task.НазваниеЗадания}</div>
                         {объединенная}
                     </div>
+
                     <div className="card-body" style={{ padding: 10 }}>
                         <table>
                             <tbody>
-                                {подразделение}
-                                {исполнитель}
-                                {времяНачала}
-                                {времяКонца}
-                                {зона}
-                                {автомобиль}
-                                {откудаКуда}
-                                {паллета}
-                                {заявка}
-                                {спецификация}
+                                <tr>
+                                    <td style={{ ...labelStyle }}>Пал.откуда</td>
+                                    <td className={fromInputClassName} style={{ ...textStyle }}>{this.fromName}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style={{ ...labelStyle }}>Пал.куда</td>
+                                    <td className={intoInputClassName} style={{ ...textStyle }}>{this.intoName}</td>
+                                    <td>
+                                        <BuhtaButton small color="success">завершить пал.</BuhtaButton>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
                 <div style={{ textAlign: "right" }}>
