@@ -27,7 +27,7 @@ import {playSound, playSound_ButtonClick} from "../../utils/playSound";
 //import {showInfoMessage} from "../../modals/InfoMessageModal";
 import {showSnack} from "../../ui/showSnack";
 import {PlaySound} from "../../sounds/PlaySound";
-import {I_ПИК_Лист_тестовые_штрихкоды, TestBarcodesPage} from "../TestBarcodesPage";
+import {TestBarcodesPage} from "../TestBarcodesPage";
 //import {showErrorMessage} from "../../modals/ErrorMessageModal";
 import Button from "reactstrap/lib/Button";
 import {getSubcontoTextColorClass} from "../../utils/getSubcontoTextColorClass";

@@ -4,8 +4,8 @@ import { IAppPageProps } from "./AppWindow";
 import { appState } from "../AppState";
 import { playSound, playSound_ButtonClick } from "../utils/playSound";
 
-import { call_wmsapi } from "../utils/call_wmsapi";
 import { BuhtaButton } from "../ui/BuhtaButton";
+import { IResult_wms_android_тестовые_штрихкоды, _wms_android_тестовые_штрихкоды } from "../generated-api";
 
 export interface ITestBarcodesPageProps extends IAppPageProps {
     taskId: number;
@@ -19,13 +19,13 @@ const styles = (theme: any) => ({
 });
 
 
-export interface I_ПИК_Лист_тестовые_штрихкоды {
-    newPalletes: null | any[];
-    palletesOutOfTask: null | any[];
-    palletesInTask: null | any[];
-    tovarInTask: null | any[];
-    palletesKuda: null | any[];
-}
+// export interface I_ПИК_Лист_тестовые_штрихкоды {
+//     newPalletes: null | any[];
+//     palletesOutOfTask: null | any[];
+//     palletesInTask: null | any[];
+//     tovarInTask: null | any[];
+//     palletesKuda: null | any[];
+// }
 
 export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
     static PAGE_ID = "TestBarcodesPage";
@@ -35,11 +35,11 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
     }
 
     //recordset: any[] = [];
-    data: I_ПИК_Лист_тестовые_штрихкоды | undefined;
+    data: IResult_wms_android_тестовые_штрихкоды[];
 
     async loadFromSql() {
         if (!this.data && this.props.pageId == appState.activePageId[0]) {
-            this.data = await call_wmsapi<I_ПИК_Лист_тестовые_штрихкоды>("ПИК_Лист_тестовые_штрихкоды", { taskId: this.props.taskId });
+            this.data = await _wms_android_тестовые_штрихкоды(this.props.taskId);
             this.forceUpdate();
         }
         //debugger
@@ -54,10 +54,10 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
         this.loadFromSql();
     };
 
-    componentDidUpdate() {
-        //console.log("MainMenuPage componentDidUpdate");
-        this.loadFromSql();
-    };
+    // componentDidUpdate() {
+    //     //console.log("MainMenuPage componentDidUpdate");
+    //     this.loadFromSql();
+    // };
 
     render() {
         if (!this.data)
@@ -75,7 +75,7 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                         appState.closeAndDestroyActivePage();
                     }}>
                         Закрыть
-                </BuhtaButton>
+                    </BuhtaButton>
                     <BuhtaButton outline style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
                         appState.closeAndDestroyActivePage();
                         appState.pushTestBarcode("8463943749437202383", "");
@@ -84,21 +84,21 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     </BuhtaButton>
                     <br />
                     {
-                        (this.data.palletesKuda || []).map((row: any, index: number) => {
+                        (this.data || []).map((row: IResult_wms_android_тестовые_штрихкоды, index: number) => {
                             return ([
-                                <BuhtaButton key={index + 1000000} outline
+                                <BuhtaButton key={index} outline
                                     style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
                                         appState.closeAndDestroyActivePage();
-                                        appState.pushTestBarcode(row.Паллета_ШтрихКод, "");
+                                        appState.pushTestBarcode(row.ШтрихКод, "");
                                     }}>
-                                    <span className={"text-color-subconto-pallete"}>в-подборе-{row.Паллета_Номер}</span>
+                                    <span style={{ color: row.Цвет }}>{row.Объект}</span>
                                 </BuhtaButton>,
                                 <br key={index + 2000000} />
                             ]
                             )
                         })
                     }
-                    {
+                    {/* {
                         (this.data.newPalletes || []).map((row: any, index: number) => {
                             return ([
                                 <BuhtaButton key={index + 1000000} outline
@@ -197,7 +197,7 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                             ]
                             )
                         })
-                    }
+                    } */}
                 </div>
 
 

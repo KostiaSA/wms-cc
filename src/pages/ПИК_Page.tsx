@@ -8,6 +8,7 @@ import { showError } from "../modals/ErrorMessagePage";
 import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
+import { TestBarcodesPage } from "./TestBarcodesPage";
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -30,12 +31,80 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     intoId: number = -1;
     intoName: string = "не выбрано";
 
+    barcodeProcessorHandler: any;
+
+    async barcodeProcessor() {
+        if (!this.props.visible) return;
+
+        let barcode = appState.getNextBarcodeFromQueue(this.props.pageId);
+        if (!barcode) return;
+
+        // let req: I_ПИК_Лист_Поступил_ШтрихКод_req = {
+        //     taskId: this.taskId,
+        //     barcode: barcode.barcode,
+        //     barcodeType: barcode.barcodeType,
+        //     fromType: this.fromType,
+        //     fromId: this.fromId,
+        //     intoType: this.intoType,
+        //     intoId: this.intoId,
+        // };
+
+
+        // let ans = await call_wmsapi<I_ПИК_Лист_Поступил_ШтрихКод_ans>(ПИК_Лист_Поступил_ШтрихКод_proc, req);
+
+        // if (ans.error) {
+        //     PlaySound.ошибка("ошибка");
+        // } else if (ans.неизвестный_штрих_код) {
+        //     PlaySound.неизвестный_штрих_код();
+        // } else if (ans.штрихкод_не_подходит) {
+        //     PlaySound.штрихкод_не_подходит(barcode.barcodeType, barcode.barcode);
+        // } else if (ans.не_выбрана_паллета_откуда) {
+        //     PlaySound.не_выбрана_паллета_откуда();
+        // } else if (ans.не_выбрана_паллета_куда) {
+        //     PlaySound.не_выбрана_паллета_куда();
+        // } else if (ans.паллета_куда) {
+        //     this.intoType = ans.паллета_куда.intoType;
+        //     this.intoId = ans.паллета_куда.intoId;
+        //     this.intoName = ans.паллета_куда.intoName;
+        //     PlaySound.паллета_куда(barcode.barcode);
+        //     this.forceUpdate();
+        // } else if (ans.паллета_откуда) {
+        //     this.fromType = ans.паллета_откуда.fromType;
+        //     this.fromId = ans.паллета_откуда.fromId;
+        //     this.fromName = ans.паллета_откуда.fromName;
+        //     PlaySound.паллета_откуда(barcode.barcode);
+        //     this.forceUpdate();
+        // } else if (ans.паллета_коробка_взята_в_подбор) {
+        //     this.intoType = ans.паллета_коробка_взята_в_подбор.palboxType;
+        //     this.intoId = ans.паллета_коробка_взята_в_подбор.palboxId;
+        //     this.intoName = ans.паллета_коробка_взята_в_подбор.palboxName;
+        //     if (this.intoType == "PAL")
+        //         PlaySound.паллета_взята_в_подбор(barcode.barcode);
+        //     else if (this.intoType == "BOX")
+        //         PlaySound.коробка_взята_в_подбор(barcode.barcode);
+        //     else
+        //         throw "barcodeProcessor(): неизвестный тип " + this.fromType;
+
+        //     this.forceUpdate();
+
+        //     throw "проверка";
+
+        // }
+        // else
+        //     console.error("ошибка", ans)
+
+
+    }
+
+
     async componentDidMount() {
         this.task = await _wms_android_Информация_о_задании(this.props.taskId);
+        this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
         this.forceUpdate();
     }
 
     componentWillUnmount() {
+        clearInterval(this.barcodeProcessorHandler)
     }
 
     render() {
@@ -160,12 +229,26 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     </div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                    <div style={{ marginTop: 10 }}>
+                    <div style={{ marginTop: 10, paddingRight: 4 }}>
                         {паллета4}
                         {паллетаОткуда}
                         {паллетаКуда}
                     </div>
-                    <div style={{ marginTop: 10 }}>
+                    <div style={{ marginTop: 10, paddingBottom: 10, paddingRight: 4 }}>
+                        <BuhtaButton
+                            style={{ marginLeft: 10 }}
+                            className="btn-sm"
+                            color="secondary"
+                            outline
+                            onClick={() => {
+                                appState.openPage(TestBarcodesPage, {
+                                    pageId: TestBarcodesPage.PAGE_ID,
+                                    taskId: this.props.taskId
+                                })
+                            }}
+                        >
+                            тест-ШРТИХ
+                        </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
                             className="btn-sm"
@@ -179,7 +262,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                             }}
                         >
                             выход
-                    </BuhtaButton>
+                        </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
                             className="btn-sm"
@@ -189,7 +272,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                             }}
                         >
                             завершить ПИК
-                    </BuhtaButton>
+                        </BuhtaButton>
                     </div>
                 </div>
 
