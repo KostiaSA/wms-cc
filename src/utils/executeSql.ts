@@ -1,6 +1,7 @@
 import { XJSON_clone, XJSON_parse } from "./xjson";
 import * as moment from "moment";
 import { appState } from '../AppState';
+import { sleep } from "./sleep";
 
 interface IExecuteSqlReq {
     tsdKey: number,
@@ -11,15 +12,20 @@ interface IExecuteSqlReq {
 
 export async function executeSql(sql: string): Promise<any[]> {
 
+    while (appState.sqlWaitPanelVisible) {
+        await sleep(10);
+    }
+
     return new Promise<any>(
         (resolve: (obj: any) => void, reject: (error: string) => void) => {
 
             console.log(sql);
             var xhr = new XMLHttpRequest();
+            // timeout не работает, суки, всегда 120 sec
+            //xhr.timeout = 0; xhr.ontimeout = () => { console.log("Timed out!!!"); }
             let url = "executeSql";
             xhr.open("POST", url, true);
             xhr.setRequestHeader('Content-type', "application/json;charset=UTF-8");
-
 
             xhr.onload = function () {
                 appState.sqlWaitPanelVisible = false;
@@ -60,6 +66,7 @@ export async function executeSql(sql: string): Promise<any[]> {
             // };
 
             xhr.onerror = function (ev: Event) {
+                console.log("xhr.onerror", ev);
                 appState.sqlWaitPanelVisible = false;
                 appState.appWindow.forceUpdate();
                 reject("нет связи с сервером");

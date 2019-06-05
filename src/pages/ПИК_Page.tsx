@@ -1,29 +1,23 @@
 import * as  React from "react";
 import { IAppPageProps } from "./AppWindow";
 import { appState } from '../AppState';
-import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание, IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Взять_задание_в_работу_ПИК } from "../generated-api";
-import Container from "reactstrap/lib/Container";
-import CardBody from "reactstrap/lib/CardBody";
 import { CSSProperties } from 'react';
 import { getTaskConst } from '../taskConst';
-import { element } from "prop-types";
-import { Button } from "reactstrap";
-import { playSound_ButtonClick } from "../utils/playSound";
 import { BuhtaButton } from "../ui/BuhtaButton";
 import { showError } from "../modals/ErrorMessagePage";
-import { show_ПИК } from "./ПИК_Page";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании } from "../generated-api";
 
-export interface IИнформация_о_задании_PageProps extends IAppPageProps {
+export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
 }
 
-export function show_Информация_о_задании(taskId: number) {
-    appState.openPage<IИнформация_о_задании_PageProps>(Информация_о_задании_Page, { pageId: "Информация_о_задании_" + taskId, taskId: taskId });
+export function show_ПИК(taskId: number) {
+    appState.openPage<IПИК_PageProps>(ПИК_Page, { pageId: "ПИК_" + taskId, taskId: taskId });
 }
 
 
 
-export class Информация_о_задании_Page extends React.Component<IИнформация_о_задании_PageProps> {
+export class ПИК_Page extends React.Component<IПИК_PageProps> {
     task: IResult_wms_android_Информация_о_задании;
 
     async componentDidMount() {
@@ -192,9 +186,9 @@ export class Информация_о_задании_Page extends React.Component
             )
         }
 
-        let пропустьУпаковку = null;
-        if (this.task.ПропускУпакРазрешен == 1) {
-            пропустьУпаковку = (
+        let паллета4 = null;
+        if (true) {
+            паллета4 = (
                 <BuhtaButton
                     className="btn-sm"
                     color="warning"
@@ -203,17 +197,48 @@ export class Информация_о_задании_Page extends React.Component
                         //playSound_ButtonClick();
                     }}
                 >
-                    пропустить упак.
+                    паллета
                 </BuhtaButton>
             )
         }
 
+        let паллетаОткуда = null;
+        if (true) {
+            паллетаОткуда = (
+                <BuhtaButton
+                    className="btn-sm"
+                    color="warning"
+                    outline
+                    onClick={() => {
+                        //playSound_ButtonClick();
+                    }}
+                >
+                    откуда
+                </BuhtaButton>
+            )
+        }
+
+        let паллетаКуда = null;
+        if (true) {
+            паллетаКуда = (
+                <BuhtaButton
+                    className="btn-sm"
+                    color="warning"
+                    outline
+                    onClick={() => {
+                        //playSound_ButtonClick();
+                    }}
+                >
+                    куда
+                </BuhtaButton>
+            )
+        }
 
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
+            <div className={"app"} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
 
 
-                <div className="card" style={{ marginBottom: 0 }}>
+                <div className="card" style={{ marginBottom: 0, flex: "1" }}>
                     <div className="card-header" style={{ backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <div>{this.task.НазваниеЗадания}</div>
                         {объединенная}
@@ -237,7 +262,9 @@ export class Информация_о_задании_Page extends React.Component
                 </div>
                 <div style={{ textAlign: "right" }}>
                     <div style={{ marginTop: 10 }}>
-                        {пропустьУпаковку}
+                        {паллета4}
+                        {паллетаОткуда}
+                        {паллетаКуда}
                     </div>
                     <div style={{ marginTop: 10 }}>
                         <BuhtaButton
@@ -252,7 +279,7 @@ export class Информация_о_задании_Page extends React.Component
                                 appState.closeActivePage();
                             }}
                         >
-                            отмена
+                            выход
                     </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
@@ -262,7 +289,7 @@ export class Информация_о_задании_Page extends React.Component
                                 this.doExecuteTask();
                             }}
                         >
-                            выполнить
+                            завершить ПИК
                     </BuhtaButton>
                     </div>
                 </div>
@@ -274,17 +301,16 @@ export class Информация_о_задании_Page extends React.Component
     }
 
     async doExecuteTask() {
-        if (this.task.Тип == 2) {// ПИК
-            let result = await _wms_android_Взять_задание_в_работу_ПИК(this.props.taskId, appState.kadrId);
-            if (result.error) {
-                showError(result.error);
-            }
-            appState.closeActivePage();
-            show_ПИК(this.props.taskId);
-        }
-        else {
-            throw new Error("doExecuteTask(): не сделано для задания типа " + this.task.Тип);
-        }
+        // if (this.task.Тип == 2) {// ПИК
+        //     let result = await _wms_android_Взять_задание_в_работу_ПИК(this.props.taskId, appState.kadrId);
+        //     if (result.error) {
+        //         showError(result.error);
+        //     }
+
+        // }
+        // else {
+        //     throw new Error("doExecuteTask(): не сделано для задания типа " + this.task.Тип);
+        // }
     }
 }
 
