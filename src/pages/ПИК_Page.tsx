@@ -5,7 +5,7 @@ import { CSSProperties } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -38,6 +38,43 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
         let barcode = appState.getNextBarcodeFromQueue(this.props.pageId);
         if (!barcode) return;
+        let barcodePrefix = barcode.barcode.substr(0, 3).toUpperCase();
+
+        if (this.task.ЗавершенноеЗадание != 0) {
+            showError("ПИК уже завершен.");
+            return;
+        }
+
+
+        let res = await _wms_android_Проверка_блокировки_пересоздания_ПИКов(this.task.ДоговорКлюч);
+        if (res.Заблокировано != 0) {
+            showError("Выполняется пересоздание ПИКов по договору. Подождите.");
+            return;
+        }
+
+        let res2 = await _wms_android_Штрихкод_запрещен(barcode.barcode);
+        if (res2.Запрещен == 1) {
+            showError("Запрещенный штрих-код.");
+            return;
+        }
+
+        if (barcodePrefix != "BOX" && barcodePrefix != "PAL") {
+            let res3 = await _wms_android_ПИК_Подобран(this.props.taskId);
+            if (res3.Подобран == 1) {
+                let res4 = await _wms_android_ПИК_все_паллеты_завершены(this.props.taskId);
+                if (res4.Завершены == 1)
+                    showError("ПИК подобран. Завершайте задание!");
+                else
+                    showError("ПИК подобран. Завершайте паллеты!");
+                return;
+            }
+        }
+
+        console.log("пик-получен-штрих", barcode.barcode);
+
+        // todo режим замены 'Вы находитесь в режиме замены. Можно сканировать только ШК выбранного товара. Для выхода из режима нажмите ИнфЗам.'
+
+
 
         // let req: I_ПИК_Лист_Поступил_ШтрихКод_req = {
         //     taskId: this.taskId,
@@ -238,7 +275,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
                             className="btn-sm"
-                            color="secondary"
+                            color="danger"
                             outline
                             onClick={() => {
                                 appState.openPage(TestBarcodesPage, {

@@ -263,3 +263,91 @@ export async function _wms_android_тестовые_штрихкоды(taskId: n
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_Проверка_блокировки_пересоздания_ПИКов {
+    error:string;
+    Заблокировано: number
+}
+
+export async function _wms_android_Проверка_блокировки_пересоздания_ПИКов(dogId: number): Promise<IResult_wms_android_Проверка_блокировки_пересоздания_ПИКов> {
+    if (typeof dogId != "number") throw new Error("вызов '_wms_android_Проверка_блокировки_пересоздания_ПИКов': параметр 'dogId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Проверка_блокировки_пересоздания_ПИКов " + dogId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Проверка_блокировки_пересоздания_ПИКов: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Проверка_блокировки_пересоздания_ПИКов: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Заблокировано) == "undefined") throw new Error("результат выполнения '_wms_android_Проверка_блокировки_пересоздания_ПИКов': не заполнена колонка 'Заблокировано'");
+            if (typeof row.Заблокировано != "number") throw new Error("результат выполнения '_wms_android_Проверка_блокировки_пересоздания_ПИКов': значение в колонке 'Заблокировано' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Штрихкод_запрещен {
+    error:string;
+    Запрещен: number
+}
+
+export async function _wms_android_Штрихкод_запрещен(barcode: string): Promise<IResult_wms_android_Штрихкод_запрещен> {
+    if (typeof barcode != "string") throw new Error("вызов '_wms_android_Штрихкод_запрещен': параметр 'barcode' должен быть строкой");
+    let recordsets = await executeSql("_wms_android_Штрихкод_запрещен " + stringAsSql(barcode));
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Штрихкод_запрещен: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Штрихкод_запрещен: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Запрещен) == "undefined") throw new Error("результат выполнения '_wms_android_Штрихкод_запрещен': не заполнена колонка 'Запрещен'");
+            if (typeof row.Запрещен != "number") throw new Error("результат выполнения '_wms_android_Штрихкод_запрещен': значение в колонке 'Запрещен' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_ПИК_Подобран {
+    error:string;
+    Подобран: number
+}
+
+export async function _wms_android_ПИК_Подобран(taskId: number): Promise<IResult_wms_android_ПИК_Подобран> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_Подобран': параметр 'taskId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_Подобран " + taskId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_ПИК_Подобран: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_ПИК_Подобран: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Подобран) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_Подобран': не заполнена колонка 'Подобран'");
+            if (typeof row.Подобран != "number") throw new Error("результат выполнения '_wms_android_ПИК_Подобран': значение в колонке 'Подобран' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_ПИК_все_паллеты_завершены {
+    error:string;
+    Завершены: number
+}
+
+export async function _wms_android_ПИК_все_паллеты_завершены(taskId: number): Promise<IResult_wms_android_ПИК_все_паллеты_завершены> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_все_паллеты_завершены': параметр 'taskId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_все_паллеты_завершены " + taskId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_ПИК_все_паллеты_завершены: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_ПИК_все_паллеты_завершены: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Завершены) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_все_паллеты_завершены': не заполнена колонка 'Завершены'");
+            if (typeof row.Завершены != "number") throw new Error("результат выполнения '_wms_android_ПИК_все_паллеты_завершены': значение в колонке 'Завершены' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
