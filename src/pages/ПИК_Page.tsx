@@ -246,7 +246,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     </div>
 
                     <div className="card-body" style={{ padding: 10 }}>
-                        <table>
+                        <table style={{ width: "100%" }}>
                             <tbody>
                                 <tr>
                                     <td style={{ ...labelStyle }}>Пал.откуда</td>
