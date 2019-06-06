@@ -78,7 +78,6 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
         // todo _скл_Получить_Партию_по_длине
 
-
         if (tmcId > 0 || partId > 0) {
             if (this.fromId == 0) {
                 showError("Не выбрана паллета ОТКУДА! Отсканируйте штрих-код паллеты.");
