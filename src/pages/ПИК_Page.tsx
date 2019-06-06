@@ -5,7 +5,7 @@ import { CSSProperties } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -24,11 +24,11 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     task: IResult_wms_android_Информация_о_задании;
 
     fromType: string = "";
-    fromId: number = -1;
+    fromId: number = 0;
     fromName: string = "не выбрано";
 
     intoType: string = "";
-    intoId: number = -1;
+    intoId: number = 0;
     intoName: string = "не выбрано";
 
     barcodeProcessorHandler: any;
@@ -69,6 +69,33 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                 return;
             }
         }
+
+        let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.Клиент)).ТМЦ;
+        let partId = 0;
+        if (tmcId == 0) {
+            partId = (await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент)).Партия;
+        }
+
+        // todo _скл_Получить_Партию_по_длине
+
+
+        if (tmcId > 0 || partId > 0) {
+            if (this.fromId == 0) {
+                showError("Не выбрана паллета ОТКУДА! Отсканируйте штрих-код паллеты.");
+                return;
+            }
+            if (this.intoId == 0) {
+                showError("Не выбрана паллета КУДА! Отсканируйте штрих-код паллеты.");
+                return;
+            }
+        }
+
+        // if ((PartID <> 0) or(TMCID <> 0)) and(FromPalleteEdit.Value = 0) and(IntoPalleteEdit.Value = 0) 
+        // {
+        // bmWarning('Отсканируйте штрих-код паллеты');
+        // Exit;
+        // }
+
 
         console.log("пик-получен-штрих", barcode.barcode);
 

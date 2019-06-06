@@ -351,3 +351,49 @@ export async function _wms_android_ПИК_все_паллеты_завершен
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_Получить_ТМЦ_по_штрих_коду {
+    error:string;
+    ТМЦ: number
+}
+
+export async function _wms_android_Получить_ТМЦ_по_штрих_коду(barcode: string, clientId: number): Promise<IResult_wms_android_Получить_ТМЦ_по_штрих_коду> {
+    if (typeof barcode != "string") throw new Error("вызов '_wms_android_Получить_ТМЦ_по_штрих_коду': параметр 'barcode' должен быть строкой");
+    if (typeof clientId != "number") throw new Error("вызов '_wms_android_Получить_ТМЦ_по_штрих_коду': параметр 'clientId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Получить_ТМЦ_по_штрих_коду " + stringAsSql(barcode) + "," + clientId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Получить_ТМЦ_по_штрих_коду: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Получить_ТМЦ_по_штрих_коду: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.ТМЦ) == "undefined") throw new Error("результат выполнения '_wms_android_Получить_ТМЦ_по_штрих_коду': не заполнена колонка 'ТМЦ'");
+            if (typeof row.ТМЦ != "number") throw new Error("результат выполнения '_wms_android_Получить_ТМЦ_по_штрих_коду': значение в колонке 'ТМЦ' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Получить_Партию_по_штрих_коду {
+    error:string;
+    Партия: number
+}
+
+export async function _wms_android_Получить_Партию_по_штрих_коду(barcode: string, clientId: number): Promise<IResult_wms_android_Получить_Партию_по_штрих_коду> {
+    if (typeof barcode != "string") throw new Error("вызов '_wms_android_Получить_Партию_по_штрих_коду': параметр 'barcode' должен быть строкой");
+    if (typeof clientId != "number") throw new Error("вызов '_wms_android_Получить_Партию_по_штрих_коду': параметр 'clientId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Получить_Партию_по_штрих_коду " + stringAsSql(barcode) + "," + clientId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Получить_Партию_по_штрих_коду: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Получить_Партию_по_штрих_коду: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Партия) == "undefined") throw new Error("результат выполнения '_wms_android_Получить_Партию_по_штрих_коду': не заполнена колонка 'Партия'");
+            if (typeof row.Партия != "number") throw new Error("результат выполнения '_wms_android_Получить_Партию_по_штрих_коду': значение в колонке 'Партия' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
