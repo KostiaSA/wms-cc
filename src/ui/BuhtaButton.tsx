@@ -26,7 +26,7 @@ export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
         if (this.props.small)
             smallStyle = {
                 padding: "0.15rem 0.15rem",
-                paddingBottom: "0.20rem",
+                paddingBottom: "0.25rem",
                 lineHeight: 1.2,
                 fontSize:11,
             };

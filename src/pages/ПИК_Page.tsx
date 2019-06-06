@@ -5,10 +5,11 @@ import { CSSProperties } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
+import { PlaySound } from "../sounds/PlaySound";
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -26,10 +27,13 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     fromType: string = "";
     fromId: number = 0;
     fromName: string = "не выбрано";
+    fromCellName: string = "";
 
     intoType: string = "";
     intoId: number = 0;
     intoName: string = "не выбрано";
+
+    isReplaceMode: number = 0;
 
     barcodeProcessorHandler: any;
 
@@ -95,6 +99,30 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         // Exit;
         // }
 
+
+
+        if (barcodePrefix == "PAL") {
+            let palleteId = Number.parseInt(barcode.barcode.toUpperCase().replace("PAL", ""));
+            let palResult = await _wms_android_ПИК_обработка_шк_паллеты(this.props.taskId, palleteId, this.isReplaceMode, this.fromId, this.intoId);
+            console.log("PAL", palResult);
+            if (palResult.ПаллетаОткуда > 0) {
+                PlaySound.паллета_откуда(barcode.barcode);
+                this.fromId = palleteId;
+                this.fromType = "PAL";
+                this.fromName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
+                this.fromCellName = (await _wms_android_Название_ячейки_где_паллета(palleteId)).НазваниеЯчейки;
+                if (this.fromName == this.fromCellName)
+                    this.fromCellName = "";
+                this.forceUpdate();
+            }
+            if (palResult.ПаллетаКуда > 0) {
+                PlaySound.паллета_куда(barcode.barcode);
+                this.intoId = palleteId;
+                this.intoType = "PAL";
+                this.intoName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
+                this.forceUpdate();
+            }
+        }
 
         console.log("пик-получен-штрих", barcode.barcode);
 
@@ -275,15 +303,16 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         <table style={{ width: "100%" }}>
                             <tbody>
                                 <tr>
-                                    <td style={{ ...labelStyle }}>Пал.откуда</td>
+                                    <td style={{ ...labelStyle }}>откуда</td>
                                     <td className={fromInputClassName} style={{ ...textStyle }}>{this.fromName}</td>
-                                    <td></td>
+                                    <td style={{ ...textStyle, color: "brown" }}>{this.fromCellName}</td>
                                 </tr>
                                 <tr>
-                                    <td style={{ ...labelStyle }}>Пал.куда</td>
+                                    <td style={{ ...labelStyle }}>куда</td>
                                     <td className={intoInputClassName} style={{ ...textStyle }}>{this.intoName}</td>
                                     <td>
-                                        <BuhtaButton small color="success">завершить пал.</BuhtaButton>
+                                        <BuhtaButton small outline color="primary">новая</BuhtaButton>
+                                        <BuhtaButton small outline color="success" style={{ marginLeft: 5 }}>завершить</BuhtaButton>
                                     </td>
                                 </tr>
                             </tbody>

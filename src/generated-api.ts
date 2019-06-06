@@ -397,3 +397,79 @@ export async function _wms_android_Получить_Партию_по_штрих
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_ПИК_обработка_шк_паллеты {
+    error:string;
+    ПаллетаОткуда: number;
+    ПаллетаКуда: number;
+    ПаллетаБеретсяЦеликом: number
+}
+
+export async function _wms_android_ПИК_обработка_шк_паллеты(taskId: number, palleteId: number, isReplace: number, currentFromPalleteId: number, currentIntoPalleteId: number): Promise<IResult_wms_android_ПИК_обработка_шк_паллеты> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_паллеты': параметр 'taskId' должен быть числом");
+    if (typeof palleteId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_паллеты': параметр 'palleteId' должен быть числом");
+    if (typeof isReplace != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_паллеты': параметр 'isReplace' должен быть числом");
+    if (typeof currentFromPalleteId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_паллеты': параметр 'currentFromPalleteId' должен быть числом");
+    if (typeof currentIntoPalleteId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_паллеты': параметр 'currentIntoPalleteId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_обработка_шк_паллеты " + taskId.toString() + "," + palleteId.toString() + "," + isReplace.toString() + "," + currentFromPalleteId.toString() + "," + currentIntoPalleteId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_ПИК_обработка_шк_паллеты: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_ПИК_обработка_шк_паллеты: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.ПаллетаОткуда) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_паллеты': не заполнена колонка 'ПаллетаОткуда'");
+            if (typeof row.ПаллетаОткуда != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_паллеты': значение в колонке 'ПаллетаОткуда' должно быть числом");
+            if (typeof(row.ПаллетаКуда) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_паллеты': не заполнена колонка 'ПаллетаКуда'");
+            if (typeof row.ПаллетаКуда != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_паллеты': значение в колонке 'ПаллетаКуда' должно быть числом");
+            if (typeof(row.ПаллетаБеретсяЦеликом) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_паллеты': не заполнена колонка 'ПаллетаБеретсяЦеликом'");
+            if (typeof row.ПаллетаБеретсяЦеликом != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_паллеты': значение в колонке 'ПаллетаБеретсяЦеликом' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Название_ячейки_где_паллета {
+    error:string;
+    НазваниеЯчейки: string
+}
+
+export async function _wms_android_Название_ячейки_где_паллета(palleteId: number): Promise<IResult_wms_android_Название_ячейки_где_паллета> {
+    if (typeof palleteId != "number") throw new Error("вызов '_wms_android_Название_ячейки_где_паллета': параметр 'palleteId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Название_ячейки_где_паллета " + palleteId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Название_ячейки_где_паллета: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Название_ячейки_где_паллета: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.НазваниеЯчейки) == "undefined") throw new Error("результат выполнения '_wms_android_Название_ячейки_где_паллета': не заполнена колонка 'НазваниеЯчейки'");
+            if (typeof row.НазваниеЯчейки != "string") throw new Error("результат выполнения '_wms_android_Название_ячейки_где_паллета': значение в колонке 'НазваниеЯчейки' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Название_паллеты {
+    error:string;
+    НазваниеПаллеты: string
+}
+
+export async function _wms_android_Название_паллеты(palleteId: number): Promise<IResult_wms_android_Название_паллеты> {
+    if (typeof palleteId != "number") throw new Error("вызов '_wms_android_Название_паллеты': параметр 'palleteId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Название_паллеты " + palleteId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Название_паллеты: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Название_паллеты: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.НазваниеПаллеты) == "undefined") throw new Error("результат выполнения '_wms_android_Название_паллеты': не заполнена колонка 'НазваниеПаллеты'");
+            if (typeof row.НазваниеПаллеты != "string") throw new Error("результат выполнения '_wms_android_Название_паллеты': значение в колонке 'НазваниеПаллеты' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
