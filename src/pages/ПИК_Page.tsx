@@ -333,30 +333,33 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
 
                 <div className="card" style={{ marginBottom: 0, flex: "1" }}>
-                    <div className="card-header" style={{ backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
+                    <div className="card-header" style={{ zoom: 1.3, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <div>{this.task.НазваниеЗадания}</div>
                         {объединенная}
                     </div>
 
                     <div className="card-body" style={{ display: "flex", flexDirection: "column", padding: 0 }}>
-                        <table style={{ width: "100%", margin: 5, }}>
-                            <tbody>
-                                <tr>
-                                    <td style={{ ...labelStyle }}>откуда</td>
-                                    <td className={fromInputClassName} style={{ ...textStyle }}>{this.fromName}</td>
-                                    <td style={{ ...textStyle, color: "brown" }}>{this.fromCellName}</td>
-                                </tr>
-                                <tr>
-                                    <td style={{ ...labelStyle }}>куда</td>
-                                    <td className={intoInputClassName} style={{ ...textStyle }}>{this.intoName}</td>
-                                    <td>
-                                        <BuhtaButton small outline color="primary">новая</BuhtaButton>
-                                        <BuhtaButton small outline color="success" style={{ marginLeft: 5 }}>завершить</BuhtaButton>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div style={{ flex: "1", overflow: "hidden", position: "relative", fontSize: 11 }} className="ag-theme-balham">
+                        <div style={{ padding: 5, zoom: 1.3, }}>
+
+                            <table style={{ width: "100%" }}>
+                                <tbody>
+                                    <tr>
+                                        <td style={{ ...labelStyle }}>откуда</td>
+                                        <td className={fromInputClassName} style={{ ...textStyle }}>{this.fromName}</td>
+                                        <td style={{ ...textStyle, color: "brown" }}>{this.fromCellName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ ...labelStyle }}>куда</td>
+                                        <td className={intoInputClassName} style={{ ...textStyle }}>{this.intoName}</td>
+                                        <td>
+                                            <BuhtaButton small outline color="primary">новая</BuhtaButton>
+                                            <BuhtaButton small outline color="success" style={{ marginLeft: 5 }}>завершить</BuhtaButton>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style={{ zoom: 1.3, flex: "1", overflow: "hidden", position: "relative", fontSize: 11 }} className="ag-theme-balham">
                             <div style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
                                     //headerHeight={25}
@@ -382,7 +385,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
                     </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
+                <div style={{ zoom: 1.3, textAlign: "right" }}>
                     <div style={{ marginTop: 10, paddingRight: 4 }}>
                         {паллета4}
                         {паллетаОткуда}
@@ -402,7 +405,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                 })
                             }}
                         >
-                            ШРТИХ
+                            ШТРИХ
                         </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}

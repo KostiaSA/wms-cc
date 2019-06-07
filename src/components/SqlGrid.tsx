@@ -60,7 +60,7 @@ export class SqlGrid extends React.Component<ISqlGridProps, any> {
         } catch (error) {
             console.error(error);
             showError("executeSqlStoredProc: " + this.props.sqlProcName + ": " + error.toString());
-            //appState.closeActivePage();
+            //appState. loseActivePage();
             return;
         }
         // this.autoSizeAll();
