@@ -5,11 +5,16 @@ import { CSSProperties } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, IResult_wms_android_ПИК_список_паллет, _wms_android_ПИК_список_паллет } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
 import { PlaySound } from "../sounds/PlaySound";
+import { AgGridReact } from "ag-grid-react/lib/agGridReact";
+import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
+import { replaceAll } from '../utils/replaceAll';
+import { escapeHtml } from '../utils/escapeHtml';
+import { agGridMultiRowCellRenderer } from "../utils/agGridMultiRowCellRenderer";
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -198,7 +203,42 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         clearInterval(this.barcodeProcessorHandler)
     }
 
+    palletesGridData: IResult_wms_android_ПИК_список_паллет[];
+    palletesGridApi: any;
+    palletesGridColumnApi: any;
+    //loaded: boolean = false;
+
+    onPalletesGridReady = async (params: any) => {
+        this.palletesGridApi = params.api;
+        this.palletesGridColumnApi = params.columnApi;
+
+        this.palletesGridData = await _wms_android_ПИК_список_паллет(this.props.taskId, this.intoId, this.fromId);
+        this.palletesGridApi.setRowData(this.palletesGridData);
+        this.forceUpdate();
+        this.palletesGridApi.sizeColumnsToFit();
+        this.palletesGridApi.resetRowHeights();
+
+    };
+
+    tovarsGridApi: any;
+    tovarsGridColumnApi: any;
+    //loaded: boolean = false;
+
+    onTovarsGridReady = (params: any) => {
+        this.tovarsGridApi = params.api;
+        this.tovarsGridColumnApi = params.columnApi;
+
+        if (this.tovarsGridApi) {
+            this.tovarsGridApi.sizeColumnsToFit();
+            this.tovarsGridApi.resetRowHeights();
+        }
+
+    };
+
+
     render() {
+        let overlayLoadingTemplate = '<i class="fa fa-spinner fa-spin ag-overlay-loading-center" style="color:darkgray;font-size:28px;border:0px"></i>';
+        let overlayNoRowsTemplate = "<span class='ag-overlay-loading-center'>пустой список</span>";
 
         let labelStyle: CSSProperties = {
             fontSize: 12,
@@ -299,8 +339,8 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         {объединенная}
                     </div>
 
-                    <div className="card-body" style={{ padding: 10 }}>
-                        <table style={{ width: "100%" }}>
+                    <div className="card-body" style={{ display: "flex", flexDirection: "column", padding: 0 }}>
+                        <table style={{ width: "100%", padding: 10, }}>
                             <tbody>
                                 <tr>
                                     <td style={{ ...labelStyle }}>откуда</td>
@@ -317,6 +357,27 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                 </tr>
                             </tbody>
                         </table>
+                        <div style={{ flex: "1", overflow: "hidden", position: "relative", fontSize: 11 }} className="ag-theme-balham">
+                            <div style={{ height: "100%", width: "100%", position: "absolute" }}>
+                                <AgGridReact
+                                    //rowData={this.palletesGridData}
+                                    //  overlayLoadingTemplate={overlayLoadingTemplate}
+                                    overlayNoRowsTemplate={overlayNoRowsTemplate}
+                                    onGridReady={this.onPalletesGridReady}
+                                >
+                                    <AgGridColumn
+                                        field="ТМЦ" autoHeight
+                                        cellRenderer={agGridMultiRowCellRenderer}
+                                        cellStyle={{ color: "black" }}
+                                    >
+                                    </AgGridColumn>
+                                    <AgGridColumn field="ЯчейкаПаллета" width={110} autoHeight cellRenderer={agGridMultiRowCellRenderer} cellStyle={{ color: "brown" }}></AgGridColumn>
+                                    <AgGridColumn field="ВзятоВзять" width={80}></AgGridColumn>
+                                    <AgGridColumn field="КолЕдИзм" width={80}></AgGridColumn>
+
+                                </AgGridReact>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -326,6 +387,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         {паллетаОткуда}
                         {паллетаКуда}
                     </div>
+
                     <div style={{ marginTop: 10, paddingBottom: 10, paddingRight: 4 }}>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}

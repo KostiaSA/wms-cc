@@ -473,3 +473,42 @@ export async function _wms_android_Название_паллеты(palleteId: nu
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_ПИК_список_паллет {
+    error:string;
+    ПаллетаКлюч: number;
+    ТМЦ: string;
+    ЯчейкаПаллета: string;
+    ЯчейкаКлюч: number;
+    ВзятоВзять: string;
+    КолЕдИзм: string
+}
+
+export async function _wms_android_ПИК_список_паллет(taskId: number, palleteInto: number, palleteFrom: number): Promise<IResult_wms_android_ПИК_список_паллет[]> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_список_паллет': параметр 'taskId' должен быть числом");
+    if (typeof palleteInto != "number") throw new Error("вызов '_wms_android_ПИК_список_паллет': параметр 'palleteInto' должен быть числом");
+    if (typeof palleteFrom != "number") throw new Error("вызов '_wms_android_ПИК_список_паллет': параметр 'palleteFrom' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_список_паллет " + taskId.toString() + "," + palleteInto.toString() + "," + palleteFrom.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.ПаллетаКлюч) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ПаллетаКлюч'");
+            if (typeof row.ПаллетаКлюч != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ПаллетаКлюч' должно быть числом");
+            if (typeof(row.ТМЦ) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ТМЦ'");
+            if (typeof row.ТМЦ != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ТМЦ' должно быть строкой");
+            if (typeof(row.ЯчейкаПаллета) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ЯчейкаПаллета'");
+            if (typeof row.ЯчейкаПаллета != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ЯчейкаПаллета' должно быть строкой");
+            if (typeof(row.ЯчейкаКлюч) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ЯчейкаКлюч'");
+            if (typeof row.ЯчейкаКлюч != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ЯчейкаКлюч' должно быть числом");
+            if (typeof(row.ВзятоВзять) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ВзятоВзять'");
+            if (typeof row.ВзятоВзять != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ВзятоВзять' должно быть строкой");
+            if (typeof(row.КолЕдИзм) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'КолЕдИзм'");
+            if (typeof row.КолЕдИзм != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'КолЕдИзм' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset;
+
+}
