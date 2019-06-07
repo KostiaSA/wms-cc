@@ -211,12 +211,11 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     onPalletesGridReady = async (params: any) => {
         this.palletesGridApi = params.api;
         this.palletesGridColumnApi = params.columnApi;
-
         this.palletesGridData = await _wms_android_ПИК_список_паллет(this.props.taskId, this.intoId, this.fromId);
         this.palletesGridApi.setRowData(this.palletesGridData);
-        this.forceUpdate();
         this.palletesGridApi.sizeColumnsToFit();
         this.palletesGridApi.resetRowHeights();
+        this.forceUpdate();
 
     };
 
@@ -227,7 +226,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     onTovarsGridReady = (params: any) => {
         this.tovarsGridApi = params.api;
         this.tovarsGridColumnApi = params.columnApi;
-
+        this.tovarsGridApi.hideOverlay();
         if (this.tovarsGridApi) {
             this.tovarsGridApi.sizeColumnsToFit();
             this.tovarsGridApi.resetRowHeights();
@@ -340,7 +339,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     </div>
 
                     <div className="card-body" style={{ display: "flex", flexDirection: "column", padding: 0 }}>
-                        <table style={{ width: "100%", padding: 10, }}>
+                        <table style={{ width: "100%", margin: 5, }}>
                             <tbody>
                                 <tr>
                                     <td style={{ ...labelStyle }}>откуда</td>
@@ -360,7 +359,9 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         <div style={{ flex: "1", overflow: "hidden", position: "relative", fontSize: 11 }} className="ag-theme-balham">
                             <div style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
-                                    //rowData={this.palletesGridData}
+                                    //headerHeight={25}
+                                    suppressLoadingOverlay
+                                    // rowData={this.palletesGridData}
                                     //  overlayLoadingTemplate={overlayLoadingTemplate}
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onPalletesGridReady}
@@ -371,9 +372,9 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                         cellStyle={{ color: "black" }}
                                     >
                                     </AgGridColumn>
-                                    <AgGridColumn field="ЯчейкаПаллета" width={110} autoHeight cellRenderer={agGridMultiRowCellRenderer} cellStyle={{ color: "brown" }}></AgGridColumn>
-                                    <AgGridColumn field="ВзятоВзять" width={80}></AgGridColumn>
-                                    <AgGridColumn field="КолЕдИзм" width={80}></AgGridColumn>
+                                    <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={110} autoHeight cellRenderer={agGridMultiRowCellRenderer} cellStyle={{ color: "brown" }}></AgGridColumn>
+                                    <AgGridColumn headerName="Взято/ Взять" field="ВзятоВзять" width={80}></AgGridColumn>
+                                    <AgGridColumn headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>
@@ -401,7 +402,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                 })
                             }}
                         >
-                            тест-ШРТИХ
+                            ШРТИХ
                         </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}

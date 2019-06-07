@@ -7,7 +7,10 @@ html, body {
     min-height: 100%;
     height: 100%;
     max-height: 100%;
-    zoom: 100%;
+}
+
+body {
+    zoom: 1.2
 }
 
 .cell-wrap-text {
@@ -19,6 +22,28 @@ html, body {
     padding-left: 2px;
     padding-right: 2px;
     text-overflow: clip;
+}
+
+.ag-theme-balham .ag-header-cell, .ag-theme-balham .ag-header-group-cell {
+    line-height: inherit;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.ag-theme-balham .ag-header-cell-label {
+    display: flex;
+    float: left;
+    height: 100%;
+    width: calc(100% - 1px);
+}
+
+.ag-theme-balham .ag-header-cell-label .ag-header-cell-text {
+    text-overflow: clip;
+    font-size: 10px;
+    line-height: 11px;
+    font-weight: normal;
+    color: olive;
+    white-space: normal;
 }
 
 /* немного потемнее текст */
