@@ -13,6 +13,7 @@ import { showInfo } from "../modals/InfoMessagePage";
 import { I_ПИК_1_меню_PageProps, ПИК_1_меню_Page_ModalResult, ПИК_1_меню_Page } from "../modals/ПИК_2_меню";
 import { getConfirmation } from "../modals/ConfirmationPage";
 import { show_Информация_о_задании } from "./Информация_о_задании_Page";
+import { show_НастройкаТСД } from "./НастройкаТСД_Page";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -102,7 +103,7 @@ let mainMenuItems: IMainMenuItem[] = [
         icon: <i className="fa fa-cog"></i>,
         onClick: () => {
             playSound_ButtonClick();
-            appState.openPage(PeakPage, { pageId: "PeakPage" })
+            show_НастройкаТСД();
         }
     },
 ];
@@ -198,7 +199,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
         let titleStyle = { marginTop: "0.5em" };
 
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "" : "none", zoom:appState.zoom }}>
+            <div className={"app"} style={{ display: this.props.visible ? "" : "none", zoom: appState.zoom }}>
                 <h5 className={"text-center"} style={titleStyle}>ОСНОВНЫЕ ОПЕРАЦИИ</h5>
                 <ul className="list-group">
                     {this.renderGroup("ОСНОВНЫЕ ОПЕРАЦИИ")}

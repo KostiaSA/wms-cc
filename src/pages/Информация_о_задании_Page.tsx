@@ -213,7 +213,7 @@ export class Информация_о_задании_Page extends React.Component
 
 
                 <div className="card" style={{ marginBottom: 0 }}>
-                    <div className="card-header" style={{ zoom: appState.zoom, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
+                    <div className="card-header" style={{ textAlign: "center", zoom: appState.zoom, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <div>{this.task.НазваниеЗадания}</div>
                         {объединенная}
                     </div>
