@@ -109,7 +109,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         if (barcodePrefix == "PAL") {
             let palleteId = Number.parseInt(barcode.barcode.toUpperCase().replace("PAL", ""));
             let palResult = await _wms_android_ПИК_обработка_шк_паллеты(this.props.taskId, palleteId, this.isReplaceMode, this.fromId, this.intoId);
-            console.log("PAL", palResult);
+            //console.log("PAL", palResult);
             if (palResult.ПаллетаОткуда > 0) {
                 PlaySound.паллета_откуда(barcode.barcode);
                 this.fromId = palleteId;

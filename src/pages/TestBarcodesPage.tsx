@@ -69,7 +69,8 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     paddingLeft: 5,
                     paddingRight: 5,
                     display: this.props.visible ? "" : "none",
-                    backgroundColor: "white"
+                    backgroundColor: "white",
+                    zoom: appState.zoom
                 }}>
                     <BuhtaButton outline style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
                         appState.closeAndDestroyActivePage();
@@ -86,12 +87,12 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     {
                         (this.data || []).map((row: IResult_wms_android_тестовые_штрихкоды, index: number) => {
                             return ([
-                                <BuhtaButton key={index} outline 
+                                <BuhtaButton key={index} outline
                                     style={{ marginRight: 3, marginTop: 5, maxWidth: 250 }} onClick={() => {
                                         appState.closeAndDestroyActivePage();
                                         appState.pushTestBarcode(row.ШтрихКод, "");
                                     }}>
-                                    <span style={{ color: row.Цвет, whiteSpace:"normal" }}>{row.Объект}</span>
+                                    <span style={{ color: row.Цвет, whiteSpace: "normal" }}>{row.Объект}</span>
                                 </BuhtaButton>,
                                 <br key={index + 2000000} />
                             ]

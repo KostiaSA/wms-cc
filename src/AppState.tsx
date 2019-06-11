@@ -12,12 +12,14 @@ import { PlaySound } from "./sounds/PlaySound";
 import { registerBuhtaObject } from "./registerBuhtaObject";
 //import {showErrorMessage} from "./modals/ErrorMessageModal";
 import { showAppError } from "./modals/ErrorMessagePage";
-import { IResult_wms_android_Доступы, IResult_wms_android_Главное_меню_Список_Новых_Заданий } from "./generated-api";
+import { IResult_wms_android_Доступы, IResult_wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_Получить_настройки_ТСД, _wms_android_Сохранить_настройки_ТСД } from "./generated-api";
 import { sleep } from "./utils/sleep";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
 declare var zebra: IZebraApi;
+
+export type НастройкиТСД = "zoom" | "???";
 
 export interface IOpenedPage {
     props: IAppPageProps;
@@ -34,7 +36,6 @@ export class AppState {
     kadrId: number = -1;
     podrId: number = -1;
     userName: string = "";
-    zoom: number = 1;
     доступы: IResult_wms_android_Доступы[] = [];
     новыеЗадания: IResult_wms_android_Главное_меню_Список_Новых_Заданий[] = [];
 
@@ -56,6 +57,34 @@ export class AppState {
     //snack: SnackbarProps | null = null;
 
     sqlWaitPanelVisible: boolean = false;
+
+    private _настройки_ТСД: { [параметр: string]: any } = {};
+
+    async зарузить_настройки_ТСД() {
+        this._настройки_ТСД["zoom"] = 1;
+
+        let res = await _wms_android_Получить_настройки_ТСД(this.kadrId);
+        for (let row of res) {
+            this._настройки_ТСД[row.Параметр] = JSON.parse(row.Значение);
+        }
+    }
+
+    async сохранить_настройки_ТСД(параметр: НастройкиТСД, значение: any) {
+        this._настройки_ТСД[параметр] = значение;
+        await _wms_android_Сохранить_настройки_ТСД(this.kadrId, параметр, JSON.stringify(значение));
+
+    }
+
+    настройки_ТСД(параметр: НастройкиТСД): any {
+        if (!this._настройки_ТСД[параметр])
+            throw new Error("нет такой настройки ТСД: " + параметр);
+
+        return this._настройки_ТСД[параметр];
+    }
+
+    get zoom() {
+        return this.настройки_ТСД("zoom");
+    }
 
     forceUpdate() {
         this.appWindow!.forceUpdate();
@@ -187,12 +216,16 @@ export class AppState {
     }
 
     isUsersHasAccessToRasdel(rasdel: string): boolean {
+        if (rasdel == "НАСТРОЙКА_ТСД")
+            return true;
+            
         rasdel = rasdel.toUpperCase();
         if (!rasdel.startsWith("MOBILE_"))
             rasdel = "MOBILE_" + rasdel;
 
         if (rasdel == "MOBILE_ИНФО")
             return true;
+
 
         // сначала перебираем доступы конкретного юзера
         for (let acc of this.доступы) {

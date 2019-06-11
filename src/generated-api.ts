@@ -512,3 +512,52 @@ export async function _wms_android_ПИК_список_паллет(taskId: numb
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_Сохранить_настройки_ТСД {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_Сохранить_настройки_ТСД(kadrId: number, параметр: string, значение: string): Promise<IResult_wms_android_Сохранить_настройки_ТСД> {
+    if (typeof kadrId != "number") throw new Error("вызов '_wms_android_Сохранить_настройки_ТСД': параметр 'kadrId' должен быть числом");
+    if (typeof параметр != "string") throw new Error("вызов '_wms_android_Сохранить_настройки_ТСД': параметр 'параметр' должен быть строкой");
+    if (typeof значение != "string") throw new Error("вызов '_wms_android_Сохранить_настройки_ТСД': параметр 'значение' должен быть строкой");
+    let recordsets = await executeSql("_wms_android_Сохранить_настройки_ТСД " + kadrId.toString() + "," + stringAsSql(параметр) + "," + stringAsSql(значение));
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Сохранить_настройки_ТСД: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Сохранить_настройки_ТСД: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_Сохранить_настройки_ТСД': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_Сохранить_настройки_ТСД': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Получить_настройки_ТСД {
+    error:string;
+    Параметр: string;
+    Значение: string
+}
+
+export async function _wms_android_Получить_настройки_ТСД(kadrId: number): Promise<IResult_wms_android_Получить_настройки_ТСД[]> {
+    if (typeof kadrId != "number") throw new Error("вызов '_wms_android_Получить_настройки_ТСД': параметр 'kadrId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Получить_настройки_ТСД " + kadrId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Параметр) == "undefined") throw new Error("результат выполнения '_wms_android_Получить_настройки_ТСД': не заполнена колонка 'Параметр'");
+            if (typeof row.Параметр != "string") throw new Error("результат выполнения '_wms_android_Получить_настройки_ТСД': значение в колонке 'Параметр' должно быть строкой");
+            if (typeof(row.Значение) == "undefined") throw new Error("результат выполнения '_wms_android_Получить_настройки_ТСД': не заполнена колонка 'Значение'");
+            if (typeof row.Значение != "string") throw new Error("результат выполнения '_wms_android_Получить_настройки_ТСД': значение в колонке 'Значение' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset;
+
+}

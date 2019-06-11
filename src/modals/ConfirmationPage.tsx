@@ -49,11 +49,11 @@ export class Confirmation_Page extends React.Component<I_Confirmation_PageProps,
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
-                    <ModalHeader className={"text-secondary"}>{this.props.title}</ModalHeader>
-                    <ModalBody className={"text-primary"}>
+                    <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
+                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom }}>
                         {this.props.message}
                     </ModalBody>
-                    <ModalFooter>
+                    <ModalFooter style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="light"
                             onClick={() => {
                                 appState.setModalResult<boolean>(false);

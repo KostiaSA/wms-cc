@@ -80,6 +80,8 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
             appState.kadrId = row.KadrId;
             appState.podrId = row.PodrId;
             appState.доступы = await _wms_android_Доступы(this.login);
+            await appState.зарузить_настройки_ТСД();
+
             appState.новыеЗадания = await _wms_android_Главное_меню_Список_Новых_Заданий(appState.kadrId, appState.podrId);
 
             appState.openPage(MainMenuPage, { pageId: MainMenuPage.PAGE_ID });
@@ -99,7 +101,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
     render(): React.ReactNode {
         return (
             <div className="app flex-row align-items-top" style={{ display: this.props.visible ? "" : "none" }}>
-                <Container style={{ backgroundColor: "ALICEBLUE" }}>
+                <Container style={{ backgroundColor: "ALICEBLUE", zoom:1.15 }}>
 
                     <Col md="8">
 

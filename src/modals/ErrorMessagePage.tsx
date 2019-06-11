@@ -49,11 +49,11 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
-                    <ModalHeader className={"text-danger"}>{this.props.title}</ModalHeader>
-                    <ModalBody>
+                    <ModalHeader className={"text-danger"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
+                    <ModalBody style={{ zoom: appState.zoom }}>
                         {this.props.message}
                     </ModalBody>
-                    <ModalFooter>
+                    <ModalFooter style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="danger"
                             onClick={() => appState.closeActiveModal()}>
                             Закрыть

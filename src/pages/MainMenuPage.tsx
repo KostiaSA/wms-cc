@@ -95,6 +95,16 @@ let mainMenuItems: IMainMenuItem[] = [
         label: "ИНВ",
         code: "ИНВ",
     },
+    {
+        group: "НАСТРОЙКИ",
+        label: "НАСТРОЙКА ТСД",
+        code: "НАСТРОЙКА_ТСД",
+        icon: <i className="fa fa-cog"></i>,
+        onClick: () => {
+            playSound_ButtonClick();
+            appState.openPage(PeakPage, { pageId: "PeakPage" })
+        }
+    },
 ];
 
 export class MainMenuPage extends React.Component<IMainMenuPageProps> {
@@ -146,6 +156,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
 
     renderGroup(group: string): ReactNode[] {
         let ret: ReactNode[] = [];
+
         for (let item of mainMenuItems) {
             if (item.group == group && appState.isUsersHasAccessToRasdel(item.code)) {
                 let новыеЗадания = appState.новыеЗадания.find((x) => x.Тип == item.code);
@@ -153,13 +164,19 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                 if (новыеЗадания && (новыеЗадания.Новых > 0 || новыеЗадания.ВРаботе > 0)) {
                     newStr = новыеЗадания.Новых + "/" + новыеЗадания.ВРаботе;
                 }
+
+                let icon: any;
+                if (item.icon) {
+                    icon = <span style={{ marginRight: 5 }}>{item.icon}</span>
+                }
+
                 ret.push(
                     <li
                         key={mainMenuItems.indexOf(item)}
                         className="list-group-item"
                         onClick={item.onClick}
                     >
-                        {item.icon}
+                        {icon}
                         {item.label} <span style={{ color: "dodgerblue", marginLeft: 10 }}>{newStr}</span>
                     </li>
                 );
@@ -181,7 +198,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
         let titleStyle = { marginTop: "0.5em" };
 
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "" : "none" }}>
+            <div className={"app"} style={{ display: this.props.visible ? "" : "none", zoom:appState.zoom }}>
                 <h5 className={"text-center"} style={titleStyle}>ОСНОВНЫЕ ОПЕРАЦИИ</h5>
                 <ul className="list-group">
                     {this.renderGroup("ОСНОВНЫЕ ОПЕРАЦИИ")}
@@ -209,6 +226,10 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                 <ul className="list-group">
                     {this.renderGroup("ПРОЧИЕ ОПЕРАЦИИ")}
                 </ul>
+                <h5 className={"text-center"} style={titleStyle}>НАСТРОЙКИ</h5>
+                <ul className="list-group">
+                    {this.renderGroup("НАСТРОЙКИ")}
+                </ul>
                 <h5 className={"text-center"} style={titleStyle}>КОНЕЦ РАБОТЫ</h5>
                 <ul className="list-group">
                     <li className="list-group-item"
@@ -217,7 +238,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                             appState.closeActivePage()
                         }}
 
-                    ><i className="fa fa-user"></i>Выход
+                    ><i className="fa fa-user" style={{ marginRight: 5 }}></i>Выход
                     </li>
                 </ul>
                 {/* <h5 className={"text-center"} style={titleStyle}>ЗАДАНИЯ ОЖИДАЮТ</h5>
