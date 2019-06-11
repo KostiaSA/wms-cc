@@ -240,7 +240,6 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         let overlayNoRowsTemplate = "<span class='ag-overlay-loading-center'>пустой список</span>";
 
         let labelStyle: CSSProperties = {
-            fontSize: 12,
             color: "gray"
         };
 
@@ -333,13 +332,13 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
 
                 <div className="card" style={{ marginBottom: 0, flex: "1" }}>
-                    <div className="card-header" style={{ zoom: 1.3, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
+                    <div className="card-header" style={{ zoom: appState.zoom, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <div>{this.task.НазваниеЗадания}</div>
                         {объединенная}
                     </div>
 
                     <div className="card-body" style={{ display: "flex", flexDirection: "column", padding: 0 }}>
-                        <div style={{ padding: 5, zoom: 1.3, }}>
+                        <div style={{ padding: 5, zoom: appState.zoom, }}>
 
                             <table style={{ width: "100%" }}>
                                 <tbody>
@@ -359,7 +358,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                 </tbody>
                             </table>
                         </div>
-                        <div style={{ zoom: 1.3, flex: "1", overflow: "hidden", position: "relative", fontSize: 11 }} className="ag-theme-balham">
+                        <div style={{ zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
                             <div style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
                                     //headerHeight={25}
@@ -385,7 +384,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
                     </div>
                 </div>
-                <div style={{ zoom: 1.3, textAlign: "right" }}>
+                <div style={{ zoom: appState.zoom, textAlign: "right" }}>
                     <div style={{ marginTop: 10, paddingRight: 4 }}>
                         {паллета4}
                         {паллетаОткуда}

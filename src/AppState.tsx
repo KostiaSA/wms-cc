@@ -34,6 +34,7 @@ export class AppState {
     kadrId: number = -1;
     podrId: number = -1;
     userName: string = "";
+    zoom: number = 1;
     доступы: IResult_wms_android_Доступы[] = [];
     новыеЗадания: IResult_wms_android_Главное_меню_Список_Новых_Заданий[] = [];
 

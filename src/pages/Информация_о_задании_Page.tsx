@@ -37,7 +37,6 @@ export class Информация_о_задании_Page extends React.Component
     render() {
 
         let labelStyle: CSSProperties = {
-            fontSize: 12,
             color: "gray"
         };
 
@@ -214,11 +213,11 @@ export class Информация_о_задании_Page extends React.Component
 
 
                 <div className="card" style={{ marginBottom: 0 }}>
-                    <div className="card-header" style={{ backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
+                    <div className="card-header" style={{ zoom: appState.zoom, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <div>{this.task.НазваниеЗадания}</div>
                         {объединенная}
                     </div>
-                    <div className="card-body" style={{ padding: 10 }}>
+                    <div className="card-body" style={{ zoom: appState.zoom, padding: 10 }}>
                         <table>
                             <tbody>
                                 {подразделение}
@@ -235,7 +234,7 @@ export class Информация_о_задании_Page extends React.Component
                         </table>
                     </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
+                <div style={{ zoom: appState.zoom, textAlign: "right" }}>
                     <div style={{ marginTop: 10 }}>
                         {пропустьУпаковку}
                     </div>
