@@ -76,7 +76,7 @@ export class AppState {
     }
 
     настройки_ТСД(параметр: НастройкиТСД): any {
-        if (!this._настройки_ТСД[параметр])
+        if (typeof this._настройки_ТСД[параметр] == "undefined")
             throw new Error("нет такой настройки ТСД: " + параметр);
 
         return this._настройки_ТСД[параметр];
@@ -218,7 +218,7 @@ export class AppState {
     isUsersHasAccessToRasdel(rasdel: string): boolean {
         if (rasdel == "НАСТРОЙКА_ТСД")
             return true;
-            
+
         rasdel = rasdel.toUpperCase();
         if (!rasdel.startsWith("MOBILE_"))
             rasdel = "MOBILE_" + rasdel;

@@ -3,6 +3,7 @@ import { IAppPageProps } from "./AppWindow";
 import { appState } from '../AppState';
 import { CSSProperties } from 'react';
 import { BuhtaButton } from "../ui/BuhtaButton";
+import { _wms_android_Сохранить_настройки_ТСД } from "../generated-api";
 
 export interface IНастройкаТСД_PageProps extends IAppPageProps {
 
@@ -52,10 +53,31 @@ export class НастройкаТСД_Page extends React.Component<IНастро
                         <div>НАСТРОЙКА ТСД</div>
                     </div>
                     <div className="card-body" style={{ zoom: appState.zoom, padding: 10 }}>
-                        <table>
+                        <div className="form-horizontal">
+                            <div className="form-group row">
+                                <label className="col-md-3 col-form-label">размер шрифта</label>
+                                <div className="col-md-9">
+                                    <select
+                                        className="form-control form-control"
+                                        name="select3"
+                                        onChange={async (event: any) => {
+                                            console.log(event.target.value); await appState.сохранить_настройки_ТСД("zoom", Number.parseFloat(event.target.value)); appState.appWindow.forceUpdate();
+                                        }}
+                                    >
+                                        <option value="0.8" selected={appState.настройки_ТСД("zoom") == 0.8}>маленький</option>
+                                        <option value="0.9" selected={appState.настройки_ТСД("zoom") == 0.9}>уменьшенный</option>
+                                        <option value="1" selected={appState.настройки_ТСД("zoom") == 1}>нормальный</option>
+                                        <option value="1.1" selected={appState.настройки_ТСД("zoom") == 1.1}>увеличенный</option>
+                                        <option value="1.2" selected={appState.настройки_ТСД("zoom") == 1.2}>большой</option>
+                                        <option value="1.3" selected={appState.настройки_ТСД("zoom") == 1.3}>очень большой</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {/* <table>
                             <tbody>
                             </tbody>
-                        </table>
+                        </table> */}
                     </div>
                 </div>
                 <div style={{ zoom: appState.zoom, textAlign: "right" }}>
