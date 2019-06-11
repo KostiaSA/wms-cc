@@ -1,7 +1,6 @@
 import * as  React from "react";
 import { IAppPageProps } from "./AppWindow";
 import { appState } from '../AppState';
-import { CSSProperties } from 'react';
 import { BuhtaButton } from "../ui/BuhtaButton";
 import { _wms_android_Сохранить_настройки_ТСД } from "../generated-api";
 
@@ -24,26 +23,6 @@ export class НастройкаТСД_Page extends React.Component<IНастро
     }
 
     render() {
-
-        let labelStyle: CSSProperties = {
-            color: "gray"
-        };
-
-        let textStyle: CSSProperties = {
-            paddingLeft: 5,
-        };
-
-        // let зона: any = null;
-        // if (getTaskConst(this.task.Тип).показыватьЗонуВИнфо) {
-        //     зона = (
-        //         <tr>
-        //             <td style={{ ...labelStyle, paddingTop: 10 }}>зона ПРР</td>
-        //             <td style={{ ...textStyle, paddingTop: 10 }}>{this.task.Зона}</td>
-        //         </tr>
-        //     )
-        // }
-
-
 
         return (
             <div className={"app"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
@@ -87,9 +66,6 @@ export class НастройкаТСД_Page extends React.Component<IНастро
                             className="btn-sm"
                             color="secondary"
                             outline
-                            // onTouchStart={() => {
-                            //     playSound_ButtonClick();
-                            // }}
                             onClick={() => {
                                 appState.closeActivePage();
                             }}
