@@ -14,7 +14,7 @@ import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { replaceAll } from '../utils/replaceAll';
 import { escapeHtml } from '../utils/escapeHtml';
-import { agGridMultiRowCellRenderer } from "../utils/agGridMultiRowCellRenderer";
+import { agGridMultiRowCellRenderer, agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererForTMC } from '../utils/agGridMultiRowCellRenderer';
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -214,7 +214,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         this.palletesGridData = await _wms_android_ПИК_список_паллет(this.props.taskId, this.intoId, this.fromId);
         this.palletesGridApi.setRowData(this.palletesGridData);
         this.palletesGridApi.sizeColumnsToFit();
-        this.palletesGridApi.resetRowHeights();
+        //this.palletesGridApi.resetRowHeights();
         this.forceUpdate();
 
     };
@@ -229,7 +229,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         this.tovarsGridApi.hideOverlay();
         if (this.tovarsGridApi) {
             this.tovarsGridApi.sizeColumnsToFit();
-            this.tovarsGridApi.resetRowHeights();
+            //this.tovarsGridApi.resetRowHeights();
         }
 
     };
@@ -367,16 +367,18 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                     //  overlayLoadingTemplate={overlayLoadingTemplate}
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onPalletesGridReady}
+                                    // onColumnResized={() => { this.palletesGridApi.resetRowHeights(); }}
+                                    rowHeight={45}
                                 >
                                     <AgGridColumn
-                                        field="ТМЦ" autoHeight
-                                        cellRenderer={agGridMultiRowCellRenderer}
-                                        cellStyle={{ color: "black" }}
+                                        headerName="Что на паллете"
+                                        field="ТМЦ"
+                                        cellRenderer={agGridMultiRowCellRendererForTMC}
                                     >
                                     </AgGridColumn>
-                                    <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={110} autoHeight cellRenderer={agGridMultiRowCellRenderer} cellStyle={{ color: "brown" }}></AgGridColumn>
-                                    <AgGridColumn headerName="Взято/ Взять" field="ВзятоВзять" width={80}></AgGridColumn>
-                                    <AgGridColumn headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80}></AgGridColumn>
+                                    <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={110} cellRenderer={agGridMultiRowCellRendererForCellPallete} cellStyle={{ textAlign: "center" }}></AgGridColumn>
+                                    <AgGridColumn headerName="Взято/ Взять" field="ВзятоВзять" width={80} cellStyle={{ textAlign: "center" }}></AgGridColumn>
+                                    <AgGridColumn headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80} cellStyle={{ textAlign: "center" }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>
@@ -425,7 +427,9 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                             className="btn-sm"
                             color="success"
                             onClick={() => {
-                                this.doExecuteTask();
+
+
+                                //                                this.doExecuteTask();
                             }}
                         >
                             завершить ПИК
@@ -435,7 +439,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
 
 
-            </div>
+            </div >
         )
     }
 
