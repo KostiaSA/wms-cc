@@ -28,7 +28,7 @@ export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
                 padding: "0.15rem 0.15rem",
                 paddingBottom: "0.25rem",
                 lineHeight: 1.2,
-                fontSize:11,
+                fontSize: 11,
             };
         return (
             <Button
@@ -39,8 +39,11 @@ export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
                 block={this.props.block}
                 color={this.props.color}
                 disabled={this.props.disabled}
-                onClick={(e: any) => { playSound_ButtonClick(); if (!zebraOk()) this.props.onClick(e) }}
-                onTouchStart={(e: any) => { playSound_ButtonClick(); if (zebraOk()) this.props.onClick(e) }}
+                onClick={(e: any) => { if (!zebraOk()) playSound_ButtonClick(); this.props.onClick(e) }}
+                onTouchStart={(e: any) => { if (zebraOk()) playSound_ButtonClick(); }}
+
+            // onClick={(e: any) => { playSound_ButtonClick(); if (!zebraOk()) this.props.onClick(e) }}
+            // onTouchStart={(e: any) => { playSound_ButtonClick(); if (zebraOk()) this.props.onClick(e) }}
             >
                 {this.props.children}
             </Button>

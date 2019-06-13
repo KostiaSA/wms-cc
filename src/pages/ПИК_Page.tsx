@@ -1,7 +1,7 @@
 import * as  React from "react";
 import { IAppPageProps } from "./AppWindow";
 import { appState } from '../AppState';
-import { CSSProperties } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
@@ -15,6 +15,9 @@ import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { replaceAll } from '../utils/replaceAll';
 import { escapeHtml } from '../utils/escapeHtml';
 import { agGridMultiRowCellRenderer, agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererForTMC } from '../utils/agGridMultiRowCellRenderer';
+import { showInfo } from "../modals/InfoMessagePage";
+import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО } from "../const";
+import { playSound_ButtonClick } from "../utils/playSound";
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -368,7 +371,8 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onPalletesGridReady}
                                     // onColumnResized={() => { this.palletesGridApi.resetRowHeights(); }}
-                                    rowHeight={45}
+                                    rowHeight={48}
+                                    onRowClicked={this.onPalleteGridRowClicked.bind(this)}
                                 >
                                     <AgGridColumn
                                         headerName="Что на паллете"
@@ -376,9 +380,9 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                         cellRenderer={agGridMultiRowCellRendererForTMC}
                                     >
                                     </AgGridColumn>
-                                    <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={110} cellRenderer={agGridMultiRowCellRendererForCellPallete} cellStyle={{ textAlign: "center" }}></AgGridColumn>
-                                    <AgGridColumn headerName="Взято/ Взять" field="ВзятоВзять" width={80} cellStyle={{ textAlign: "center" }}></AgGridColumn>
-                                    <AgGridColumn headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80} cellStyle={{ textAlign: "center" }}></AgGridColumn>
+                                    <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={140} cellRenderer={agGridMultiRowCellRendererForCellPallete} cellStyle={{ textAlign: "center" }}></AgGridColumn>
+                                    <AgGridColumn headerName="Взято/ Взять" field="ВзятоВзять" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
+                                    <AgGridColumn headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>
@@ -441,6 +445,40 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
             </div >
         )
+    }
+
+    onPalleteGridRowClicked(e: any) {
+        playSound_ButtonClick();
+        let row: IResult_wms_android_ПИК_список_паллет = e.data;
+        let cellStyle: CSSProperties = { borderBottom: "0px solid gray", padding: 4 };
+        let info: ReactNode = (
+            <table style={{ color: "gray" }}>
+                <tbody>
+                    <tr>
+                        <td style={cellStyle}>на паллете</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ }}> {replaceAll(row.ТМЦ, "\r", " ")}</td>
+                    </tr>
+                    <tr>
+                        <td style={cellStyle}>ячейка</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_ЯЧЕЙКА }}>{row.Ячейка}</td>
+                    </tr>
+                    <tr>
+                        <td style={cellStyle}>паллета</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА }}>{row.Паллета}</td>
+                    </tr>
+                    <tr>
+                        <td style={cellStyle}>взято/взять</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}>{row.ВзятоВзять}</td>
+                    </tr>
+                    <tr>
+                        <td style={cellStyle}>кол-во</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }} >{row.КолЕдИзм}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        );
+        showInfo(info);
     }
 
     async doExecuteTask() {

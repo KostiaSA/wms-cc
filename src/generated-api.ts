@@ -478,6 +478,8 @@ export interface IResult_wms_android_ПИК_список_паллет {
     error:string;
     ПаллетаКлюч: number;
     ТМЦ: string;
+    Ячейка: string;
+    Паллета: string;
     ЯчейкаПаллета: string;
     ЯчейкаКлюч: number;
     ВзятоВзять: string;
@@ -498,6 +500,10 @@ export async function _wms_android_ПИК_список_паллет(taskId: numb
             if (typeof row.ПаллетаКлюч != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ПаллетаКлюч' должно быть числом");
             if (typeof(row.ТМЦ) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ТМЦ'");
             if (typeof row.ТМЦ != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ТМЦ' должно быть строкой");
+            if (typeof(row.Ячейка) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'Ячейка'");
+            if (typeof row.Ячейка != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'Ячейка' должно быть строкой");
+            if (typeof(row.Паллета) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'Паллета'");
+            if (typeof row.Паллета != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'Паллета' должно быть строкой");
             if (typeof(row.ЯчейкаПаллета) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ЯчейкаПаллета'");
             if (typeof row.ЯчейкаПаллета != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': значение в колонке 'ЯчейкаПаллета' должно быть строкой");
             if (typeof(row.ЯчейкаКлюч) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_паллет': не заполнена колонка 'ЯчейкаКлюч'");

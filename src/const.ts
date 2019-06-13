@@ -5,3 +5,4 @@ export const ЦВЕТ_ТЕКСТА_ЯЧЕЙКА = "brown";
 export const ЦВЕТ_ТЕКСТА_ТМЦ = "black";
 export const ЦВЕТ_ТЕКСТА_НОМЕР_ТМЦ = "#808080a8";
 export const ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ = "black";
+export const ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО = "dodgerblue";
