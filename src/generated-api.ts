@@ -567,3 +567,30 @@ export async function _wms_android_Получить_настройки_ТСД(ka
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_ПИК_обработка_шк_партии {
+    error:string;
+    НоваяПаллетаОткуда: number
+}
+
+export async function _wms_android_ПИК_обработка_шк_партии(taskId: number, partId: number, isBrak: number, barcode: string, currentFromPalleteId: number, currentIntoPalleteId: number): Promise<IResult_wms_android_ПИК_обработка_шк_партии> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_партии': параметр 'taskId' должен быть числом");
+    if (typeof partId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_партии': параметр 'partId' должен быть числом");
+    if (typeof isBrak != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_партии': параметр 'isBrak' должен быть числом");
+    if (typeof barcode != "string") throw new Error("вызов '_wms_android_ПИК_обработка_шк_партии': параметр 'barcode' должен быть строкой");
+    if (typeof currentFromPalleteId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_партии': параметр 'currentFromPalleteId' должен быть числом");
+    if (typeof currentIntoPalleteId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_партии': параметр 'currentIntoPalleteId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_обработка_шк_партии " + taskId.toString() + "," + partId.toString() + "," + isBrak.toString() + "," + stringAsSql(barcode) + "," + currentFromPalleteId.toString() + "," + currentIntoPalleteId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_ПИК_обработка_шк_партии: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_ПИК_обработка_шк_партии: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.НоваяПаллетаОткуда) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_партии': не заполнена колонка 'НоваяПаллетаОткуда'");
+            if (typeof row.НоваяПаллетаОткуда != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_партии': значение в колонке 'НоваяПаллетаОткуда' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

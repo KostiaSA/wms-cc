@@ -39,8 +39,8 @@ export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
                 block={this.props.block}
                 color={this.props.color}
                 disabled={this.props.disabled}
-                onClick={(e: any) => { if (!zebraOk()) playSound_ButtonClick(); this.props.onClick(e) }}
-                onTouchStart={(e: any) => { if (zebraOk()) playSound_ButtonClick(); }}
+                onClick={(e: any) => { playSound_ButtonClick(); this.props.onClick(e) }}
+            //    onTouchStart={(e: any) => { if (zebraOk()) playSound_ButtonClick(); }}
 
             // onClick={(e: any) => { playSound_ButtonClick(); if (!zebraOk()) this.props.onClick(e) }}
             // onTouchStart={(e: any) => { playSound_ButtonClick(); if (zebraOk()) this.props.onClick(e) }}
