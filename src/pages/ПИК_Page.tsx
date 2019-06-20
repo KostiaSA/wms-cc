@@ -1,11 +1,11 @@
 import * as  React from "react";
 import { IAppPageProps } from "./AppWindow";
-import { appState } from '../AppState';
+import { appState, BarcodeWithType } from '../AppState';
 import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, IResult_wms_android_ПИК_список_паллет, _wms_android_ПИК_список_паллет, _wms_android_ПИК_обработка_шк_партии } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, IResult_wms_android_ПИК_список_паллет, _wms_android_ПИК_список_паллет, _wms_android_ПИК_обработка_шк_партии, _wms_android_ПИК_обработка_шк_товара } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -42,6 +42,11 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     intoName: string = "не выбрано";
 
     isReplaceMode: number = 0;
+    isЗапросКоличестваMode: number = 0;
+    otherParty: number = 0;
+
+    partId: number = 0;
+    tmcId: number = 0;
 
     barcodeProcessorHandler: any;
 
@@ -111,6 +116,12 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         this.fromCellName = "";
                     this.forceUpdate();
                 }
+
+                this.tmcId = partResult.tmcId;
+                this.partId = partResult.partId;
+                this.otherParty = partResult.otherParty;
+                await this.processTovarBarcode(barcode);
+                return;
             }
             else {
                 showError(partResult.error);
@@ -169,68 +180,40 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         }
 
         console.log("пик-получен-штрих", barcode.barcode);
-
-        // todo режим замены 'Вы находитесь в режиме замены. Можно сканировать только ШК выбранного товара. Для выхода из режима нажмите ИнфЗам.'
-
-
-
-        // let req: I_ПИК_Лист_Поступил_ШтрихКод_req = {
-        //     taskId: this.taskId,
-        //     barcode: barcode.barcode,
-        //     barcodeType: barcode.barcodeType,
-        //     fromType: this.fromType,
-        //     fromId: this.fromId,
-        //     intoType: this.intoType,
-        //     intoId: this.intoId,
-        // };
-
-
-        // let ans = await call_wmsapi<I_ПИК_Лист_Поступил_ШтрихКод_ans>(ПИК_Лист_Поступил_ШтрихКод_proc, req);
-
-        // if (ans.error) {
-        //     PlaySound.ошибка("ошибка");
-        // } else if (ans.неизвестный_штрих_код) {
-        //     PlaySound.неизвестный_штрих_код();
-        // } else if (ans.штрихкод_не_подходит) {
-        //     PlaySound.штрихкод_не_подходит(barcode.barcodeType, barcode.barcode);
-        // } else if (ans.не_выбрана_паллета_откуда) {
-        //     PlaySound.не_выбрана_паллета_откуда();
-        // } else if (ans.не_выбрана_паллета_куда) {
-        //     PlaySound.не_выбрана_паллета_куда();
-        // } else if (ans.паллета_куда) {
-        //     this.intoType = ans.паллета_куда.intoType;
-        //     this.intoId = ans.паллета_куда.intoId;
-        //     this.intoName = ans.паллета_куда.intoName;
-        //     PlaySound.паллета_куда(barcode.barcode);
-        //     this.forceUpdate();
-        // } else if (ans.паллета_откуда) {
-        //     this.fromType = ans.паллета_откуда.fromType;
-        //     this.fromId = ans.паллета_откуда.fromId;
-        //     this.fromName = ans.паллета_откуда.fromName;
-        //     PlaySound.паллета_откуда(barcode.barcode);
-        //     this.forceUpdate();
-        // } else if (ans.паллета_коробка_взята_в_подбор) {
-        //     this.intoType = ans.паллета_коробка_взята_в_подбор.palboxType;
-        //     this.intoId = ans.паллета_коробка_взята_в_подбор.palboxId;
-        //     this.intoName = ans.паллета_коробка_взята_в_подбор.palboxName;
-        //     if (this.intoType == "PAL")
-        //         PlaySound.паллета_взята_в_подбор(barcode.barcode);
-        //     else if (this.intoType == "BOX")
-        //         PlaySound.коробка_взята_в_подбор(barcode.barcode);
-        //     else
-        //         throw "barcodeProcessor(): неизвестный тип " + this.fromType;
-
-        //     this.forceUpdate();
-
-        //     throw "проверка";
-
-        // }
-        // else
-        //     console.error("ошибка", ans)
-
+        await this.processTovarBarcode(barcode);
 
     }
 
+    async processTovarBarcode(barcode: BarcodeWithType) {
+
+        let res = await _wms_android_ПИК_обработка_шк_товара(
+            this.props.taskId,
+            this.tmcId,
+            this.partId,
+            -1, // todo SkladKol
+            barcode.barcode,
+            this.fromId,
+            this.intoId,
+            this.isReplaceMode,
+            this.task.Клиент,
+            this.isЗапросКоличестваMode,
+            this.otherParty,
+            0, // todo @ChangePalOld
+            0, // todo @ChangePartOld
+            appState.kadrId
+        );
+
+        if (res.error) {
+            PlaySound.ошибка("");
+            await showError(res.error);
+            return
+        }
+
+        PlaySound.товар_подобран("");
+
+        console.log(res);
+
+    }
 
     async componentDidMount() {
         this.task = await _wms_android_Информация_о_задании(this.props.taskId);
