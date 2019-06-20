@@ -90,6 +90,36 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
         // todo _скл_Получить_Партию_по_длине
 
+
+        if (partId > 0 || barcodePrefix == "PAR" || barcodePrefix == "BRA") {
+            let isBrak: number = barcodePrefix == "BRA" ? 1 : 0;
+            let partResult = await _wms_android_ПИК_обработка_шк_партии(this.props.taskId, partId, isBrak, barcode.barcode, this.fromId, this.intoId);
+
+            if (!partResult.error) {
+                if (this.intoId == 0) {
+                    showError("Не выбрана паллета КУДА! Отсканируйте штрих-код паллеты.");
+                    return;
+                }
+
+                if (partResult.НоваяПаллетаОткуда > 0) {
+                    PlaySound.паллета_откуда(barcode.barcode);
+                    this.fromId = partResult.НоваяПаллетаОткуда;
+                    this.fromType = "PAL";
+                    this.fromName = (await _wms_android_Название_паллеты(partResult.НоваяПаллетаОткуда)).НазваниеПаллеты;
+                    this.fromCellName = (await _wms_android_Название_ячейки_где_паллета(partResult.НоваяПаллетаОткуда)).НазваниеЯчейки;
+                    if (this.fromName == this.fromCellName)
+                        this.fromCellName = "";
+                    this.forceUpdate();
+                }
+            }
+            else {
+                showError(partResult.error);
+                return;
+
+            }
+
+        }
+
         if (tmcId > 0 || partId > 0) {
             if (this.fromId == 0) {
                 showError("Не выбрана паллета ОТКУДА! Отсканируйте штрих-код паллеты.");
@@ -99,23 +129,6 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                 showError("Не выбрана паллета КУДА! Отсканируйте штрих-код паллеты.");
                 return;
             }
-        }
-
-        if (partId > 0 || barcodePrefix == "PAR" || barcodePrefix == "BRA") {
-            let isBrak: number = barcodePrefix == "BRA" ? 1 : 0;
-            let partResult = await _wms_android_ПИК_обработка_шк_партии(this.props.taskId, partId, isBrak, barcode.barcode, this.fromId, this.intoId);
-            if (partResult.НоваяПаллетаОткуда > 0) {
-                PlaySound.паллета_откуда(barcode.barcode);
-                this.fromId = partResult.НоваяПаллетаОткуда;
-                this.fromType = "PAL";
-                this.fromName = (await _wms_android_Название_паллеты(partResult.НоваяПаллетаОткуда)).НазваниеПаллеты;
-                this.fromCellName = (await _wms_android_Название_ячейки_где_паллета(partResult.НоваяПаллетаОткуда)).НазваниеЯчейки;
-                if (this.fromName == this.fromCellName)
-                    this.fromCellName = "";
-                this.forceUpdate();
-            }
-            return
-
         }
 
         // if ((PartID <> 0) or(TMCID <> 0)) and(FromPalleteEdit.Value = 0) and(IntoPalleteEdit.Value = 0) 
