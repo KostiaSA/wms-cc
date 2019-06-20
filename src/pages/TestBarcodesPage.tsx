@@ -93,6 +93,8 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                                         appState.pushTestBarcode(row.ШтрихКод, "");
                                     }}>
                                     <span style={{ color: row.Цвет, whiteSpace: "normal" }}>{row.Объект}</span>
+                                    <br />
+                                    <span style={{ color: "#ff00ff8a", whiteSpace: "normal" }}>шк:{row.ШтрихКод}</span>
                                 </BuhtaButton>,
                                 <br key={index + 2000000} />
                             ]

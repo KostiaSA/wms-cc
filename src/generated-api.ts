@@ -647,3 +647,77 @@ export async function _wms_android_ПИК_обработка_шк_товара(t
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_ПИК_список_товара_на_паллете {
+    error:string;
+    Ключ: number;
+    InternalRecordID: number;
+    TMCKey: number;
+    PartKey: number;
+    ТМЦ: string;
+    ТМЦ2: string;
+    Партия: string;
+    ЖесткостьКоробкиПодбор: number;
+    ГруппаПодбор: number;
+    ВесПроизводителяПодбор: number;
+    В_заявке: number;
+    Взять: string;
+    ПИК: number;
+    Шт: number;
+    М: number;
+    Key: number;
+    ОснПартия: number;
+    Кол_Ед_Изм: number
+}
+
+export async function _wms_android_ПИК_список_товара_на_паллете(taskId: number, palFrom: number): Promise<IResult_wms_android_ПИК_список_товара_на_паллете[]> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_список_товара_на_паллете': параметр 'taskId' должен быть числом");
+    if (typeof palFrom != "number") throw new Error("вызов '_wms_android_ПИК_список_товара_на_паллете': параметр 'palFrom' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_список_товара_на_паллете " + taskId.toString() + "," + palFrom.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ключ) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'Ключ'");
+            if (typeof row.Ключ != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'Ключ' должно быть числом");
+            if (typeof(row.InternalRecordID) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'InternalRecordID'");
+            if (typeof row.InternalRecordID != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'InternalRecordID' должно быть числом");
+            if (typeof(row.TMCKey) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'TMCKey'");
+            if (typeof row.TMCKey != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'TMCKey' должно быть числом");
+            if (typeof(row.PartKey) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'PartKey'");
+            if (typeof row.PartKey != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'PartKey' должно быть числом");
+            if (typeof(row.ТМЦ) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'ТМЦ'");
+            if (typeof row.ТМЦ != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'ТМЦ' должно быть строкой");
+            if (typeof(row.ТМЦ2) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'ТМЦ2'");
+            if (typeof row.ТМЦ2 != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'ТМЦ2' должно быть строкой");
+            if (typeof(row.Партия) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'Партия'");
+            if (typeof row.Партия != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'Партия' должно быть строкой");
+            if (typeof(row.ЖесткостьКоробкиПодбор) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'ЖесткостьКоробкиПодбор'");
+            if (typeof row.ЖесткостьКоробкиПодбор != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'ЖесткостьКоробкиПодбор' должно быть числом");
+            if (typeof(row.ГруппаПодбор) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'ГруппаПодбор'");
+            if (typeof row.ГруппаПодбор != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'ГруппаПодбор' должно быть числом");
+            if (typeof(row.ВесПроизводителяПодбор) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'ВесПроизводителяПодбор'");
+            if (typeof row.ВесПроизводителяПодбор != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'ВесПроизводителяПодбор' должно быть числом");
+            if (typeof(row.В_заявке) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'В_заявке'");
+            if (typeof row.В_заявке != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'В_заявке' должно быть числом");
+            if (typeof(row.Взять) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'Взять'");
+            if (typeof row.Взять != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'Взять' должно быть строкой");
+            if (typeof(row.ПИК) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'ПИК'");
+            if (typeof row.ПИК != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'ПИК' должно быть числом");
+            if (typeof(row.Шт) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'Шт'");
+            if (typeof row.Шт != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'Шт' должно быть числом");
+            if (typeof(row.М) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'М'");
+            if (typeof row.М != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'М' должно быть числом");
+            if (typeof(row.Key) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'Key'");
+            if (typeof row.Key != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'Key' должно быть числом");
+            if (typeof(row.ОснПартия) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'ОснПартия'");
+            if (typeof row.ОснПартия != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'ОснПартия' должно быть числом");
+            if (typeof(row.Кол_Ед_Изм) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': не заполнена колонка 'Кол_Ед_Изм'");
+            if (typeof row.Кол_Ед_Изм != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_товара_на_паллете': значение в колонке 'Кол_Ед_Изм' должно быть числом");            
+        }
+    }
+
+    return lastRecordset;
+
+}
