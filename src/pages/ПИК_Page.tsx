@@ -44,6 +44,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     isReplaceMode: number = 0;
     isЗапросКоличестваMode: number = 0;
     otherParty: number = 0;
+    changeTMCID: number = 0;
 
     partId: number = 0;
     tmcId: number = 0;
@@ -212,7 +213,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         }
 
         PlaySound.товар_подобран("");
-
+        setTimeout(this.loadTovarsGridData.bind(this), 1)
         console.log(res);
 
     }
@@ -257,7 +258,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         if (!this.tovarsGridApi)
             return;
         if (this.fromId > 0) {
-            this.tovarsGridData = await _wms_android_ПИК_список_товара_на_паллете(this.props.taskId, this.fromId);
+            this.tovarsGridData = await _wms_android_ПИК_список_товара_на_паллете(this.props.taskId, this.fromId, this.isReplaceMode, this.changeTMCID);
             this.tovarsGridApi.setRowData(this.tovarsGridData);
             this.tovarsGridApi.sizeColumnsToFit();
         }

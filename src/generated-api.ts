@@ -670,10 +670,12 @@ export interface IResult_wms_android_ПИК_список_товара_на_па�
     Кол_Ед_Изм: number
 }
 
-export async function _wms_android_ПИК_список_товара_на_паллете(taskId: number, palFrom: number): Promise<IResult_wms_android_ПИК_список_товара_на_паллете[]> {
+export async function _wms_android_ПИК_список_товара_на_паллете(taskId: number, palFrom: number, isReplace: number, changeTMCID: number): Promise<IResult_wms_android_ПИК_список_товара_на_паллете[]> {
     if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_список_товара_на_паллете': параметр 'taskId' должен быть числом");
     if (typeof palFrom != "number") throw new Error("вызов '_wms_android_ПИК_список_товара_на_паллете': параметр 'palFrom' должен быть числом");
-    let recordsets = await executeSql("_wms_android_ПИК_список_товара_на_паллете " + taskId.toString() + "," + palFrom.toString());
+    if (typeof isReplace != "number") throw new Error("вызов '_wms_android_ПИК_список_товара_на_паллете': параметр 'isReplace' должен быть числом");
+    if (typeof changeTMCID != "number") throw new Error("вызов '_wms_android_ПИК_список_товара_на_паллете': параметр 'changeTMCID' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_список_товара_на_паллете " + taskId.toString() + "," + palFrom.toString() + "," + isReplace.toString() + "," + changeTMCID.toString());
     let lastRecordset = recordsets[recordsets.length - 1];
 
 
