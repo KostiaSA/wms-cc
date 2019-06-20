@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, IResult_wms_android_ПИК_список_паллет, _wms_android_ПИК_список_паллет, _wms_android_ПИК_обработка_шк_партии, _wms_android_ПИК_обработка_шк_товара } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, IResult_wms_android_ПИК_список_паллет, _wms_android_ПИК_список_паллет, _wms_android_ПИК_обработка_шк_партии, _wms_android_ПИК_обработка_шк_товара, IResult_wms_android_ПИК_список_товара_на_паллете, _wms_android_ПИК_список_товара_на_паллете } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -16,7 +16,7 @@ import { replaceAll } from '../utils/replaceAll';
 import { escapeHtml } from '../utils/escapeHtml';
 import { agGridMultiRowCellRenderer, agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererForTMC } from '../utils/agGridMultiRowCellRenderer';
 import { showInfo } from "../modals/InfoMessagePage";
-import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО } from "../const";
+import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ } from "../const";
 import { playSound_ButtonClick } from "../utils/playSound";
 
 export interface IПИК_PageProps extends IAppPageProps {
@@ -115,6 +115,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     if (this.fromName == this.fromCellName)
                         this.fromCellName = "";
                     this.forceUpdate();
+                    setTimeout(this.loadTovarsGridData.bind(this), 1)
                 }
 
                 this.tmcId = partResult.tmcId;
@@ -163,6 +164,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                 if (this.fromName == this.fromCellName)
                     this.fromCellName = "";
                 this.forceUpdate();
+                setTimeout(this.loadTovarsGridData.bind(this), 1)
             }
             if (palResult.ПаллетаКуда > 0) {
                 PlaySound.паллета_куда(barcode.barcode);
@@ -243,18 +245,27 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
     tovarsGridApi: any;
     tovarsGridColumnApi: any;
-    //loaded: boolean = false;
+    tovarsGridData: IResult_wms_android_ПИК_список_товара_на_паллете[];
 
     onTovarsGridReady = (params: any) => {
         this.tovarsGridApi = params.api;
         this.tovarsGridColumnApi = params.columnApi;
-        this.tovarsGridApi.hideOverlay();
-        if (this.tovarsGridApi) {
-            this.tovarsGridApi.sizeColumnsToFit();
-            //this.tovarsGridApi.resetRowHeights();
-        }
-
+        setTimeout(this.loadTovarsGridData.bind(this), 1)
     };
+
+    async loadTovarsGridData() {
+        if (!this.tovarsGridApi)
+            return;
+        if (this.fromId > 0) {
+            this.tovarsGridData = await _wms_android_ПИК_список_товара_на_паллете(this.props.taskId, this.fromId);
+            this.tovarsGridApi.setRowData(this.tovarsGridData);
+            this.tovarsGridApi.sizeColumnsToFit();
+        }
+        else {
+            this.tovarsGridData = [];
+            this.tovarsGridApi.setRowData(this.tovarsGridData);
+        }
+    }
 
 
     render() {
@@ -380,7 +391,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                 </tbody>
                             </table>
                         </div>
-                        <div style={{ zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
+                        <div style={{ display: this.fromId != 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
                             <div style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
                                     //headerHeight={25}
@@ -402,6 +413,32 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                     <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={140} cellRenderer={agGridMultiRowCellRendererForCellPallete} cellStyle={{ textAlign: "center" }}></AgGridColumn>
                                     <AgGridColumn headerName="Взято/ Взять" field="ВзятоВзять" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
                                     <AgGridColumn headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
+
+                                </AgGridReact>
+                            </div>
+                        </div>
+                        <div style={{ display: this.fromId == 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
+                            <div style={{ height: "100%", width: "100%", position: "absolute" }}>
+                                <AgGridReact
+                                    //headerHeight={25}
+                                    suppressLoadingOverlay
+                                    // rowData={this.palletesGridData}
+                                    //  overlayLoadingTemplate={overlayLoadingTemplate}
+                                    overlayNoRowsTemplate={overlayNoRowsTemplate}
+                                    onGridReady={this.onTovarsGridReady}
+                                    // onColumnResized={() => { this.palletesGridApi.resetRowHeights(); }}
+                                    rowHeight={48}
+                                    onRowClicked={this.onPalleteGridRowClicked.bind(this)}
+                                >
+                                    <AgGridColumn
+                                        headerName="Товар"
+                                        field="ТМЦ2"
+                                        cellRenderer={agGridMultiRowCellRendererForTMC}
+                                        cellStyle={{ background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}
+                                    >
+                                    </AgGridColumn>
+                                    <AgGridColumn headerName="Взять" field="Взять" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>
+                                    <AgGridColumn headerName="шт" field="Шт" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>
