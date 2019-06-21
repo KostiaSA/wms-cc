@@ -14,7 +14,7 @@ import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { replaceAll } from '../utils/replaceAll';
 import { escapeHtml } from '../utils/escapeHtml';
-import { agGridMultiRowCellRenderer, agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererForTMC } from '../utils/agGridMultiRowCellRenderer';
+import { agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererForTMC, agGridMultiRowCellRendererForTMC_for_table_cell } from '../utils/agGridMultiRowCellRenderer';
 import { showInfo } from "../modals/InfoMessagePage";
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ } from "../const";
 import { playSound_ButtonClick } from "../utils/playSound";
@@ -261,6 +261,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             this.tovarsGridData = await _wms_android_ПИК_список_товара_на_паллете(this.props.taskId, this.fromId, this.isReplaceMode, this.changeTMCID);
             this.tovarsGridApi.setRowData(this.tovarsGridData);
             this.tovarsGridApi.sizeColumnsToFit();
+            this.tovarsGridApi.resetRowHeights();
         }
         else {
             this.tovarsGridData = [];
@@ -409,6 +410,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                         headerName="Что на паллете"
                                         field="ТМЦ"
                                         cellRenderer={agGridMultiRowCellRendererForTMC}
+                                        cellStyle={{ whiteSpace: "normal" }}
                                     >
                                     </AgGridColumn>
                                     <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={140} cellRenderer={agGridMultiRowCellRendererForCellPallete} cellStyle={{ textAlign: "center" }}></AgGridColumn>
@@ -428,18 +430,18 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onTovarsGridReady}
                                     // onColumnResized={() => { this.palletesGridApi.resetRowHeights(); }}
-                                    rowHeight={48}
-                                    onRowClicked={this.onPalleteGridRowClicked.bind(this)}
+                                    rowHeight={80}
+                                    onRowClicked={this.onTovarGridRowClicked.bind(this)}
                                 >
                                     <AgGridColumn
                                         headerName="Товар"
-                                        field="ТМЦ2"
+                                        field="ТМЦ"
                                         cellRenderer={agGridMultiRowCellRendererForTMC}
-                                        cellStyle={{ background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}
+                                        cellStyle={{ background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ, whiteSpace: "normal" }}
                                     >
                                     </AgGridColumn>
-                                    <AgGridColumn headerName="Взять" field="Взять" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>
-                                    <AgGridColumn headerName="шт" field="Шт" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>
+                                    <AgGridColumn headerName="Взять" field="Взять" width={50} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>
+                                    <AgGridColumn headerName="шт" field="Шт" width={30} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>
@@ -488,8 +490,6 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                             className="btn-sm"
                             color="success"
                             onClick={() => {
-
-
                                 //                                this.doExecuteTask();
                             }}
                         >
@@ -513,7 +513,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                 <tbody>
                     <tr>
                         <td style={cellStyle}>на паллете</td>
-                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ }}> {replaceAll(row.ТМЦ, "\r", " ")}</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ }}> {agGridMultiRowCellRendererForTMC_for_table_cell(row.ТМЦ)}</td>
                     </tr>
                     <tr>
                         <td style={cellStyle}>ячейка</td>
@@ -530,6 +530,32 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     <tr>
                         <td style={cellStyle}>кол-во</td>
                         <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }} >{row.КолЕдИзм}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        );
+        showInfo(info);
+    }
+
+    onTovarGridRowClicked(e: any) {
+        playSound_ButtonClick();
+        let row: IResult_wms_android_ПИК_список_товара_на_паллете = e.data;
+        let cellStyle: CSSProperties = { borderBottom: "0px solid gray", padding: 4 };
+        let info: ReactNode = (
+            <table style={{ color: "gray" }}>
+                <tbody>
+                    <tr>
+                        <td style={cellStyle}>на паллете</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ }}> {agGridMultiRowCellRendererForTMC_for_table_cell(row.ТМЦ)}</td>
+                    </tr>
+                    <tr>
+                        <td style={cellStyle}>взять</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}>{row.Взять}</td>
+                    </tr>
+                    <tr>
+                        <td style={cellStyle}>шт.</td>
+                        <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }} >{row.Шт}</td>
                     </tr>
 
                 </tbody>
