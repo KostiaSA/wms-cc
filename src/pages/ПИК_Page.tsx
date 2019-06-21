@@ -269,6 +269,11 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         }
     }
 
+    palletesGridGetRowHeight(params: any): number {
+        console.log(params);
+        debugger
+        return 45;
+    }
 
     render() {
         let overlayLoadingTemplate = '<i class="fa fa-spinner fa-spin ag-overlay-loading-center" style="color:darkgray;font-size:28px;border:0px"></i>';
@@ -405,6 +410,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                     // onColumnResized={() => { this.palletesGridApi.resetRowHeights(); }}
                                     rowHeight={48}
                                     onRowClicked={this.onPalleteGridRowClicked.bind(this)}
+                                //getRowHeight={this.palletesGridGetRowHeight.bind(this)}
                                 >
                                     <AgGridColumn
                                         headerName="Что на паллете"
@@ -577,5 +583,3 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         // }
     }
 }
-
-
