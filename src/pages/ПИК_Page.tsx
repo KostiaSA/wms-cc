@@ -190,6 +190,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     async processTovarBarcode(barcode: BarcodeWithType) {
 
         let res = await _wms_android_ПИК_обработка_шк_товара(
+            0,
             this.props.taskId,
             this.tmcId,
             this.partId,
@@ -203,7 +204,8 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             this.otherParty,
             0, // todo @ChangePalOld
             0, // todo @ChangePartOld
-            appState.kadrId
+            appState.kadrId,
+            0
         );
 
         if (res.error) {
@@ -212,9 +214,15 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             return
         }
 
-        PlaySound.товар_подобран("");
-        setTimeout(this.loadTovarsGridData.bind(this), 1)
-        console.log(res);
+        if (res.Нужен_запрос_количества_Ok = 1) {
+            console.log("Нужен_запрос_количества_Ok", res);
+            return
+        }
+        else {
+            await PlaySound.товар_подобран("");
+            setTimeout(this.loadTovarsGridData.bind(this), 10)
+            console.log(res);
+        }
 
     }
 
@@ -471,7 +479,8 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                             onClick={() => {
                                 appState.openPage(TestBarcodesPage, {
                                     pageId: TestBarcodesPage.PAGE_ID,
-                                    taskId: this.props.taskId
+                                    taskId: this.props.taskId,
+                                    palleteFrom: this.fromId,
                                 })
                             }}
                         >

@@ -243,9 +243,10 @@ export interface IResult_wms_android_тестовые_штрихкоды {
     Цвет: string
 }
 
-export async function _wms_android_тестовые_штрихкоды(taskId: number): Promise<IResult_wms_android_тестовые_штрихкоды[]> {
+export async function _wms_android_тестовые_штрихкоды(taskId: number, palleteFrom: number): Promise<IResult_wms_android_тестовые_штрихкоды[]> {
     if (typeof taskId != "number") throw new Error("вызов '_wms_android_тестовые_штрихкоды': параметр 'taskId' должен быть числом");
-    let recordsets = await executeSql("_wms_android_тестовые_штрихкоды " + taskId.toString());
+    if (typeof palleteFrom != "number") throw new Error("вызов '_wms_android_тестовые_штрихкоды': параметр 'palleteFrom' должен быть числом");
+    let recordsets = await executeSql("_wms_android_тестовые_штрихкоды " + taskId.toString() + "," + palleteFrom.toString());
     let lastRecordset = recordsets[recordsets.length - 1];
     if (!lastRecordset) return { error: "_wms_android_тестовые_штрихкоды: не вернула результатов" } as any;
 
@@ -606,13 +607,20 @@ export async function _wms_android_ПИК_обработка_шк_партии(t
 
 export interface IResult_wms_android_ПИК_обработка_шк_товара {
     error:string;
+    Нужен_запрос_количества_Ok: number;
+    запрос_количества_TMCID: number;
+    запрос_количества_NewKol: number;
+    запрос_количества_MaxKol: number;
+    запрос_количества_PartID: number;
+    запрос_количества_ЯчейкаОткуда: number;
     Товар_с_паллеты_подобран: number;
     Паллета_откуда_опустела: number;
     Нужен_вызов_процедуры_Ok: number;
     Заявка_14700: number
 }
 
-export async function _wms_android_ПИК_обработка_шк_товара(taskId: number, tmcId: number, partId: number, SkladKol: number, barcode: string, currentFromPalleteId: number, currentIntoPalleteId: number, isZamena: number, clientID: number, requestEdit_Value: number, otherParty: number, changePalOld: number, changePartOld: number, userID: number): Promise<IResult_wms_android_ПИК_обработка_шк_товара> {
+export async function _wms_android_ПИК_обработка_шк_товара(mode: number, taskId: number, tmcId: number, partId: number, SkladKol: number, barcode: string, currentFromPalleteId: number, currentIntoPalleteId: number, isZamena: number, clientID: number, requestEdit_Value: number, otherParty: number, changePalOld: number, changePartOld: number, userID: number, newKol_ответ_юзера: number): Promise<IResult_wms_android_ПИК_обработка_шк_товара> {
+    if (typeof mode != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'mode' должен быть числом");
     if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'taskId' должен быть числом");
     if (typeof tmcId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'tmcId' должен быть числом");
     if (typeof partId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'partId' должен быть числом");
@@ -627,12 +635,25 @@ export async function _wms_android_ПИК_обработка_шк_товара(t
     if (typeof changePalOld != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'changePalOld' должен быть числом");
     if (typeof changePartOld != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'changePartOld' должен быть числом");
     if (typeof userID != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'userID' должен быть числом");
-    let recordsets = await executeSql("_wms_android_ПИК_обработка_шк_товара " + taskId.toString() + "," + tmcId.toString() + "," + partId.toString() + "," + SkladKol.toString() + "," + stringAsSql(barcode) + "," + currentFromPalleteId.toString() + "," + currentIntoPalleteId.toString() + "," + isZamena.toString() + "," + clientID.toString() + "," + requestEdit_Value.toString() + "," + otherParty.toString() + "," + changePalOld.toString() + "," + changePartOld.toString() + "," + userID.toString());
+    if (typeof newKol_ответ_юзера != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'newKol_ответ_юзера' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_обработка_шк_товара " + mode.toString() + "," + taskId.toString() + "," + tmcId.toString() + "," + partId.toString() + "," + SkladKol.toString() + "," + stringAsSql(barcode) + "," + currentFromPalleteId.toString() + "," + currentIntoPalleteId.toString() + "," + isZamena.toString() + "," + clientID.toString() + "," + requestEdit_Value.toString() + "," + otherParty.toString() + "," + changePalOld.toString() + "," + changePartOld.toString() + "," + userID.toString() + "," + newKol_ответ_юзера.toString());
     let lastRecordset = recordsets[recordsets.length - 1];
     if (!lastRecordset) return { error: "_wms_android_ПИК_обработка_шк_товара: не вернула результатов" } as any;
     if (lastRecordset.length > 1) return { error: "_wms_android_ПИК_обработка_шк_товара: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
     for (let row of lastRecordset) {
         if (!row.error) {
+            if (typeof(row.Нужен_запрос_количества_Ok) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'Нужен_запрос_количества_Ok'");
+            if (typeof row.Нужен_запрос_количества_Ok != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': значение в колонке 'Нужен_запрос_количества_Ok' должно быть числом");
+            if (typeof(row.запрос_количества_TMCID) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'запрос_количества_TMCID'");
+            if (typeof row.запрос_количества_TMCID != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': значение в колонке 'запрос_количества_TMCID' должно быть числом");
+            if (typeof(row.запрос_количества_NewKol) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'запрос_количества_NewKol'");
+            if (typeof row.запрос_количества_NewKol != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': значение в колонке 'запрос_количества_NewKol' должно быть числом");
+            if (typeof(row.запрос_количества_MaxKol) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'запрос_количества_MaxKol'");
+            if (typeof row.запрос_количества_MaxKol != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': значение в колонке 'запрос_количества_MaxKol' должно быть числом");
+            if (typeof(row.запрос_количества_PartID) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'запрос_количества_PartID'");
+            if (typeof row.запрос_количества_PartID != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': значение в колонке 'запрос_количества_PartID' должно быть числом");
+            if (typeof(row.запрос_количества_ЯчейкаОткуда) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'запрос_количества_ЯчейкаОткуда'");
+            if (typeof row.запрос_количества_ЯчейкаОткуда != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': значение в колонке 'запрос_количества_ЯчейкаОткуда' должно быть числом");
             if (typeof(row.Товар_с_паллеты_подобран) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'Товар_с_паллеты_подобран'");
             if (typeof row.Товар_с_паллеты_подобран != "number") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': значение в колонке 'Товар_с_паллеты_подобран' должно быть числом");
             if (typeof(row.Паллета_откуда_опустела) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_обработка_шк_товара': не заполнена колонка 'Паллета_откуда_опустела'");

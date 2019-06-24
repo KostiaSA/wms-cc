@@ -9,6 +9,7 @@ import { IResult_wms_android_тестовые_штрихкоды, _wms_android_�
 
 export interface ITestBarcodesPageProps extends IAppPageProps {
     taskId: number;
+    palleteFrom: number;
 }
 
 
@@ -39,7 +40,7 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
 
     async loadFromSql() {
         if (!this.data && this.props.pageId == appState.activePageId[0]) {
-            this.data = await _wms_android_тестовые_штрихкоды(this.props.taskId);
+            this.data = await _wms_android_тестовые_штрихкоды(this.props.taskId, this.props.palleteFrom);
             this.forceUpdate();
         }
         //debugger
