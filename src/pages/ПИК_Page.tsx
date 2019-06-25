@@ -18,6 +18,7 @@ import { agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererFor
 import { showInfo } from "../modals/InfoMessagePage";
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ } from "../const";
 import { playSound_ButtonClick } from "../utils/playSound";
+import { I_ПИК_запрос_количества_PageProps, get_ПИК_запрос_количества } from "../modals/ПИК_запрос_количества";
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -91,7 +92,9 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.Клиент)).ТМЦ;
         let partId = 0;
         if (tmcId == 0) {
-            partId = (await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент)).Партия;
+            let res = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент);
+            partId = res.Партия;
+            tmcId = res.ТМЦ;
         }
 
         // todo _скл_Получить_Партию_по_длине
@@ -228,6 +231,8 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
     async componentDidMount() {
         this.task = await _wms_android_Информация_о_задании(this.props.taskId);
+        this.isЗапросКоличестваMode = this.task.РучнойВводКоличества;
+
         this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
         this.forceUpdate();
     }
@@ -471,6 +476,31 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     </div>
 
                     <div style={{ marginTop: 10, paddingBottom: 10, paddingRight: 4 }}>
+                        <BuhtaButton
+                            style={{ marginLeft: 10 }}
+                            className="btn-sm"
+                            color="danger"
+                            outline
+                            onClick={async () => {
+                                let p: any = {
+                                    taskId: this.props.taskId,
+                                    запрос_количества_TMCID: 1143,
+                                    запрос_количества_NewKol: 1,
+                                    запрос_количества_MaxKol: 17,
+                                    запрос_количества_PartID: 526,
+                                    запрос_количества_ЯчейкаОткуда: 17084,
+                                    запрос_количества_НазваниеПартии: "СР: 08.02.2020",
+                                    запрос_количества_НазваниеТовара: "[00001638] ПОЛЕСЬЕ Соль экстра 1 кг (20 шт.) :"
+
+                                }
+                                await get_ПИК_запрос_количества(p);
+                                //     taskId: this.props.taskId,
+                                //     palleteFrom: this.fromId,
+                                // })
+                            }}
+                        >
+                            ЗК
+                        </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
                             className="btn-sm"

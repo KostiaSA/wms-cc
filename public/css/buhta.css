@@ -102,6 +102,10 @@ body {
     background-color: AZURE;
 }
 
+.form-control {
+    font-size: 12px;
+}
+
 /* navbar-icon-top*/
 
 /* .navbar-icon-top .navbar-nav .nav-link {

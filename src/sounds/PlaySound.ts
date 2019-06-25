@@ -1,7 +1,7 @@
-import {zebraTextToSpeech} from "../zebra/ZebraApi";
-import {playSound} from "../utils/playSound";
-import {sleep} from "../utils/sleep";
-import {showSnack} from "../ui/showSnack";
+import { zebraTextToSpeech } from "../zebra/ZebraApi";
+import { playSound } from "../utils/playSound";
+import { sleep } from "../utils/sleep";
+import { showSnack } from "../ui/showSnack";
 
 function barcodeToString_00_00(barcode: string): string {
     if (!barcode || barcode == "")
@@ -13,14 +13,14 @@ function barcodeToString_00_00(barcode: string): string {
 
 export class PlaySound {
 
-    static async ошибка(text:string) {
+    static async ошибка(text: string) {
         showSnack(text, "error");
         playSound("error");
         await sleep(700);
         zebraTextToSpeech(text);
     }
 
-    static async ошибка_приложения(text:string) {
+    static async ошибка_приложения(text: string) {
         showSnack(text, "error");
         playSound("error");
         await sleep(700);
@@ -154,4 +154,10 @@ export class PlaySound {
         showSnack("партия товара " + barcode + " подобрана", "success");
         zebraTextToSpeech("партия товара " + barcodeToString_00_00(barcode) + " подобран-а");
     }
+
+    static async введите_количество() {
+        //showSnack("товар " + barcode + " подобран", "success");
+        zebraTextToSpeech("введите количество");
+    }
+
 }
