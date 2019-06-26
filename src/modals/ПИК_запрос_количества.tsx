@@ -47,6 +47,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
     }
 
     info: IResult_wms_android_ПИК_запрос_количества_info;
+    error: string = "";
 
     async componentDidMount() {
         PlaySound.введите_количество();
@@ -71,6 +72,8 @@ export class ПИК_запрос_количества_Page extends React.Compone
     render(): React.ReactNode {
         if (!this.info)
             return null;
+
+        this.checkError();
 
         let labelStyle: CSSProperties = {
             color: "gray"
@@ -160,6 +163,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                         </BuhtaButton>
                         <span style={{ marginLeft: 3 }}> {this.info.UnitLabel_Caption}</span>
 
+
                     </div>
                 </td>
             </tr >
@@ -192,7 +196,8 @@ export class ПИК_запрос_количества_Page extends React.Compone
                                     {кол}
                                 </tbody>
                             </table>
-                            <div style={{ color: "DEEPSKYBLUE", textAlign: "center", marginTop: 10 }} >{this.info.InTaskLabel_Caption} {this.info.InTaskLabelKol_Caption}</div>
+                            <div style={{ color: "#20a8d8", textAlign: "center", marginTop: 10 }} >{this.info.InTaskLabel_Caption} {this.info.InTaskLabelKol_Caption}</div>
+                            <div style={{ color: "red", textAlign: "center", marginTop: 10 }} >{this.error}</div>
                         </div>
 
                     </ModalBody>
@@ -204,6 +209,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             Отмена
                         </BuhtaButton>
                         <BuhtaButton color="primary"
+                            disabled={this.error != ""}
                             onClick={() => {
                                 appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: 0 });
                             }}>
@@ -215,5 +221,24 @@ export class ПИК_запрос_количества_Page extends React.Compone
         )
     }
 
-}
+    checkError() {
+        this.error = "";
+        //MestEdit.DoChangeValue;
+        //KolEdit.DoChangeValue;
+        if (this.info.KolEdit_Value <= 0 || (this.info.bSimpleWeight == 1 && this.info.ClearEdit_Value <= 0)) {
+            this.error = "неверное количество";
+            return;
+            //KolEdit.SetFocus;
+            //PlaySoundOnPocketPC('Error01');
+        }
 
+        if (this.info.bSimpleWeight == 1 && this.info.ClearEdit_Value > this.props.запрос_количества_MaxKol) {
+            this.error = 'Нельзя ввести больше ' + this.props.запрос_количества_MaxKol;
+            return;
+        }
+
+        if (this.info.bSimpleWeight == 0 && this.info.KolEdit_Value > this.props.запрос_количества_MaxKol) {
+            this.error = 'Нельзя ввести больше ' + this.props.запрос_количества_MaxKol;
+        }
+    }
+}

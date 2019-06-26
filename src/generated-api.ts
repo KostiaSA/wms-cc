@@ -772,7 +772,14 @@ export interface IResult_wms_android_ПИК_запрос_количества_in
     InTaskLabel_Caption: string;
     InTaskLabelKol_Caption: string;
     UpTypeEdit_ComboItems_Text: string;
-    UpTypeEdit_Value: string
+    UpTypeEdit_Value: string;
+    PlaceID: number;
+    DopF: number;
+    ShtH: number;
+    InUp: number;
+    InUp2: number;
+    bSimpleWeight: number;
+    ClearEdit_Value: number
 }
 
 export async function _wms_android_ПИК_запрос_количества_info(taskId: number, Kol_overflow: number, Количество: number, ТМЦ: number, ПартияПИК: number, Ввод_количества_в_раскладке: number, ВсегоКоличество: number, КоличествоПИК: number, ЯчейкаОткудаПИК: number): Promise<IResult_wms_android_ПИК_запрос_количества_info> {
@@ -812,7 +819,21 @@ export async function _wms_android_ПИК_запрос_количества_info
             if (typeof(row.UpTypeEdit_ComboItems_Text) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'UpTypeEdit_ComboItems_Text'");
             if (typeof row.UpTypeEdit_ComboItems_Text != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UpTypeEdit_ComboItems_Text' должно быть строкой");
             if (typeof(row.UpTypeEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'UpTypeEdit_Value'");
-            if (typeof row.UpTypeEdit_Value != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UpTypeEdit_Value' должно быть строкой");            
+            if (typeof row.UpTypeEdit_Value != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UpTypeEdit_Value' должно быть строкой");
+            if (typeof(row.PlaceID) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'PlaceID'");
+            if (typeof row.PlaceID != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'PlaceID' должно быть числом");
+            if (typeof(row.DopF) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'DopF'");
+            if (typeof row.DopF != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'DopF' должно быть числом");
+            if (typeof(row.ShtH) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'ShtH'");
+            if (typeof row.ShtH != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'ShtH' должно быть числом");
+            if (typeof(row.InUp) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'InUp'");
+            if (typeof row.InUp != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'InUp' должно быть числом");
+            if (typeof(row.InUp2) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'InUp2'");
+            if (typeof row.InUp2 != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'InUp2' должно быть числом");
+            if (typeof(row.bSimpleWeight) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'bSimpleWeight'");
+            if (typeof row.bSimpleWeight != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'bSimpleWeight' должно быть числом");
+            if (typeof(row.ClearEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'ClearEdit_Value'");
+            if (typeof row.ClearEdit_Value != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'ClearEdit_Value' должно быть числом");            
         }
     }
 
