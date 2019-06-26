@@ -80,6 +80,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
             padding: 3,
         };
 
+        let items = this.info.UpTypeEdit_ComboItems_Text.split("\r").map((item: string, index: number) => <option key={index} value={item}>{item}</option>);
         let тип_упак = (
             <tr>
                 <td style={labelStyle}>тип уп.</td>
@@ -87,13 +88,15 @@ export class ПИК_запрос_количества_Page extends React.Compone
                     <select
                         className="form-control form-control"
                         name="select3"
+                        value={this.info.UpTypeEdit_Value}
                         onChange={async (event: any) => {
                             console.log(event.target.value); //await appState.сохранить_настройки_ТСД("zoom", Number.parseFloat(event.target.value)); 
                             this.forceUpdate();
                         }}
                     >
-                        <option value="коробка" selected>коробка</option>
-                        <option value="шт">шт</option>
+                        {items}
+                        {/* <option value="коробка" selected>коробка</option>
+                        <option value="шт">шт</option> */}
                     </select>
                 </td>
             </tr>
@@ -166,7 +169,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
-                    <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>Запрос количества</ModalHeader>
+                    <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom, color: "gray" }}>Ввод количества</ModalHeader>
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom }}>
                         <div className="card-body" style={{ zoom: appState.zoom, padding: 0 }}>
                             <table>

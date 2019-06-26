@@ -767,11 +767,12 @@ export interface IResult_wms_android_ПИК_запрос_количества_in
     MestPanel_Visible: number;
     KolEdit_SetFocus: number;
     MestEdit_SetFocus: number;
-    UpTypeEdit_Value: string;
     MestEdit_Value: number;
     KolEdit_Value: number;
     InTaskLabel_Caption: string;
-    InTaskLabelKol_Caption: string
+    InTaskLabelKol_Caption: string;
+    UpTypeEdit_ComboItems_Text: string;
+    UpTypeEdit_Value: string
 }
 
 export async function _wms_android_ПИК_запрос_количества_info(taskId: number, Kol_overflow: number, Количество: number, ТМЦ: number, ПартияПИК: number, Ввод_количества_в_раскладке: number, ВсегоКоличество: number, КоличествоПИК: number, ЯчейкаОткудаПИК: number): Promise<IResult_wms_android_ПИК_запрос_количества_info> {
@@ -800,8 +801,6 @@ export async function _wms_android_ПИК_запрос_количества_info
             if (typeof row.KolEdit_SetFocus != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'KolEdit_SetFocus' должно быть числом");
             if (typeof(row.MestEdit_SetFocus) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'MestEdit_SetFocus'");
             if (typeof row.MestEdit_SetFocus != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'MestEdit_SetFocus' должно быть числом");
-            if (typeof(row.UpTypeEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'UpTypeEdit_Value'");
-            if (typeof row.UpTypeEdit_Value != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UpTypeEdit_Value' должно быть строкой");
             if (typeof(row.MestEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'MestEdit_Value'");
             if (typeof row.MestEdit_Value != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'MestEdit_Value' должно быть числом");
             if (typeof(row.KolEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'KolEdit_Value'");
@@ -809,7 +808,11 @@ export async function _wms_android_ПИК_запрос_количества_info
             if (typeof(row.InTaskLabel_Caption) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'InTaskLabel_Caption'");
             if (typeof row.InTaskLabel_Caption != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'InTaskLabel_Caption' должно быть строкой");
             if (typeof(row.InTaskLabelKol_Caption) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'InTaskLabelKol_Caption'");
-            if (typeof row.InTaskLabelKol_Caption != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'InTaskLabelKol_Caption' должно быть строкой");            
+            if (typeof row.InTaskLabelKol_Caption != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'InTaskLabelKol_Caption' должно быть строкой");
+            if (typeof(row.UpTypeEdit_ComboItems_Text) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'UpTypeEdit_ComboItems_Text'");
+            if (typeof row.UpTypeEdit_ComboItems_Text != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UpTypeEdit_ComboItems_Text' должно быть строкой");
+            if (typeof(row.UpTypeEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'UpTypeEdit_Value'");
+            if (typeof row.UpTypeEdit_Value != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UpTypeEdit_Value' должно быть строкой");            
         }
     }
 
