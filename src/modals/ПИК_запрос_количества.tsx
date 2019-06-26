@@ -50,14 +50,15 @@ export class ПИК_запрос_количества_Page extends React.Compone
 
     async componentDidMount() {
         PlaySound.введите_количество();
+
         this.info = await _wms_android_ПИК_запрос_количества_info(
             this.props.taskId,
             0, // Kol_overflow
             this.props.запрос_количества_NewKol,
             this.props.запрос_количества_TMCID,
             this.props.запрос_количества_PartID,
-            0, // Ввод_количества_в_раскладке
-            0, //ВсегоКоличество
+            this.props.запрос_количества_Ввод_количества_в_раскладке,
+            this.props.запрос_количества_ВсегоКоличество,
             this.props.запрос_количества_MaxKol,
             this.props.запрос_количества_ЯчейкаОткуда,
         );
@@ -108,7 +109,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             required
                             type="number"
                             className="form-control"
-                            style={{ width: 60, display: "inline", color: "#ffc107", fontWeight: "bold" }}
+                            style={{ width: 60, display: "inline", color: "#ffc107", fontWeight: "bold", textAlign: "center" }}
                             value={this.info.MestEdit_Value}
                             onChange={(event) => { this.info.MestEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
                         >
@@ -140,7 +141,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             required
                             type="number"
                             className="form-control"
-                            style={{ width: 60, display: "inline", color: "#4dbd74", fontWeight: "bold" }}
+                            style={{ width: 60, display: "inline", color: "#4dbd74", fontWeight: "bold", textAlign: "center" }}
                             value={this.info.KolEdit_Value}
                             onChange={(event) => { this.info.KolEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
                         >
@@ -188,6 +189,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                                     {кол}
                                 </tbody>
                             </table>
+                            <div style={{ color: "DEEPSKYBLUE", textAlign: "center", marginTop: 10 }} >{this.info.InTaskLabel_Caption} {this.info.InTaskLabelKol_Caption}</div>
                         </div>
 
                     </ModalBody>
