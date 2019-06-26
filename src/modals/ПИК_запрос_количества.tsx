@@ -112,17 +112,31 @@ export class ПИК_запрос_количества_Page extends React.Compone
                 <td style={labelStyle}>упаковок</td>
                 <td style={textStyle}>
                     <div className="input-groupx">
-                        <BuhtaButton outline color="warning" style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#ffc10747" }}><i className="fa fa-minus"></i></BuhtaButton>
+                        <BuhtaButton
+                            outline
+                            color="warning"
+                            style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#ffc10747" }}
+                            onClick={() => { this.info.MestEdit_Value--; this.MestEditChanged(); this.forceUpdate() }}
+                        >
+                            <i className="fa fa-minus"></i>
+                        </BuhtaButton>
                         <input
                             required
                             type="number"
                             className="form-control"
                             style={{ width: 60, display: "inline", color: this.error == "" ? "#ffc107" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.info.MestEdit_Value}
-                            onChange={(event) => { this.info.MestEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
+                            onChange={(event) => { this.info.MestEdit_Value = Number.parseFloat(event.target.value); this.MestEditChanged(); this.forceUpdate() }}
                         >
                         </input>
-                        <BuhtaButton outline color="warning" style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#ffc10747" }}><i className="fa fa-plus"></i></BuhtaButton>
+                        <BuhtaButton
+                            outline
+                            color="warning"
+                            style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#ffc10747" }}
+                            onClick={() => { this.info.MestEdit_Value++; this.MestEditChanged(); this.forceUpdate() }}
+                        >
+                            <i className="fa fa-plus"></i>
+                        </BuhtaButton>
                         <span style={{ marginLeft: 3 }}> {this.info.BoxLabel_Caption}</span>
                     </div>
                 </td>
@@ -140,7 +154,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             outline
                             color="success"
                             style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#4dbd743d" }}
-                            onClick={() => { this.info.KolEdit_Value--; this.forceUpdate() }}
+                            onClick={() => { this.info.KolEdit_Value--; this.KolEditChanged(); this.forceUpdate() }}
 
                         >
                             <i className="fa fa-minus"></i>
@@ -151,7 +165,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             className="form-control"
                             style={{ width: 60, display: "inline", color: this.error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.info.KolEdit_Value}
-                            onChange={(event) => { this.info.KolEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
+                            onChange={(event) => { this.info.KolEdit_Value = Number.parseFloat(event.target.value); this.KolEditChanged(); this.forceUpdate() }}
                         >
 
                         </input>
@@ -159,7 +173,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             outline
                             color="success"
                             style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#4dbd743d" }}
-                            onClick={() => { this.info.KolEdit_Value++; this.forceUpdate() }}
+                            onClick={() => { this.info.KolEdit_Value++; this.KolEditChanged(); this.forceUpdate() }}
                         >
                             <i className="fa fa-plus"></i>
                         </BuhtaButton>
@@ -231,6 +245,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             <BuhtaButton color="success" outline
                                 onClick={() => {
                                     this.info.KolEdit_Value = this.props.запрос_количества_MaxKol;
+                                    this.KolEditChanged();
                                     this.forceUpdate();
                                 }}>
                                 Выбрать все
@@ -239,7 +254,10 @@ export class ПИК_запрос_количества_Page extends React.Compone
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
                                 disabled={this.error != ""}
                                 onClick={() => {
-                                    appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: 0 });
+                                    if (this.info.bSimpleWeight == 1)
+                                        appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: this.info.ClearEdit_Value });
+                                    else
+                                        appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: this.info.KolEdit_Value });
                                 }}>
                                 Ok
                             </BuhtaButton>
@@ -247,7 +265,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                                 style={{ float: "right" }}
                                 color="light"
                                 onClick={() => {
-                                    appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: 0 });
+                                    appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Cancel", newKol: 0 });
                                 }}>
                                 Отмена
                             </BuhtaButton>
@@ -256,6 +274,34 @@ export class ПИК_запрос_количества_Page extends React.Compone
                 </Modal>
             </div>
         )
+    }
+
+    KolEditChanged() {
+        if (this.info.bSimpleWeight == 1) {
+            if (this.info.InBox > 0)
+                this.info.MestEdit_Value = Math.trunc(this.info.KolEdit_Value / this.info.InBox);
+
+            this.info.ClearEdit_Value = this.info.KolEdit_Value - this.info.MestEdit_Value * this.info.cBoxWeight;
+
+            if (this.info.ClearEdit_Value < 0)
+                this.info.ClearEdit_Value = 0;
+        }
+        else {
+            if (this.info.InBox > 0 && this.info.bSimpleWeight == 0)
+                this.info.MestEdit_Value = Math.trunc(this.info.KolEdit_Value / this.info.InBox);
+        }
+
+    }
+
+    MestEditChanged() {
+        if (this.info.bSimpleWeight == 1) {
+            this.info.ClearEdit_Value = this.info.KolEdit_Value - this.info.cBoxWeight * this.info.MestEdit_Value;
+            if (this.info.ClearEdit_Value < 0)
+                this.info.ClearEdit_Value = 0;
+        }
+        else {
+            this.info.KolEdit_Value = this.info.MestEdit_Value * this.info.InBox;
+        }
     }
 
     checkError() {

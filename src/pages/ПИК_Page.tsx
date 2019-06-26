@@ -219,6 +219,38 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
         if (res.Нужен_запрос_количества_Ok = 1) {
             console.log("Нужен_запрос_количества_Ok", res);
+            let p: any = {
+                taskId: this.props.taskId,
+                ...res
+            }
+            let dialog_res = await get_ПИК_запрос_количества(p);
+
+            if (dialog_res.result == "Ok") {
+                // юзер ввел количество (dialog_res.newKol), еще раз вызываем с mode=1 
+                let res2 = await _wms_android_ПИК_обработка_шк_товара(
+                    1,
+                    this.props.taskId,
+                    this.tmcId,
+                    this.partId,
+                    -1, // todo SkladKol
+                    barcode.barcode,
+                    this.fromId,
+                    this.intoId,
+                    this.isReplaceMode,
+                    this.task.Клиент,
+                    this.isЗапросКоличестваMode,
+                    this.otherParty,
+                    0, // todo @ChangePalOld
+                    0, // todo @ChangePartOld
+                    appState.kadrId,
+                    dialog_res.newKol
+                );
+
+                await PlaySound.товар_подобран("");
+                setTimeout(this.loadTovarsGridData.bind(this), 10)
+                console.log(res);
+
+            }
             return
         }
         else {
