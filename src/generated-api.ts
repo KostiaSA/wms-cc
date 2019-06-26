@@ -779,7 +779,11 @@ export interface IResult_wms_android_ПИК_запрос_количества_in
     InUp: number;
     InUp2: number;
     bSimpleWeight: number;
-    ClearEdit_Value: number
+    ClearEdit_Value: number;
+    ClearPanel_Visible: number;
+    InBox: number;
+    TotalPanel_Visible: number;
+    TotalLabel_Caption: string
 }
 
 export async function _wms_android_ПИК_запрос_количества_info(taskId: number, Kol_overflow: number, Количество: number, ТМЦ: number, ПартияПИК: number, Ввод_количества_в_раскладке: number, ВсегоКоличество: number, КоличествоПИК: number, ЯчейкаОткудаПИК: number): Promise<IResult_wms_android_ПИК_запрос_количества_info> {
@@ -833,7 +837,15 @@ export async function _wms_android_ПИК_запрос_количества_info
             if (typeof(row.bSimpleWeight) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'bSimpleWeight'");
             if (typeof row.bSimpleWeight != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'bSimpleWeight' должно быть числом");
             if (typeof(row.ClearEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'ClearEdit_Value'");
-            if (typeof row.ClearEdit_Value != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'ClearEdit_Value' должно быть числом");            
+            if (typeof row.ClearEdit_Value != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'ClearEdit_Value' должно быть числом");
+            if (typeof(row.ClearPanel_Visible) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'ClearPanel_Visible'");
+            if (typeof row.ClearPanel_Visible != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'ClearPanel_Visible' должно быть числом");
+            if (typeof(row.InBox) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'InBox'");
+            if (typeof row.InBox != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'InBox' должно быть числом");
+            if (typeof(row.TotalPanel_Visible) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'TotalPanel_Visible'");
+            if (typeof row.TotalPanel_Visible != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'TotalPanel_Visible' должно быть числом");
+            if (typeof(row.TotalLabel_Caption) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'TotalLabel_Caption'");
+            if (typeof row.TotalLabel_Caption != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'TotalLabel_Caption' должно быть строкой");            
         }
     }
 

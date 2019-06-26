@@ -104,6 +104,8 @@ export class ПИК_запрос_количества_Page extends React.Compone
                 </td>
             </tr>
         )
+        if (this.info.MestPanel_Visible == 0 || this.props.запрос_количества_MaxKol < this.info.InBox)
+            тип_упак = null;
 
         let упак = (
             <tr>
@@ -115,7 +117,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             required
                             type="number"
                             className="form-control"
-                            style={{ width: 60, display: "inline", color: "#ffc107", fontWeight: "bold", textAlign: "center" }}
+                            style={{ width: 60, display: "inline", color: this.error == "" ? "#ffc107" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.info.MestEdit_Value}
                             onChange={(event) => { this.info.MestEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
                         >
@@ -126,7 +128,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                 </td>
             </tr>
         )
-        if (this.info.MestPanel_Visible == 0)
+        if (this.info.MestPanel_Visible == 0 || this.props.запрос_количества_MaxKol < this.info.InBox)
             упак = null;
 
         let кол = (
@@ -147,7 +149,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                             required
                             type="number"
                             className="form-control"
-                            style={{ width: 60, display: "inline", color: "#4dbd74", fontWeight: "bold", textAlign: "center" }}
+                            style={{ width: 60, display: "inline", color: this.error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.info.KolEdit_Value}
                             onChange={(event) => { this.info.KolEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
                         >
@@ -169,6 +171,27 @@ export class ПИК_запрос_количества_Page extends React.Compone
             </tr >
         )
 
+        let нетто = (
+            <tr>
+                <td style={labelStyle}>нетто</td>
+                <td style={textStyle}>
+                    <div className="input-groupx">
+                        <input
+                            required
+                            type="number"
+                            className="form-control"
+                            style={{ width: 60, display: "inline", color: this.error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
+                            value={this.info.ClearEdit_Value}
+                            onChange={(event) => { this.info.ClearEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
+                        >
+                        </input>
+                        <span style={{ marginLeft: 3 }}> {this.info.UnitLabel_Caption}</span>
+                    </div>
+                </td>
+            </tr >
+        )
+        if (this.info.ClearPanel_Visible == 0)
+            нетто = null;
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
@@ -194,27 +217,41 @@ export class ПИК_запрос_количества_Page extends React.Compone
                                     {тип_упак}
                                     {упак}
                                     {кол}
+                                    {нетто}
                                 </tbody>
                             </table>
                             <div style={{ color: "#20a8d8", textAlign: "center", marginTop: 10 }} >{this.info.InTaskLabel_Caption} {this.info.InTaskLabelKol_Caption}</div>
+                            <div style={{ color: "gray", fontSize: 9, textAlign: "center", marginTop: 10, display: this.info.TotalPanel_Visible == 0 ? "none" : undefined }} >{this.info.TotalLabel_Caption}</div>
                             <div style={{ color: "red", textAlign: "center", marginTop: 10 }} >{this.error}</div>
                         </div>
 
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
-                        <BuhtaButton color="light"
-                            onClick={() => {
-                                appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: 0 });
-                            }}>
-                            Отмена
-                        </BuhtaButton>
-                        <BuhtaButton color="primary"
-                            disabled={this.error != ""}
-                            onClick={() => {
-                                appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: 0 });
-                            }}>
-                            Ok
-                        </BuhtaButton>
+                        <div style={{ width: "100%" }}>
+                            <BuhtaButton color="success" outline
+                                onClick={() => {
+                                    this.info.KolEdit_Value = this.props.запрос_количества_MaxKol;
+                                    this.forceUpdate();
+                                }}>
+                                Выбрать все
+                            </BuhtaButton>
+                            <BuhtaButton color="primary"
+                                style={{ float: "right", minWidth: 45, marginLeft: 5 }}
+                                disabled={this.error != ""}
+                                onClick={() => {
+                                    appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: 0 });
+                                }}>
+                                Ok
+                            </BuhtaButton>
+                            <BuhtaButton
+                                style={{ float: "right" }}
+                                color="light"
+                                onClick={() => {
+                                    appState.setModalResult<I_ПИК_запрос_количества_Result>({ result: "Ok", newKol: 0 });
+                                }}>
+                                Отмена
+                            </BuhtaButton>
+                        </div>
                     </ModalFooter>
                 </Modal>
             </div>
@@ -239,6 +276,23 @@ export class ПИК_запрос_количества_Page extends React.Compone
 
         if (this.info.bSimpleWeight == 0 && this.info.KolEdit_Value > this.props.запрос_количества_MaxKol) {
             this.error = 'Нельзя ввести больше ' + this.props.запрос_количества_MaxKol;
+        }
+
+        if (this.info.ShtH == 0 && this.info.PlaceID > 0) {
+            if (this.info.InUp > 0 && this.info.KolEdit_Value % this.info.InUp > 0) {
+                if (this.info.DopF == 1 && this.info.InUp2 > 0) {
+                    if (this.info.KolEdit_Value % this.info.InUp2 > 0) {
+                        this.error = 'Количество д.б. кратным ' + this.info.InUp2;
+                        return;
+                    }
+                    else
+                        return;
+
+                }
+                this.error = 'Количество д.б. кратным ' + this.info.InUp;
+                return;
+            }
+
         }
     }
 }
