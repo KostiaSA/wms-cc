@@ -11,7 +11,7 @@ import { sleep } from "../utils/sleep";
 import { getRandomString } from "../utils/getRandomString";
 import { ReactNode, CSSProperties } from 'react';
 import { BuhtaButton } from "../ui/BuhtaButton";
-import { IResult_wms_android_ПИК_обработка_шк_товара } from "../generated-api";
+import { IResult_wms_android_ПИК_обработка_шк_товара, IResult_wms_android_ПИК_запрос_количества_info, _wms_android_ПИК_запрос_количества_info } from "../generated-api";
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
 
@@ -46,14 +46,30 @@ export class ПИК_запрос_количества_Page extends React.Compone
         super(props, context);
     }
 
+    info: IResult_wms_android_ПИК_запрос_количества_info;
 
-    componentDidMount() {
+    async componentDidMount() {
         PlaySound.введите_количество();
+        this.info = await _wms_android_ПИК_запрос_количества_info(
+            this.props.taskId,
+            0, // Kol_overflow
+            this.props.запрос_количества_NewKol,
+            this.props.запрос_количества_TMCID,
+            this.props.запрос_количества_PartID,
+            0, // Ввод_количества_в_раскладке
+            0, //ВсегоКоличество
+            this.props.запрос_количества_MaxKol,
+            this.props.запрос_количества_ЯчейкаОткуда,
+        );
+        console.log(this.info)
+        this.forceUpdate();
 
     };
 
 
     render(): React.ReactNode {
+        if (!this.info)
+            return null;
 
         let labelStyle: CSSProperties = {
             color: "gray"
@@ -88,24 +104,61 @@ export class ПИК_запрос_количества_Page extends React.Compone
                 <td style={textStyle}>
                     <div className="input-groupx">
                         <BuhtaButton outline color="warning" style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#ffc10747" }}><i className="fa fa-minus"></i></BuhtaButton>
-                        <input required type="number" className="form-control" style={{ width: 60, display: "inline" }}></input>
+                        <input
+                            required
+                            type="number"
+                            className="form-control"
+                            style={{ width: 60, display: "inline", color: "#ffc107", fontWeight: "bold" }}
+                            value={this.info.MestEdit_Value}
+                            onChange={(event) => { this.info.MestEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
+                        >
+                        </input>
                         <BuhtaButton outline color="warning" style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#ffc10747" }}><i className="fa fa-plus"></i></BuhtaButton>
+                        <span style={{ marginLeft: 3 }}> {this.info.BoxLabel_Caption}</span>
                     </div>
                 </td>
             </tr>
         )
+        if (this.info.MestPanel_Visible == 0)
+            упак = null;
 
         let кол = (
             <tr>
                 <td style={labelStyle}>единиц</td>
                 <td style={textStyle}>
                     <div className="input-groupx">
-                        <BuhtaButton outline color="success" style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#4dbd743d" }}><i className="fa fa-minus"></i></BuhtaButton>
-                        <input required type="number" className="form-control" style={{ width: 60, display: "inline" }}></input>
-                        <BuhtaButton outline color="success" style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#4dbd743d" }}><i className="fa fa-plus"></i></BuhtaButton>
+                        <BuhtaButton
+                            outline
+                            color="success"
+                            style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#4dbd743d" }}
+                            onClick={() => { this.info.KolEdit_Value--; this.forceUpdate() }}
+
+                        >
+                            <i className="fa fa-minus"></i>
+                        </BuhtaButton>
+                        <input
+                            required
+                            type="number"
+                            className="form-control"
+                            style={{ width: 60, display: "inline", color: "#4dbd74", fontWeight: "bold" }}
+                            value={this.info.KolEdit_Value}
+                            onChange={(event) => { this.info.KolEdit_Value = Number.parseFloat(event.target.value); this.forceUpdate() }}
+                        >
+
+                        </input>
+                        <BuhtaButton
+                            outline
+                            color="success"
+                            style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#4dbd743d" }}
+                            onClick={() => { this.info.KolEdit_Value++; this.forceUpdate() }}
+                        >
+                            <i className="fa fa-plus"></i>
+                        </BuhtaButton>
+                        <span style={{ marginLeft: 3 }}> {this.info.UnitLabel_Caption}</span>
+
                     </div>
                 </td>
-            </tr>
+            </tr >
         )
 
 

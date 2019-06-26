@@ -753,3 +753,54 @@ export async function _wms_android_ПИК_список_товара_на_пал�
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_ПИК_запрос_количества_info {
+    error:string;
+    UnitLabel_Caption: string;
+    BoxLabel_Caption: string;
+    MestPanel_Visible: number;
+    KolEdit_SetFocus: number;
+    MestEdit_SetFocus: number;
+    UpTypeEdit_Value: string;
+    MestEdit_Value: number;
+    KolEdit_Value: number
+}
+
+export async function _wms_android_ПИК_запрос_количества_info(taskId: number, Kol_overflow: number, Количество: number, ТМЦ: number, ПартияПИК: number, Ввод_количества_в_раскладке: number, ВсегоКоличество: number, КоличествоПИК: number, ЯчейкаОткудаПИК: number): Promise<IResult_wms_android_ПИК_запрос_количества_info> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'taskId' должен быть числом");
+    if (typeof Kol_overflow != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'Kol_overflow' должен быть числом");
+    if (typeof Количество != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'Количество' должен быть числом");
+    if (typeof ТМЦ != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'ТМЦ' должен быть числом");
+    if (typeof ПартияПИК != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'ПартияПИК' должен быть числом");
+    if (typeof Ввод_количества_в_раскладке != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'Ввод_количества_в_раскладке' должен быть числом");
+    if (typeof ВсегоКоличество != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'ВсегоКоличество' должен быть числом");
+    if (typeof КоличествоПИК != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'КоличествоПИК' должен быть числом");
+    if (typeof ЯчейкаОткудаПИК != "number") throw new Error("вызов '_wms_android_ПИК_запрос_количества_info': параметр 'ЯчейкаОткудаПИК' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_запрос_количества_info " + taskId.toString() + "," + Kol_overflow.toString() + "," + Количество.toString() + "," + ТМЦ.toString() + "," + ПартияПИК.toString() + "," + Ввод_количества_в_раскладке.toString() + "," + ВсегоКоличество.toString() + "," + КоличествоПИК.toString() + "," + ЯчейкаОткудаПИК.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_ПИК_запрос_количества_info: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_ПИК_запрос_количества_info: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.UnitLabel_Caption) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'UnitLabel_Caption'");
+            if (typeof row.UnitLabel_Caption != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UnitLabel_Caption' должно быть строкой");
+            if (typeof(row.BoxLabel_Caption) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'BoxLabel_Caption'");
+            if (typeof row.BoxLabel_Caption != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'BoxLabel_Caption' должно быть строкой");
+            if (typeof(row.MestPanel_Visible) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'MestPanel_Visible'");
+            if (typeof row.MestPanel_Visible != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'MestPanel_Visible' должно быть числом");
+            if (typeof(row.KolEdit_SetFocus) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'KolEdit_SetFocus'");
+            if (typeof row.KolEdit_SetFocus != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'KolEdit_SetFocus' должно быть числом");
+            if (typeof(row.MestEdit_SetFocus) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'MestEdit_SetFocus'");
+            if (typeof row.MestEdit_SetFocus != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'MestEdit_SetFocus' должно быть числом");
+            if (typeof(row.UpTypeEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'UpTypeEdit_Value'");
+            if (typeof row.UpTypeEdit_Value != "string") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'UpTypeEdit_Value' должно быть строкой");
+            if (typeof(row.MestEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'MestEdit_Value'");
+            if (typeof row.MestEdit_Value != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'MestEdit_Value' должно быть числом");
+            if (typeof(row.KolEdit_Value) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': не заполнена колонка 'KolEdit_Value'");
+            if (typeof row.KolEdit_Value != "number") throw new Error("результат выполнения '_wms_android_ПИК_запрос_количества_info': значение в колонке 'KolEdit_Value' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
