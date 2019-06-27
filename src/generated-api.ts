@@ -855,3 +855,48 @@ export async function _wms_android_ПИК_запрос_количества_info
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_ПИК_список_партий_на_паллете {
+    error:string;
+    TMCKey: number;
+    PartKey: number;
+    Кол: number;
+    Кор: number;
+    Партия: string;
+    Кол_во: string;
+    ЕстьПИК: number;
+    ТМЦ_Вид_2: number
+}
+
+export async function _wms_android_ПИК_список_партий_на_паллете(Паллета: number, ТМЦ: number, ПИК: number): Promise<IResult_wms_android_ПИК_список_партий_на_паллете[]> {
+    if (typeof Паллета != "number") throw new Error("вызов '_wms_android_ПИК_список_партий_на_паллете': параметр 'Паллета' должен быть числом");
+    if (typeof ТМЦ != "number") throw new Error("вызов '_wms_android_ПИК_список_партий_на_паллете': параметр 'ТМЦ' должен быть числом");
+    if (typeof ПИК != "number") throw new Error("вызов '_wms_android_ПИК_список_партий_на_паллете': параметр 'ПИК' должен быть числом");
+    let recordsets = await executeSql("_wms_android_ПИК_список_партий_на_паллете " + Паллета.toString() + "," + ТМЦ.toString() + "," + ПИК.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.TMCKey) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'TMCKey'");
+            if (typeof row.TMCKey != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'TMCKey' должно быть числом");
+            if (typeof(row.PartKey) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'PartKey'");
+            if (typeof row.PartKey != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'PartKey' должно быть числом");
+            if (typeof(row.Кол) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'Кол'");
+            if (typeof row.Кол != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'Кол' должно быть числом");
+            if (typeof(row.Кор) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'Кор'");
+            if (typeof row.Кор != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'Кор' должно быть числом");
+            if (typeof(row.Партия) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'Партия'");
+            if (typeof row.Партия != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'Партия' должно быть строкой");
+            if (typeof(row.Кол_во) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'Кол_во'");
+            if (typeof row.Кол_во != "string") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'Кол_во' должно быть строкой");
+            if (typeof(row.ЕстьПИК) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'ЕстьПИК'");
+            if (typeof row.ЕстьПИК != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'ЕстьПИК' должно быть числом");
+            if (typeof(row.ТМЦ_Вид_2) == "undefined") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': не заполнена колонка 'ТМЦ_Вид_2'");
+            if (typeof row.ТМЦ_Вид_2 != "number") throw new Error("результат выполнения '_wms_android_ПИК_список_партий_на_паллете': значение в колонке 'ТМЦ_Вид_2' должно быть числом");            
+        }
+    }
+
+    return lastRecordset;
+
+}

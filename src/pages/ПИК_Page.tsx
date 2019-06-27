@@ -19,6 +19,7 @@ import { showInfo } from "../modals/InfoMessagePage";
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ } from "../const";
 import { playSound_ButtonClick } from "../utils/playSound";
 import { I_ПИК_запрос_количества_PageProps, get_ПИК_запрос_количества } from "../modals/ПИК_запрос_количества";
+import { get_ПИК_запрос_партии, I_ПИК_запрос_партии_PageProps } from "../modals/ПИК_запрос_партии";
 
 export interface IПИК_PageProps extends IAppPageProps {
     taskId: number;
@@ -508,7 +509,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     </div>
 
                     <div style={{ marginTop: 10, paddingBottom: 10, paddingRight: 4 }}>
-                        <BuhtaButton
+                        {/* <BuhtaButton
                             style={{ marginLeft: 10 }}
                             className="btn-sm"
                             color="danger"
@@ -534,6 +535,17 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                             }}
                         >
                             ЗК
+                        </BuhtaButton> */}
+                        <BuhtaButton
+                            style={{ marginLeft: 10 }}
+                            className="btn-sm"
+                            color="danger"
+                            outline
+                            onClick={async () => {
+                                await get_ПИК_запрос_партии(this.props.taskId, 1886, 13184);
+                            }}
+                        >
+                            ЗП
                         </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
