@@ -12,7 +12,7 @@ import { getRandomString } from "../utils/getRandomString";
 import { ReactNode, CSSProperties } from 'react';
 import { BuhtaButton } from "../ui/BuhtaButton";
 
-import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО } from "../const";
+import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
 import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
@@ -32,7 +32,7 @@ export interface I_ПИК_запрос_партии_Result {
     selectedPartId: number;
 }
 
-export async function get_ПИК_запрос_партии(taskId: number, tmcId: number, palleteId: number, ): Promise<I_ПИК_запрос_партии_Result> {
+export async function get_ПИК_запрос_партии(taskId: number, tmcId: number, palleteId: number): Promise<I_ПИК_запрос_партии_Result> {
     appState.modalResult = undefined;
     appState.openModal(ПИК_запрос_партии_Page, { pageId: getRandomString(), taskId, tmcId, palleteId });
     return new Promise<I_ПИК_запрос_партии_Result>(
@@ -52,10 +52,10 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
         super(props, context);
     }
 
-    data: IResult_wms_android_ПИК_список_партий_на_паллете[];
+    data: IResult_wms_android_ПИК_список_партий_на_паллете[] = [];
     tovarsGridApi: any;
     tovarsGridColumnApi: any;
-    selectedPartId: number;
+    selectedPartId: number = 0;
 
     async componentDidMount() {
         PlaySound.выберите_партию();
@@ -75,6 +75,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
         this.tovarsGridApi.setRowData(this.data);
         this.tovarsGridApi.sizeColumnsToFit();
         this.tovarsGridApi.resetRowHeights();
+        this.forceUpdate();
     }
 
     onTovarGridRowClicked(e: any) {
@@ -82,6 +83,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
         let row: IResult_wms_android_ПИК_список_партий_на_паллете = e.data;
         this.selectedPartId = row.PartKey;
         console.log(row);
+        this.forceUpdate();
     }
 
     render(): React.ReactNode {
@@ -92,9 +94,18 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
-                    <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom, color: "gray" }}>Выбор партии</ModalHeader>
-                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom }}>
-                        <div className="card-body" style={{ height: 300, zoom: appState.zoom, padding: 0 }}>
+                    <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>Выбор партии</div>
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>
+                            {this.data[0] ? this.data[0].НазваниеПаллеты : ""}
+                        </div>
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, textAlign: "left", fontSize: 11 }}>
+                            {this.data[0] ? this.data[0].НазваниеТМЦ : ""}
+                        </div>
+                    </ModalHeader>
+                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 240, }}>
+                        <div className="card-body" style={{ zoom: appState.zoom, padding: 0 }}>
+
                             <div className="ag-theme-balham" style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
                                     suppressLoadingOverlay
@@ -109,7 +120,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
                                         cellStyle={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, whiteSpace: "normal" }}
                                     >
                                     </AgGridColumn>
-                                    <AgGridColumn headerName="Кол-во" field="Кол_во" width={50} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
+                                    <AgGridColumn headerName="Кол-во" field="Кол_во" width={100} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>
@@ -121,7 +132,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
                         <div style={{ width: "100%" }}>
                             <BuhtaButton color="primary"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
-                                disabled={!this.selectedPartId}
+                                disabled={this.selectedPartId == 0}
                                 onClick={() => {
                                     appState.setModalResult<I_ПИК_запрос_партии_Result>({ result: "Ok", selectedPartId: this.selectedPartId });
                                 }}>

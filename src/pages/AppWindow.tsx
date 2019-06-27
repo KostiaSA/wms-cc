@@ -32,7 +32,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
 
             let sqlWaitPanelIcon: HTMLElement;
             sqlWaitPanel = (
-                <div style={{ border: "0px solid red", left: 0, top: 0, right: 0, bottom: 0, position: "absolute", background: "#ffffff3b", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ zIndex: 100000, border: "0px solid red", left: 0, top: 0, right: 0, bottom: 0, position: "absolute", background: "#ffffff3b", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <span ref={(e) => sqlWaitPanelIcon = e} style={{ display: "none" }}>
                         <i className="fas fa-spinner fa-spin" style={{ fontSize: 30, color: "brown" }}></i>
                     </span>
