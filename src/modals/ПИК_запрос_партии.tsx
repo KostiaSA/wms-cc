@@ -53,8 +53,8 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
     }
 
     data: IResult_wms_android_ПИК_список_партий_на_паллете[] = [];
-    tovarsGridApi: any;
-    tovarsGridColumnApi: any;
+    gridApi: any;
+    gridColumnApi: any;
     selectedPartId: number = 0;
 
     async componentDidMount() {
@@ -62,23 +62,23 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
     };
 
     onTovarsGridReady = (params: any) => {
-        this.tovarsGridApi = params.api;
-        this.tovarsGridColumnApi = params.columnApi;
-        setTimeout(this.loadTovarsGridData.bind(this), 1)
+        this.gridApi = params.api;
+        this.gridColumnApi = params.columnApi;
+        setTimeout(this.loadGridData.bind(this), 1)
     };
 
-    async loadTovarsGridData() {
-        if (!this.tovarsGridApi)
+    async loadGridData() {
+        if (!this.gridApi)
             return;
 
         this.data = await _wms_android_ПИК_список_партий_на_паллете(this.props.palleteId, this.props.tmcId, this.props.taskId);
-        this.tovarsGridApi.setRowData(this.data);
-        this.tovarsGridApi.sizeColumnsToFit();
-        this.tovarsGridApi.resetRowHeights();
+        this.gridApi.setRowData(this.data);
+        this.gridApi.sizeColumnsToFit();
+        this.gridApi.resetRowHeights();
         this.forceUpdate();
     }
 
-    onTovarGridRowClicked(e: any) {
+    onGridRowClicked(e: any) {
         playSound_ButtonClick();
         let row: IResult_wms_android_ПИК_список_партий_на_паллете = e.data;
         this.selectedPartId = row.PartKey;
@@ -112,7 +112,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onTovarsGridReady}
                                     rowHeight={40}
-                                    onRowClicked={this.onTovarGridRowClicked.bind(this)}
+                                    onRowClicked={this.onGridRowClicked.bind(this)}
                                 >
                                     <AgGridColumn
                                         headerName="Партия"
