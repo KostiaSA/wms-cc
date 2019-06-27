@@ -64,6 +64,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
             this.props.запрос_количества_ЯчейкаОткуда,
         );
         console.log(this.info)
+        this.KolEditChanged();
         this.forceUpdate();
 
     };

@@ -906,3 +906,27 @@ export async function _wms_android_ПИК_список_партий_на_пал�
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_Получить_Партию_с_паллеты {
+    error:string;
+    Партия: number
+}
+
+export async function _wms_android_Получить_Партию_с_паллеты(Паллета: number, Товар: number, ПИК: number): Promise<IResult_wms_android_Получить_Партию_с_паллеты> {
+    if (typeof Паллета != "number") throw new Error("вызов '_wms_android_Получить_Партию_с_паллеты': параметр 'Паллета' должен быть числом");
+    if (typeof Товар != "number") throw new Error("вызов '_wms_android_Получить_Партию_с_паллеты': параметр 'Товар' должен быть числом");
+    if (typeof ПИК != "number") throw new Error("вызов '_wms_android_Получить_Партию_с_паллеты': параметр 'ПИК' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Получить_Партию_с_паллеты " + Паллета.toString() + "," + Товар.toString() + "," + ПИК.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Получить_Партию_с_паллеты: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Получить_Партию_с_паллеты: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Партия) == "undefined") throw new Error("результат выполнения '_wms_android_Получить_Партию_с_паллеты': не заполнена колонка 'Партия'");
+            if (typeof row.Партия != "number") throw new Error("результат выполнения '_wms_android_Получить_Партию_с_паллеты': значение в колонке 'Партия' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

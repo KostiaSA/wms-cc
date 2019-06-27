@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, IResult_wms_android_ПИК_список_паллет, _wms_android_ПИК_список_паллет, _wms_android_ПИК_обработка_шк_партии, _wms_android_ПИК_обработка_шк_товара, IResult_wms_android_ПИК_список_товара_на_паллете, _wms_android_ПИК_список_товара_на_паллете } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Проверка_блокировки_пересоздания_ПИКов, _wms_android_Штрихкод_запрещен, _wms_android_ПИК_Подобран, _wms_android_ПИК_все_паллеты_завершены, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_ПИК_обработка_шк_паллеты, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, IResult_wms_android_ПИК_список_паллет, _wms_android_ПИК_список_паллет, _wms_android_ПИК_обработка_шк_партии, _wms_android_ПИК_обработка_шк_товара, IResult_wms_android_ПИК_список_товара_на_паллете, _wms_android_ПИК_список_товара_на_паллете, _wms_android_Получить_Партию_с_паллеты } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -45,11 +45,11 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
     isReplaceMode: number = 0;
     isЗапросКоличестваMode: number = 0;
-    otherParty: number = 0;
+    //otherParty: number = 0;
     changeTMCID: number = 0;
 
-    partId: number = 0;
-    tmcId: number = 0;
+    //  partId: number = 0;
+    //    tmcId: number = 0;
 
     barcodeProcessorHandler: any;
 
@@ -91,6 +91,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         }
 
         let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.Клиент)).ТМЦ;
+
         let partId = 0;
         if (tmcId == 0) {
             let res = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент);
@@ -123,10 +124,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     setTimeout(this.loadTovarsGridData.bind(this), 1)
                 }
 
-                this.tmcId = partResult.tmcId;
-                this.partId = partResult.partId;
-                this.otherParty = partResult.otherParty;
-                await this.processTovarBarcode(barcode);
+                await this.processTovarBarcode(barcode, partResult.tmcId, partResult.partId, partResult.otherParty);
                 return;
             }
             else {
@@ -186,18 +184,30 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             return;
         }
 
+        if (tmcId > 0 && partId == 0) {
+            partId = (await _wms_android_Получить_Партию_с_паллеты(this.fromId, tmcId, this.props.taskId)).Партия;
+            if (partId == -1) {
+                let modalResult = (await get_ПИК_запрос_партии(this.props.taskId, 1886, 13184));
+                if (modalResult.result == "Ok")
+                    partId = modalResult.selectedPartId;
+                else
+                    return;
+            }
+        }
+
+
         console.log("пик-получен-штрих", barcode.barcode);
-        await this.processTovarBarcode(barcode);
+        await this.processTovarBarcode(barcode, tmcId, partId, 0);
 
     }
 
-    async processTovarBarcode(barcode: BarcodeWithType) {
+    async processTovarBarcode(barcode: BarcodeWithType, tmcId: number, partId: number, otherParty: number) {
 
         let res = await _wms_android_ПИК_обработка_шк_товара(
             0,
             this.props.taskId,
-            this.tmcId,
-            this.partId,
+            tmcId,
+            partId,
             -1, // todo SkladKol
             barcode.barcode,
             this.fromId,
@@ -205,7 +215,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             this.isReplaceMode,
             this.task.Клиент,
             this.isЗапросКоличестваMode,
-            this.otherParty,
+            otherParty,
             0, // todo @ChangePalOld
             0, // todo @ChangePartOld
             appState.kadrId,
@@ -231,8 +241,8 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                 let res2 = await _wms_android_ПИК_обработка_шк_товара(
                     1,
                     this.props.taskId,
-                    this.tmcId,
-                    this.partId,
+                    tmcId,
+                    partId,
                     -1, // todo SkladKol
                     barcode.barcode,
                     this.fromId,
@@ -240,7 +250,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     this.isReplaceMode,
                     this.task.Клиент,
                     this.isЗапросКоличестваMode,
-                    this.otherParty,
+                    otherParty,
                     0, // todo @ChangePalOld
                     0, // todo @ChangePartOld
                     appState.kadrId,
