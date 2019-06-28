@@ -47,12 +47,12 @@ export class PlaySound {
     }
 
     static async паллета_куда(barcode: string) {
-        showSnack("паллета куда " + barcode, "info");
+        //showSnack("паллета куда " + barcode, "info");
         zebraTextToSpeech("палета куда" + barcodeToString_00_00(barcode));
     }
 
     static async паллета_откуда(barcode: string) {
-        showSnack("паллета откуда " + barcode, "info");
+        //showSnack("паллета откуда " + barcode, "info");
         zebraTextToSpeech("палета откуда" + barcodeToString_00_00(barcode));
     }
 

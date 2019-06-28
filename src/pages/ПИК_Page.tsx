@@ -424,7 +424,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         });
 
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
+            <div className={"app cy-pick-page"} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
 
 
                 <div className="card" style={{ marginBottom: 0, flex: "1" }}>
@@ -559,7 +559,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                         </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
-                            className="btn-sm"
+                            className="btn-sm cy-test-barcodes"
                             color="danger"
                             outline
                             onClick={() => {

@@ -66,13 +66,15 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
         else
             return (
 
-                <div style={{
-                    paddingLeft: 5,
-                    paddingRight: 5,
-                    display: this.props.visible ? "" : "none",
-                    backgroundColor: "white",
-                    zoom: appState.zoom
-                }}>
+                <div
+                    className="cy-test-barcodes-page"
+                    style={{
+                        paddingLeft: 5,
+                        paddingRight: 5,
+                        display: this.props.visible ? "" : "none",
+                        backgroundColor: "white",
+                        zoom: appState.zoom
+                    }}>
                     <BuhtaButton outline style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
                         appState.closeAndDestroyActivePage();
                     }}>
