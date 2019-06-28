@@ -105,11 +105,12 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
     };
 
     render(): React.ReactNode {
-        let style1: CSSProperties = { verticalAlign: "top", textAlign: "right", width: 100, paddingRight: 5 };
+        let style1: CSSProperties = { verticalAlign: "top", textAlign: "right", width: 100, paddingRight: 5, paddingTop: 3, };
+        let style2: CSSProperties = { paddingTop: 3, fontWeight: "bold" };
         let infoTable: any = null;
         if (this.info) {
-            let sqlVer = replaceAll(this.info.ВерсияСервера, "Microsoft", "");
-            sqlVer = replaceAll(sqlVer, "Copyright", "");
+            let sqlVer = this.info.ВерсияСервера.split("Copyright")[0];
+            sqlVer = replaceAll(sqlVer, "Microsoft", "");
             sqlVer = replaceAll(sqlVer, "Corporation", "");
             sqlVer = replaceAll(sqlVer, "Windows", "");
             sqlVer = replaceAll(sqlVer, "Server", "");
@@ -118,35 +119,35 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                     <tbody>
                         <tr>
                             <td style={style1}>БУХта WMS</td>
-                            <td style={{ fontWeight: "bold" }}>версия {VERSION}</td>
+                            <td style={style2}>версия {VERSION}</td>
                         </tr>
                         <tr>
                             <td style={style1}>Компания</td>
-                            <td style={{ fontWeight: "bold" }}>{this.info.Компания}</td>
+                            <td style={style2}>{this.info.Компания}</td>
                         </tr>
                         <tr>
                             <td style={style1}>База данных</td>
-                            <td style={{ fontWeight: "bold" }}>{this.info.БазаДанных}</td>
+                            <td style={style2}>{this.info.БазаДанных}</td>
                         </tr>
                         <tr>
                             <td style={style1}>Сервер</td>
-                            <td style={{ fontWeight: "bold" }}>{this.info.ИмяСервера}</td>
-                        </tr>
-                        <tr>
-                            <td style={style1}>Время сервера</td>
-                            <td style={{ fontWeight: "bold" }}>{this.info.ВремяСервера.format("DD.MM.YYYY HH:mm")}</td>
+                            <td style={style2}>{this.info.ИмяСервера}</td>
                         </tr>
                         <tr>
                             <td style={style1}>Версия SQL</td>
-                            <td style={{ fontWeight: "normal" }}>{sqlVer}</td>
+                            <td style={style2}>{sqlVer}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>Время сервера</td>
+                            <td style={style2}>{this.info.ВремяСервера.format("DD.MM.YYYY HH:mm")}</td>
                         </tr>
                         <tr>
                             <td style={style1}>ТСД номер</td>
-                            <td style={{ fontWeight: "bold" }}>{zebraGetDeviceNum()}</td>
+                            <td style={style2}>{zebraGetDeviceNum()}</td>
                         </tr>
                         <tr>
                             <td style={style1}>ТСД ID</td>
-                            <td style={{ fontWeight: "bold" }}>{zebraGetDeviceId()}</td>
+                            <td style={style2}>{zebraGetDeviceId()}</td>
                         </tr>
                     </tbody>
                 </table>
