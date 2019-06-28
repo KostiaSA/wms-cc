@@ -100,8 +100,8 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
 
     render(): React.ReactNode {
         return (
-            <div className="app flex-row align-items-top" style={{ display: this.props.visible ? "" : "none" }}>
-                <Container style={{ backgroundColor: "ALICEBLUE", zoom:1.15 }}>
+            <div className="app flex-row align-items-top cy-login-page" style={{ display: this.props.visible ? "" : "none" }}>
+                <Container style={{ backgroundColor: "ALICEBLUE", zoom: 1.15 }}>
 
                     <Col md="8">
 
@@ -116,7 +116,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                             <i className="fa fa-user"></i>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input type="text" placeholder="логин" />
+                                    <Input type="text" placeholder="логин" className="cy-login" />
                                 </InputGroup>
                                 <InputGroup className="mb-4">
                                     <InputGroupAddon addonType="prepend">
@@ -124,7 +124,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                             <i className="fa fa-unlock"></i>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input type="password" placeholder="пароль" />
+                                    <Input type="password" placeholder="пароль" className="cy-password" />
                                 </InputGroup>
                                 <Row>
                                     <Col xs="6">
