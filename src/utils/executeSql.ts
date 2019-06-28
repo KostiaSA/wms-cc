@@ -28,8 +28,11 @@ export async function executeSql(sql: string): Promise<any[]> {
             xhr.setRequestHeader('Content-type', "application/json;charset=UTF-8");
 
             xhr.onload = function () {
+
                 appState.sqlWaitPanelVisible = false;
-                appState.appWindow.forceUpdate();
+                if (appState.appWindow)
+                    appState.appWindow.forceUpdate();
+
 
                 if (this.status != 200) {
                     reject(this.statusText + " " + this.status);
@@ -67,8 +70,11 @@ export async function executeSql(sql: string): Promise<any[]> {
 
             xhr.onerror = function (ev: Event) {
                 console.log("xhr.onerror", ev);
+
                 appState.sqlWaitPanelVisible = false;
-                appState.appWindow.forceUpdate();
+                if (appState.appWindow)
+                    appState.appWindow.forceUpdate();
+
                 reject("нет связи с сервером");
             };
 
@@ -78,8 +84,11 @@ export async function executeSql(sql: string): Promise<any[]> {
                 sqlBatch: sql
             };
 
+
             appState.sqlWaitPanelVisible = true;
-            appState.appWindow.forceUpdate();
+            if (appState.appWindow)
+                appState.appWindow.forceUpdate();
+
             xhr.send(JSON.stringify(fullReq));
 
         });

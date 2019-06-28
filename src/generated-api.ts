@@ -930,3 +930,37 @@ export async function _wms_android_Получить_Партию_с_паллет
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_Логин_инфо {
+    error:string;
+    Компания: string;
+    ВремяСервера: Moment;
+    ВерсияСервера: string;
+    ИмяСервера: string;
+    БазаДанных: string
+}
+
+export async function _wms_android_Логин_инфо(): Promise<IResult_wms_android_Логин_инфо> {
+
+    let recordsets = await executeSql("_wms_android_Логин_инфо " + "");
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Логин_инфо: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Логин_инфо: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Компания) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'Компания'");
+            if (typeof row.Компания != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'Компания' должно быть строкой");
+            if (typeof(row.ВремяСервера) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'ВремяСервера'");
+            if (!row.ВремяСервера.constructor || row.ВремяСервера.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'ВремяСервера' должно быть датой");
+            if (typeof(row.ВерсияСервера) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'ВерсияСервера'");
+            if (typeof row.ВерсияСервера != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'ВерсияСервера' должно быть строкой");
+            if (typeof(row.ИмяСервера) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'ИмяСервера'");
+            if (typeof row.ИмяСервера != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'ИмяСервера' должно быть строкой");
+            if (typeof(row.БазаДанных) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'БазаДанных'");
+            if (typeof row.БазаДанных != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'БазаДанных' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

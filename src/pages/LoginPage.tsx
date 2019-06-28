@@ -23,8 +23,11 @@ import Col from "reactstrap/lib/Col";
 
 import { MainMenuPage } from "./MainMenuPage";
 import { showAppError } from "../modals/ErrorMessagePage";
-import { _wms_android_Логин, _wms_android_Доступы, _wms_android_Главное_меню_Список_Новых_Заданий } from "../generated-api";
+import { _wms_android_Логин, _wms_android_Доступы, _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_Логин_инфо, IResult_wms_android_Логин_инфо } from "../generated-api";
 import { BuhtaButton } from "../ui/BuhtaButton";
+import { VERSION } from '../const';
+import { CSSProperties } from 'react';
+import { replaceAll } from "../utils/replaceAll";
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -51,10 +54,13 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
     password: string = "";
 
     loginButtonDisabled: boolean = false;
+    info: IResult_wms_android_Логин_инфо;
 
-    componentDidMount() {
+    async componentDidMount() {
         this.password = "";
         zebraTextToSpeech("введите пароль");
+        this.info = await _wms_android_Логин_инфо();
+        this.forceUpdate();
     };
 
     loginButtonHandler = async (event: any): Promise<void> => {
@@ -99,6 +105,53 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
     };
 
     render(): React.ReactNode {
+        let style1: CSSProperties = { verticalAlign: "top", textAlign: "right", width: 100, paddingRight: 5 };
+        let infoTable: any = null;
+        if (this.info) {
+            let sqlVer = replaceAll(this.info.ВерсияСервера, "Microsoft", "");
+            sqlVer = replaceAll(sqlVer, "Copyright", "");
+            sqlVer = replaceAll(sqlVer, "Corporation", "");
+            sqlVer = replaceAll(sqlVer, "Windows", "");
+            sqlVer = replaceAll(sqlVer, "Server", "");
+            infoTable = (
+                <table style={{ marginTop: 20, fontSize: 10, color: "#00000066" }} >
+                    <tbody>
+                        <tr>
+                            <td style={style1}>БУХта WMS</td>
+                            <td style={{ fontWeight: "bold" }}>версия {VERSION}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>Компания</td>
+                            <td style={{ fontWeight: "bold" }}>{this.info.Компания}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>База данных</td>
+                            <td style={{ fontWeight: "bold" }}>{this.info.БазаДанных}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>Сервер</td>
+                            <td style={{ fontWeight: "bold" }}>{this.info.ИмяСервера}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>Время сервера</td>
+                            <td style={{ fontWeight: "bold" }}>{this.info.ВремяСервера.format("DD.MM.YYYY HH:mm")}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>Версия SQL</td>
+                            <td style={{ fontWeight: "normal" }}>{sqlVer}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>ТСД номер</td>
+                            <td style={{ fontWeight: "bold" }}>{zebraGetDeviceNum()}</td>
+                        </tr>
+                        <tr>
+                            <td style={style1}>ТСД ID</td>
+                            <td style={{ fontWeight: "bold" }}>{zebraGetDeviceId()}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            );
+        }
         return (
             <div className="app flex-row align-items-top cy-login-page" style={{ display: this.props.visible ? "" : "none" }}>
                 <Container style={{ backgroundColor: "ALICEBLUE", zoom: 1.15 }}>
@@ -146,11 +199,17 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                         </BuhtaButton>
                                     </Col>
                                 </Row>
+                                <Row>
+                                    <Col xs="16">
+                                    </Col>
+                                </Row>
+
                             </div>
                         </CardBody>
 
 
                     </Col>
+                    {infoTable}
 
                 </Container>
             </div>

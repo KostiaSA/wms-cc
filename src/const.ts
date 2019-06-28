@@ -1,3 +1,5 @@
+export const VERSION = "0.01b";
+
 export const ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ = 60000; // милисекунды
 
 export const ЦВЕТ_ТЕКСТА_ПАЛЛЕТА = "teal";
