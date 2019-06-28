@@ -54,7 +54,7 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
                         {this.props.message}
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
-                        <BuhtaButton color="danger"
+                        <BuhtaButton color="danger" className="cy-cancel cy-ok"
                             onClick={() => appState.closeActiveModal()}>
                             Закрыть
                         </BuhtaButton>

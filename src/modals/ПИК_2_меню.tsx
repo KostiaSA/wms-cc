@@ -32,7 +32,7 @@ export class ПИК_1_меню_Page extends React.Component<I_ПИК_1_меню_
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false} >
                     <ModalHeader className={"text-danger22"} style={{ zoom: appState.zoom }}>{"выбор задания ПИК"}</ModalHeader>
-                    <ModalBody style={{ zoom: appState.zoom }}>
+                    <ModalBody className="cy-pick-2-menu-page" style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="primary" style={{ marginBottom: 10 }}
                             onClick={() => {
                                 appState.setModalResult<ПИК_1_меню_Page_ModalResult>("Выбрать по маршруту");

@@ -129,7 +129,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                 <Row>
                                     <Col xs="6">
                                         <BuhtaButton color="primary" disabled={this.loginButtonDisabled}
-                                            className="px-4"
+                                            className="px-4 cy-ok"
                                             onClick={
                                                 this.loginButtonHandler
                                             }

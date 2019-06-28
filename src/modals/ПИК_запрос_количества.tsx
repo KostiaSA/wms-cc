@@ -252,6 +252,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                                 Выбрать все
                             </BuhtaButton>
                             <BuhtaButton color="primary"
+                                className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
                                 disabled={this.error != ""}
                                 onClick={() => {
@@ -263,6 +264,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
                                 Ok
                             </BuhtaButton>
                             <BuhtaButton
+                                className="cy-cancel"
                                 style={{ float: "right" }}
                                 color="light"
                                 onClick={() => {

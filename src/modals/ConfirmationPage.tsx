@@ -14,6 +14,7 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 
 
+
 export interface I_Confirmation_PageProps extends IAppPageProps {
     title: ReactNode;
     message: ReactNode;
@@ -54,13 +55,13 @@ export class Confirmation_Page extends React.Component<I_Confirmation_PageProps,
                         {this.props.message}
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
-                        <BuhtaButton color="light"
+                        <BuhtaButton className="cy-cancel" color="light"
                             onClick={() => {
                                 appState.setModalResult<boolean>(false);
                             }}>
                             Отмена
                         </BuhtaButton>
-                        <BuhtaButton color="primary"
+                        <BuhtaButton className="cy-ok" color="primary"
                             onClick={() => {
                                 appState.setModalResult<boolean>(true);
                             }}>

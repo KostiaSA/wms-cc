@@ -131,6 +131,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
                     <ModalFooter style={{ zoom: appState.zoom }}>
                         <div style={{ width: "100%" }}>
                             <BuhtaButton color="primary"
+                                className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
                                 disabled={this.selectedPartId == 0}
                                 onClick={() => {
@@ -139,6 +140,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
                                 Ok
                             </BuhtaButton>
                             <BuhtaButton
+                                className="cy-cancel"
                                 style={{ float: "right" }}
                                 color="light"
                                 onClick={() => {

@@ -209,7 +209,7 @@ export class Информация_о_задании_Page extends React.Component
 
 
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
+            <div className={"app cy-task-info-page"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
 
 
                 <div className="card" style={{ marginBottom: 0 }}>
@@ -241,7 +241,7 @@ export class Информация_о_задании_Page extends React.Component
                     <div style={{ marginTop: 10 }}>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
-                            className="btn-sm"
+                            className="btn-sm cy-cancel"
                             color="secondary"
                             outline
                             // onTouchStart={() => {
@@ -255,7 +255,7 @@ export class Информация_о_задании_Page extends React.Component
                     </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
-                            className="btn-sm"
+                            className="btn-sm cy-ok"
                             color="success"
                             onClick={() => {
                                 this.doExecuteTask();
