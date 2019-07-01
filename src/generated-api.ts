@@ -964,3 +964,48 @@ export async function _wms_android_Логин_инфо(): Promise<IResult_wms_an
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_РАЗГР_получить_задание {
+    error:string;
+    taskId: number
+}
+
+export async function _wms_android_РАЗГР_получить_задание(KadrId: number): Promise<IResult_wms_android_РАЗГР_получить_задание> {
+    if (typeof KadrId != "number") throw new Error("вызов '_wms_android_РАЗГР_получить_задание': параметр 'KadrId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_получить_задание " + KadrId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_получить_задание: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_получить_задание: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.taskId) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_получить_задание': не заполнена колонка 'taskId'");
+            if (typeof row.taskId != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_получить_задание': значение в колонке 'taskId' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Взять_задание_в_работу_РАЗГР {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_Взять_задание_в_работу_РАЗГР(TaskId: number, KadrId: number): Promise<IResult_wms_android_Взять_задание_в_работу_РАЗГР> {
+    if (typeof TaskId != "number") throw new Error("вызов '_wms_android_Взять_задание_в_работу_РАЗГР': параметр 'TaskId' должен быть числом");
+    if (typeof KadrId != "number") throw new Error("вызов '_wms_android_Взять_задание_в_работу_РАЗГР': параметр 'KadrId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Взять_задание_в_работу_РАЗГР " + TaskId.toString() + "," + KadrId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Взять_задание_в_работу_РАЗГР: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Взять_задание_в_работу_РАЗГР: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_Взять_задание_в_работу_РАЗГР': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_Взять_задание_в_работу_РАЗГР': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

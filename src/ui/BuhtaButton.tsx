@@ -3,6 +3,7 @@ import Button from "reactstrap/lib/Button";
 import { playSound_ButtonClick } from "../utils/playSound";
 import { zebraOk } from "../zebra/ZebraApi";
 import { CSSProperties } from 'react';
+import { appState } from "../AppState";
 
 export interface BuhtaButtonProps {
     style?: React.CSSProperties;
@@ -15,10 +16,17 @@ export interface BuhtaButtonProps {
     onClick?: React.MouseEventHandler<any>;
     big?: boolean;
     small?: boolean;
+    accessRasdel?: string;
+    hidden?: boolean;
 };
 
 export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
     render() {
+
+        if (this.props.hidden)
+            return null;
+        if (this.props.accessRasdel && !appState.isUsersHasAccessToRasdel(this.props.accessRasdel))
+            return null;
         let className = this.props.className || "";
         if (!this.props.big)
             className += " btn-sm";

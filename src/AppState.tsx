@@ -216,6 +216,7 @@ export class AppState {
     }
 
     isUsersHasAccessToRasdel(rasdel: string): boolean {
+
         if (rasdel == "НАСТРОЙКА_ТСД")
             return true;
 
@@ -225,7 +226,6 @@ export class AppState {
 
         if (rasdel == "MOBILE_ИНФО")
             return true;
-
 
         // сначала перебираем доступы конкретного юзера
         for (let acc of this.доступы) {

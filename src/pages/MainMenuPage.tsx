@@ -3,9 +3,9 @@ import { IAppPageProps } from "./AppWindow";
 import { appState } from '../AppState';
 import { playSound_ButtonClick } from "../utils/playSound";
 import { PeakPage } from "./Peak/PeakPage";
-import { showAppError } from "../modals/ErrorMessagePage";
+import { showAppError, showError } from "../modals/ErrorMessagePage";
 import { ReactNode } from "react";
-import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание } from "../generated-api";
+import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание, _wms_android_РАЗГР_получить_задание } from "../generated-api";
 import { ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ } from "../const";
 
 import { getRandomString } from "../utils/getRandomString";
@@ -14,6 +14,7 @@ import { I_ПИК_1_меню_PageProps, ПИК_1_меню_Page_ModalResult, ПИ
 import { getConfirmation } from "../modals/ConfirmationPage";
 import { show_Информация_о_задании } from "./Информация_о_задании_Page";
 import { show_НастройкаТСД } from "./НастройкаТСД_Page";
+import { I_РАЗГР_меню_PageProps, РАЗГР_меню_Page_ModalResult, РАЗГР_меню_Page } from "../modals/РАЗГР_меню";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -33,9 +34,32 @@ let mainMenuItems: IMainMenuItem[] = [
         group: "ОСНОВНЫЕ ОПЕРАЦИИ",
         label: "ПРИЕМ",
         code: "РАЗГР",
-        onClick: () => {
+        onClick: async () => {
             playSound_ButtonClick();
-            appState.openPage(PeakPage, { pageId: "PeakPage" })
+            let res = await appState.getModalResult<I_РАЗГР_меню_PageProps, РАЗГР_меню_Page_ModalResult>(РАЗГР_меню_Page, { pageId: getRandomString() });
+            //   | "Назначить задание (auto)" |  | "Нет";
+            if (res == "Выбор задания") {
+                showError("Пока не работает");
+            }
+            else if (res == "Прием без задания") {
+                showError("Пока не работает");
+            }
+            else if (res == "Назначить задание (auto)") {
+                let res = await _wms_android_РАЗГР_получить_задание(appState.kadrId);
+                if (res.taskId == 0) {
+                    showInfo("Нет заданий для исполнения");
+                    return;
+                }
+                // if (await getConfirmation("Взять задание в работу?", "Найдено новое задание", "Взять")) {
+                //     show_Информация_о_задании(res.taskId);
+                //     return;
+                // }
+                show_Информация_о_задании(res.taskId);
+            }
+            else
+                showAppError("Неверный 'ModalResult' в РАЗГР_меню_Page_ModalResult: " + res);
+
+            console.log(res);
         }
     },
     {
@@ -46,10 +70,10 @@ let mainMenuItems: IMainMenuItem[] = [
             playSound_ButtonClick();
             let res = await appState.getModalResult<I_ПИК_1_меню_PageProps, ПИК_1_меню_Page_ModalResult>(ПИК_1_меню_Page, { pageId: getRandomString() });
             if (res == "Выбрать задание (вручную)") {
-
+                showError("Пока не работает");
             }
             else if (res == "Выбрать по маршруту") {
-
+                showError("Пока не работает");
             }
             else if (res == "Получить задание (авто)") {
                 let res = await _wms_android_ПИК_получить_задание(appState.kadrId);
@@ -57,11 +81,14 @@ let mainMenuItems: IMainMenuItem[] = [
                     showInfo("Нет заданий для исполнения");
                     return;
                 }
-                if (await getConfirmation("Взять задание в работу?", "Найдено новое задание", "Взять")) {
-                    show_Информация_о_задании(res.taskId);
-                    return;
-                }
+                // if (await getConfirmation("Взять задание в работу?", "Найдено новое задание", "Взять")) {
+                //     show_Информация_о_задании(res.taskId);
+                //     return;
+                // }
+                show_Информация_о_задании(res.taskId);
             }
+            else
+                showAppError("Неверный 'ModalResult' в ПИК_1_меню_Page_ModalResult: " + res);
 
             console.log(res);
         }

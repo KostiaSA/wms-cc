@@ -81,6 +81,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                 return;
             }
 
+            localStorage.setItem("buhta-login", this.login);
             appState.tsdKey = row.tsdKey;
             appState.userName = row.FullUserName;
             appState.kadrId = row.KadrId;
