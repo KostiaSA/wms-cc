@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -18,6 +18,7 @@ import { agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererFor
 import { showInfo } from "../modals/InfoMessagePage";
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО } from "../const";
 import { playSound_ButtonClick } from "../utils/playSound";
+import { isNormalPallete } from "../utils/isNormalPallete";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -32,24 +33,12 @@ export function show_РАЗГР(taskId: number) {
 export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     task: IResult_wms_android_Информация_о_задании;
 
-    fromType: string = "";
-    fromId: number = 0;
-    fromName: string = "не выбрано";
-    fromCellName: string = "";
-
     intoType: string = "";
     intoId: number = 0;
     intoName: string = "не выбрано";
-
-    isReplaceMode: number = 0;
-    isЗапросКоличестваMode: number = 0;
-    //otherParty: number = 0;
-    changeTMCID: number = 0;
-
-    //  partId: number = 0;
-    //    tmcId: number = 0;
-
     barcodeProcessorHandler: any;
+
+    isRepeatebleDog: boolean = false; // Режим повторного приема и отргрузки. 
 
     async barcodeProcessor() {
         if (!this.props.visible) return;
@@ -59,22 +48,46 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         let barcodePrefix = barcode.barcode.substr(0, 3).toUpperCase();
 
         if (this.task.ЗавершенноеЗадание != 0) {
-            showError("РАЗГР уже завершен.");
+            showError("РАЗГРУЗКА завершена.");
             return;
         }
 
 
-        // let res = await _wms_android_Проверка_блокировки_пересоздания_РАЗГРов(this.task.ДоговорКлюч);
-        // if (res.Заблокировано != 0) {
-        //     showError("Выполняется пересоздание РАЗГРов по договору. Подождите.");
-        //     return;
-        // }
 
-        // let res2 = await _wms_android_Штрихкод_запрещен(barcode.barcode);
-        // if (res2.Запрещен == 1) {
-        //     showError("Запрещенный штрих-код.");
-        //     return;
-        // }
+        let res2 = await _wms_android_Штрихкод_запрещен(barcode.barcode);
+        if (res2.Запрещен == 1) {
+            showError("Запрещенный штрих-код.");
+            return;
+        }
+
+
+
+        if (barcodePrefix == "PAL") {
+            let palleteId = Number.parseInt(barcode.barcode.toUpperCase().replace("PAL", ""));
+            let pal = await _wms_android_Паллета_инфо(palleteId);
+            if (pal.error) {
+                showError(pal.error);
+                return;
+            }
+
+            if (!isNormalPallete(pal)) {
+                showError("Это служебная паллета");
+                return;
+            }
+
+            PlaySound.паллета_куда(barcode.barcode);
+            this.intoId = palleteId;
+            this.intoType = "PAL";
+            this.intoName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
+            this.forceUpdate();
+
+            return;
+        }
+
+        if (this.isRepeatebleDog) {
+            showError('Режим повторного приема и отргрузки. Разрешено сканировать только паллеты!');
+            return;
+        }
 
         // if (barcodePrefix != "BOX" && barcodePrefix != "PAL") {
         //     let res3 = await _wms_android_РАЗГР_Подобран(this.props.taskId);
@@ -147,30 +160,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
 
 
-        // if (barcodePrefix == "PAL") {
-        //     let palleteId = Number.parseInt(barcode.barcode.toUpperCase().replace("PAL", ""));
-        //     let palResult = await _wms_android_РАЗГР_обработка_шк_паллеты(this.props.taskId, palleteId, this.isReplaceMode, this.fromId, this.intoId);
-        //     //console.log("PAL", palResult);
-        //     if (palResult.ПаллетаОткуда > 0) {
-        //         PlaySound.паллета_откуда(barcode.barcode);
-        //         this.fromId = palleteId;
-        //         this.fromType = "PAL";
-        //         this.fromName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
-        //         this.fromCellName = (await _wms_android_Название_ячейки_где_паллета(palleteId)).НазваниеЯчейки;
-        //         if (this.fromName == this.fromCellName)
-        //             this.fromCellName = "";
-        //         this.forceUpdate();
-        //         setTimeout(this.loadTovarsGridData.bind(this), 1)
-        //     }
-        //     if (palResult.ПаллетаКуда > 0) {
-        //         PlaySound.паллета_куда(barcode.barcode);
-        //         this.intoId = palleteId;
-        //         this.intoType = "PAL";
-        //         this.intoName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
-        //         this.forceUpdate();
-        //     }
-        //     return;
-        // }
 
         // if (barcodePrefix == "BOX") {
         //     showError("Коробки пока не обрабатываются!");
@@ -267,7 +256,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
     async componentDidMount() {
         this.task = await _wms_android_Информация_о_задании(this.props.taskId);
-        this.isЗапросКоличестваMode = this.task.РучнойВводКоличества;
 
         this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
         this.forceUpdate();
@@ -391,10 +379,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             )
         }
 
-        let fromInputClassName = classNames({
-            "text-color-red": this.fromType == "",
-            [getSubcontoTextColorClass(this.fromType)]: this.fromType != ""
-        });
 
         let intoInputClassName = classNames({
             "text-color-red": this.intoType == "",
@@ -417,11 +401,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                             <table style={{ width: "100%" }}>
                                 <tbody>
                                     <tr>
-                                        <td style={{ ...labelStyle }}>откуда</td>
-                                        <td className={fromInputClassName} style={{ ...textStyle }}>{this.fromName}</td>
-                                        <td style={{ ...textStyle, color: "brown" }}>{this.fromCellName}</td>
-                                    </tr>
-                                    <tr>
                                         <td style={{ ...labelStyle }}>куда</td>
                                         <td className={intoInputClassName} style={{ ...textStyle }}>{this.intoName}</td>
                                         <td>
@@ -432,7 +411,15 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 </tbody>
                             </table>
                         </div>
-                        <div style={{ display: this.fromId == 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
+                        <div style={{ display: this.intoId > 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }}>
+                            <div style={{ height: "100%", width: "100%", position: "absolute", display: "flex", justifyContent: "center", alignItems: "center", padding: 10 }}>
+                                <div style={{ fontSize: 18, textAlign: "center", color: "darkorange" }}>
+                                    <div style={{ marginBottom: 30 }}>Паллета не выбрана!</div>
+                                    <div>Отсканируйте штрих-код паллеты, на которую будете принимать товар</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style={{ display: this.intoId == 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
                             <div style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
                                     //headerHeight={25}
@@ -516,7 +503,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 appState.openPage(TestBarcodesPage, {
                                     pageId: TestBarcodesPage.PAGE_ID,
                                     taskId: this.props.taskId,
-                                    palleteFrom: this.fromId,
+                                    palleteFrom: 0,
                                 })
                             }}
                         >
