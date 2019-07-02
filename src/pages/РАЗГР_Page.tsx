@@ -46,6 +46,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         let barcode = appState.getNextBarcodeFromQueue(this.props.pageId);
         if (!barcode) return;
         let barcodePrefix = barcode.barcode.substr(0, 3).toUpperCase();
+        if (barcode.barcode.toUpperCase().startsWith("CROSS"))
+            barcodePrefix = "CROSS";
 
         if (this.task.ЗавершенноеЗадание != 0) {
             showError("РАЗГРУЗКА завершена.");
@@ -89,26 +91,36 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             return;
         }
 
-        // if (barcodePrefix != "BOX" && barcodePrefix != "PAL") {
-        //     let res3 = await _wms_android_РАЗГР_Подобран(this.props.taskId);
-        //     if (res3.Подобран == 1) {
-        //         let res4 = await _wms_android_РАЗГР_все_паллеты_завершены(this.props.taskId);
-        //         if (res4.Завершены == 1)
-        //             showError("РАЗГР подобран. Завершайте задание!");
-        //         else
-        //             showError("РАЗГР подобран. Завершайте паллеты!");
-        //         return;
-        //     }
-        // }
+        if (this.task.isCrossDoc == 1) {
 
-        // let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.Клиент)).ТМЦ;
+            if (barcodePrefix != "CROSS") {
+                showError("Заявка 'Транзит'. Допустим только штрих - код CROSS");
+                return;
+            }
+            // todo ProcessCross(fBarCode);       
 
-        // let partId = 0;
-        // if (tmcId == 0) {
-        //     let res = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент);
-        //     partId = res.Партия;
-        //     tmcId = res.ТМЦ;
-        // }
+            this.forceUpdate();
+            return;
+
+        }
+
+        if (barcodePrefix == "CROSS") {
+            showError("Заявка не 'Транзит'. Штрих-код CROSS недопустим.");
+            return;
+        }
+
+
+        let tmcRes = await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.Клиент);
+        let tmcId = tmcRes.ТМЦ;
+        let barCodeKol = tmcRes.Количество;
+        let partId = 0;
+
+        if (tmcId == 0) {
+            let partRes = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент);
+            partId = partRes.Партия;
+            tmcId = partRes.ТМЦ;
+            barCodeKol = partRes.Количество;
+        }
 
         // // todo _скл_Получить_Партию_по_длине
 
