@@ -12,5 +12,5 @@ export interface IGS1Item {
 }
 
 export function parseGS1(barcode: string): IGS1Item[] {
-    return parseBarcode(barcode);
+    return parseBarcode(barcode).parsedCodeItems;
 }

@@ -140,9 +140,9 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 }
                 tmcId = res.FindedTMC;
                 partId = res.CreateedPartID;
-                // BarCodeKol:= GetValueFromSQL('SELECT dbo.[_скл_Получить_Количество_по_штрих_коду_ТМЦ] (' + StringAsSQL(fBarCode) + ',' + VarToStr(ClientID) + ')');
-                // if BarCodeKol = 0 then
-                // BarCodeKol:= GetValueFromSQL('SELECT dbo.[_скл_Получить_Количество_по_штрих_коду_Партии] (' + StringAsSQL(fBarCode) + ',' + VarToStr(ClientID) + ')');
+                if (tmcRes.Количество > 0)
+                    barCodeKol = tmcRes.Количество;
+
             }
         }
 
@@ -660,6 +660,12 @@ async function CreatePart_FromBarCode(aBarCode: string, aClientID: number, aDogI
         if (!item.data || item.data == "")
             return result;
         fPartNum = item.data.toString();
+
+        // выделяем количество
+        item = fGS1.find((i: IGS1Item) => i.ai == "37"); if (!item) return result;
+        if (!item.data || item.data == "" || !(Number.parseFloat(item.data.toString()) > 0))
+            return result;
+        result.Количество = Number.parseFloat(item.data.toString())
 
         let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(fArtikulBarCodeSt, aClientID)).ТМЦ;
 

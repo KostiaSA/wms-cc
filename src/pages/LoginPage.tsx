@@ -196,7 +196,8 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                     <Col xs="6">
                                         <BuhtaButton className="px-4" outline
                                             onClick={() => {
-                                                let xxx = parseGS1("");
+                                                let xxx = parseGS1("0114607018272899111903141719091310100190314371021203180");
+                                                console.log(xxx);
                                                 zebraReloadWebView()
                                             }}>
                                             Reload
