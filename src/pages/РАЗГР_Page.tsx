@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -19,6 +19,12 @@ import { showInfo } from "../modals/InfoMessagePage";
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО } from "../const";
 import { playSound_ButtonClick } from "../utils/playSound";
 import { isNormalPallete } from "../utils/isNormalPallete";
+import { number } from "prop-types";
+import { Moment } from 'moment';
+import moment from "moment";
+import { parseGS1, IGS1Item } from "../utils/gs1";
+import { isDate } from '../utils/isDate';
+import { isNumber } from 'util';
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -120,6 +126,24 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             partId = partRes.Партия;
             tmcId = partRes.ТМЦ;
             barCodeKol = partRes.Количество;
+        }
+
+
+        if ((tmcId == 0 && partId == 0) || (tmcId != 0 && partId == 0)) {
+            //fCreateedPartID:= 0;
+            //fFindTMC:= 0;
+            let res = await CreatePart_FromBarCode(barcode.barcode, this.task.Клиент, this.task.ДоговорКлюч);
+            if (res.Ok) {
+                if (tmcId != 0 && tmcId != res.FindedTMC) {
+                    //bmWarning('Штрих-код привязан к ТМЦ (Ключ=' + IntToStr(TMCID) + '), код ТМЦ в считанном штрих-коде (Ключ=' + IntToStr(fFindTMC) + '). На склад будет принят ТМЦ с ключом=' + IntToStr(fFindTMC));
+                    showError("Считанный штрих-код товара в партии был ранее привязан к другому ТМЦ.");
+                }
+                tmcId = res.FindedTMC;
+                partId = res.CreateedPartID;
+                // BarCodeKol:= GetValueFromSQL('SELECT dbo.[_скл_Получить_Количество_по_штрих_коду_ТМЦ] (' + StringAsSQL(fBarCode) + ',' + VarToStr(ClientID) + ')');
+                // if BarCodeKol = 0 then
+                // BarCodeKol:= GetValueFromSQL('SELECT dbo.[_скл_Получить_Количество_по_штрих_коду_Партии] (' + StringAsSQL(fBarCode) + ',' + VarToStr(ClientID) + ')');
+            }
         }
 
         // // todo _скл_Получить_Партию_по_длине
@@ -589,4 +613,64 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         //     throw new Error("doExecuteTask(): не сделано для задания типа " + this.task.Тип);
         // }
     }
+}
+
+
+interface ICreatePart_FromBarCode_Result {
+    Ok: boolean;
+    FindedTMC: number;
+    CreateedPartID: number;
+    Количество: number;
+}
+
+async function CreatePart_FromBarCode(aBarCode: string, aClientID: number, aDogID: number): Promise<ICreatePart_FromBarCode_Result> {
+
+    let fArtikulBarCodeSt: string;
+    let fReleaseDate: Moment;
+    let fExpiredDate: Moment;
+    let fPartNum: string = "";
+
+    let result: ICreatePart_FromBarCode_Result = { Ok: false, FindedTMC: 0, CreateedPartID: 0, Количество: 0 }
+
+    let fGS1 = parseGS1(aBarCode);
+
+    if (fGS1.length > 0) {
+        let item: IGS1Item;
+
+        // выделяем штрих-код тмц
+        item = fGS1.find((i: IGS1Item) => i.ai == "01"); if (!item) return result;
+        fArtikulBarCodeSt = item.data.toString();
+
+        // выделяем дату выпуска
+        item = fGS1.find((i: IGS1Item) => i.ai == "11"); if (!item) return result;
+        if (item.data instanceof Date)
+            fReleaseDate = moment(item.data);
+        else
+            return result;
+
+        // выделяем дату годности
+        item = fGS1.find((i: IGS1Item) => i.ai == "17"); if (!item) return result;
+        if (item.data instanceof Date)
+            fExpiredDate = moment(item.data);
+        else
+            return result;
+
+        // выделяем номер партии
+        item = fGS1.find((i: IGS1Item) => i.ai == "10"); if (!item) return result;
+        if (!item.data || item.data == "")
+            return result;
+        fPartNum = item.data.toString();
+
+        let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(fArtikulBarCodeSt, aClientID)).ТМЦ;
+
+        if (tmcId > 0) {
+            result.Ok = true;
+            result.FindedTMC = tmcId;
+            result.CreateedPartID = (await _wms_android_РАЗГР_Создать_партию_из_штрих_кода(fArtikulBarCodeSt, aDogID, aClientID, tmcId, fReleaseDate, fExpiredDate, fPartNum)).Партия;
+        }
+
+    }
+
+    return result;
+
 }

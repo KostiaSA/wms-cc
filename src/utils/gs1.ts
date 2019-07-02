@@ -1,7 +1,16 @@
+import { strict } from "assert";
+import { string } from "prop-types";
 
 
-declare var barcodeParser: any;
+declare var parseBarcode: any;
 
-export function parseGS1(barcode: string): any {
-    //barcodeParser
+export interface IGS1Item {
+    ai: string;
+    dataTitle: string;
+    data: string | Date;
+    unit: string;
+}
+
+export function parseGS1(barcode: string): IGS1Item[] {
+    return parseBarcode(barcode);
 }

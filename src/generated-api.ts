@@ -162,9 +162,9 @@ export async function _wms_android_Информация_о_задании(taskId
             if (typeof(row.СрочнаяОтгрузка) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'СрочнаяОтгрузка'");
             if (typeof row.СрочнаяОтгрузка != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'СрочнаяОтгрузка' должно быть числом");
             if (typeof(row.ВремяНачалаПлан) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ВремяНачалаПлан'");
-            if (!row.ВремяНачалаПлан.constructor || row.ВремяНачалаПлан.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяНачалаПлан' должно быть датой");
+            if (!row.ВремяНачалаПлан.constructor || row.ВремяНачалаПлан.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяНачалаПлан' должно быть датой (Moment)");
             if (typeof(row.ВремяОкончанияПлан) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ВремяОкончанияПлан'");
-            if (!row.ВремяОкончанияПлан.constructor || row.ВремяОкончанияПлан.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяОкончанияПлан' должно быть датой");
+            if (!row.ВремяОкончанияПлан.constructor || row.ВремяОкончанияПлан.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяОкончанияПлан' должно быть датой (Moment)");
             if (typeof(row.Автомобиль) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Автомобиль'");
             if (typeof row.Автомобиль != "string") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'Автомобиль' должно быть строкой");
             if (typeof(row.Водитель) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Водитель'");
@@ -966,7 +966,7 @@ export async function _wms_android_Логин_инфо(): Promise<IResult_wms_an
             if (typeof(row.Компания) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'Компания'");
             if (typeof row.Компания != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'Компания' должно быть строкой");
             if (typeof(row.ВремяСервера) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'ВремяСервера'");
-            if (!row.ВремяСервера.constructor || row.ВремяСервера.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'ВремяСервера' должно быть датой");
+            if (!row.ВремяСервера.constructor || row.ВремяСервера.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'ВремяСервера' должно быть датой (Moment)");
             if (typeof(row.ВерсияСервера) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'ВерсияСервера'");
             if (typeof row.ВерсияСервера != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'ВерсияСервера' должно быть строкой");
             if (typeof(row.ИмяСервера) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'ИмяСервера'");
@@ -1094,6 +1094,34 @@ export async function _wms_android_Паллета_инфо(palleteId: number): P
             if (typeof row._Напечатано != "number") throw new Error("результат выполнения '_wms_android_Паллета_инфо': значение в колонке '_Напечатано' должно быть числом");
             if (typeof(row._Паллета) == "undefined") throw new Error("результат выполнения '_wms_android_Паллета_инфо': не заполнена колонка '_Паллета'");
             if (typeof row._Паллета != "number") throw new Error("результат выполнения '_wms_android_Паллета_инфо': значение в колонке '_Паллета' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_РАЗГР_Создать_партию_из_штрих_кода {
+    error:string;
+    Партия: number
+}
+
+export async function _wms_android_РАЗГР_Создать_партию_из_штрих_кода(BarCode: string, DogID: number, ClientID: number, TMC: number, ReleaseDate: Moment, ExpiredDate: Moment, PartNum: string): Promise<IResult_wms_android_РАЗГР_Создать_партию_из_штрих_кода> {
+    if (typeof BarCode != "string") throw new Error("вызов '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': параметр 'BarCode' должен быть строкой");
+    if (typeof DogID != "number") throw new Error("вызов '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': параметр 'DogID' должен быть числом");
+    if (typeof ClientID != "number") throw new Error("вызов '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': параметр 'ClientID' должен быть числом");
+    if (typeof TMC != "number") throw new Error("вызов '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': параметр 'TMC' должен быть числом");
+    if (!ReleaseDate.constructor || ReleaseDate.constructor.name != "Moment") throw new Error("параметр 'ReleaseDate' должен быть датой (Moment)");
+    if (!ExpiredDate.constructor || ExpiredDate.constructor.name != "Moment") throw new Error("параметр 'ExpiredDate' должен быть датой (Moment)");
+    if (typeof PartNum != "string") throw new Error("вызов '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': параметр 'PartNum' должен быть строкой");
+    let recordsets = await executeSql("_wms_android_РАЗГР_Создать_партию_из_штрих_кода " + stringAsSql(BarCode) + "," + DogID.toString() + "," + ClientID.toString() + "," + TMC.toString() + "," + ReleaseDate.format('YYYYMMDD HH:mm:ss') + "," + ExpiredDate.format('YYYYMMDD HH:mm:ss') + "," + stringAsSql(PartNum));
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_Создать_партию_из_штрих_кода: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_Создать_партию_из_штрих_кода: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Партия) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': не заполнена колонка 'Партия'");
+            if (typeof row.Партия != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': значение в колонке 'Партия' должно быть числом");            
         }
     }
 
