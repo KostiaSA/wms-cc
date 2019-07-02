@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -177,80 +177,36 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
         }
 
-        // // todo _скл_Получить_Партию_по_длине
+        if (tmcId != 0) {
+            // todo if TMCID = - 666 then
+            // begin
+            //   if bmConfirmation('Товар имеет неуникальный штрих-код. Напечатать этикетку?') then
+            //   begin
+            //     ShowForm('скл_терминал_Разгрузка_печать штрих кодов', Self);
+            //   end;
+            // end
+
+            await this.processTovarBarcode(tmcId, partId, barCodeKol);
 
 
-        // if (partId > 0 || barcodePrefix == "PAR" || barcodePrefix == "BRA") {
-        //     let isBrak: number = barcodePrefix == "BRA" ? 1 : 0;
-        //     let partResult = await _wms_android_РАЗГР_обработка_шк_партии(this.props.taskId, partId, isBrak, barcode.barcode, this.fromId, this.intoId);
-
-        //     if (!partResult.error) {
-        //         if (this.intoId == 0) {
-        //             showError("Не выбрана паллета КУДА! Отсканируйте штрих-код паллеты.");
-        //             return;
-        //         }
-
-        //         if (partResult.НоваяПаллетаОткуда > 0) {
-        //             PlaySound.паллета_откуда(barcode.barcode);
-        //             this.fromId = partResult.НоваяПаллетаОткуда;
-        //             this.fromType = "PAL";
-        //             this.fromName = (await _wms_android_Название_паллеты(partResult.НоваяПаллетаОткуда)).НазваниеПаллеты;
-        //             this.fromCellName = (await _wms_android_Название_ячейки_где_паллета(partResult.НоваяПаллетаОткуда)).НазваниеЯчейки;
-        //             if (this.fromName == this.fromCellName)
-        //                 this.fromCellName = "";
-        //             this.forceUpdate();
-        //             setTimeout(this.loadTovarsGridData.bind(this), 1)
-        //         }
-
-        //         await this.processTovarBarcode(barcode, partResult.tmcId, partResult.partId, partResult.otherParty);
-        //         return;
-        //     }
-        //     else {
-        //         showError(partResult.error);
-        //         return;
-
-        //     }
-
-        // }
-
-        // if (tmcId > 0 || partId > 0) {
-        //     if (this.fromId == 0) {
-        //         showError("Не выбрана паллета ОТКУДА! Отсканируйте штрих-код паллеты.");
-        //         return;
-        //     }
-        //     if (this.intoId == 0) {
-        //         showError("Не выбрана паллета КУДА! Отсканируйте штрих-код паллеты.");
-        //         return;
-        //     }
-        // }
+        }
+        else {
+            showError("Неизвестный штрих-код");
+        }
 
 
-
-
-
-        // if (barcodePrefix == "BOX") {
-        //     showError("Коробки пока не обрабатываются!");
-        //     return;
-        // }
-
-        // if (tmcId > 0 && partId == 0) {
-        //     partId = (await _wms_android_Получить_Партию_с_паллеты(this.fromId, tmcId, this.props.taskId)).Партия;
-        //     if (partId == -1) {
-        //         let modalResult = (await get_РАЗГР_запрос_партии(this.props.taskId, 1886, 13184));
-        //         if (modalResult.result == "Ok")
-        //             partId = modalResult.selectedPartId;
-        //         else
-        //             return;
-        //     }
-        // }
-
-
-        // console.log("РАЗГР-получен-штрих", barcode.barcode);
-        // await this.processTovarBarcode(barcode, tmcId, partId, 0);
 
     }
 
-    async processTovarBarcode(barcode: BarcodeWithType, tmcId: number, partId: number, otherParty: number) {
+    async processTovarBarcode(tmcId: number, partId: number, barcodeKol: number) {
+
+        let tmcInfo = await _wms_android_ТМЦ_инфо(tmcId);
+
+        if (tmcInfo.Поставщик != this.task.Клиент) {
+            showError("Поставщик ТМЦ не соответствует клиенту в задании!");
+            return;
+        }
+
 
         // let res = await _wms_android_РАЗГР_обработка_шк_товара(
         //     0,

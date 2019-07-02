@@ -23,7 +23,7 @@ import Col from "reactstrap/lib/Col";
 
 import { MainMenuPage } from "./MainMenuPage";
 import { showAppError } from "../modals/ErrorMessagePage";
-import { _wms_android_Логин, _wms_android_Доступы, _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_Логин_инфо, IResult_wms_android_Логин_инфо } from "../generated-api";
+import { _wms_android_Логин, _wms_android_Доступы, _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_Логин_инфо, IResult_wms_android_Логин_инфо, _wms_android_Список_настроек_WMS } from "../generated-api";
 import { BuhtaButton } from "../ui/BuhtaButton";
 import { VERSION } from '../const';
 import { CSSProperties } from 'react';
@@ -88,6 +88,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
             appState.kadrId = row.KadrId;
             appState.podrId = row.PodrId;
             appState.доступы = await _wms_android_Доступы(this.login);
+            appState.настройкиWMS = await _wms_android_Список_настроек_WMS();
             await appState.зарузить_настройки_ТСД();
 
             appState.новыеЗадания = await _wms_android_Главное_меню_Список_Новых_Заданий(appState.kadrId, appState.podrId);
@@ -196,8 +197,8 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                     <Col xs="6">
                                         <BuhtaButton className="px-4" outline
                                             onClick={() => {
-                                                let xxx = parseGS1("0114607018272899111903141719091310100190314371021203180");
-                                                console.log(xxx);
+                                                // let xxx = parseGS1("0114607018272899111903141719091310100190314371021203180");
+                                                // console.log(xxx);
                                                 zebraReloadWebView()
                                             }}>
                                             Reload

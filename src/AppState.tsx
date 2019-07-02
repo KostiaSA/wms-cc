@@ -12,7 +12,7 @@ import { PlaySound } from "./sounds/PlaySound";
 import { registerBuhtaObject } from "./registerBuhtaObject";
 //import {showErrorMessage} from "./modals/ErrorMessageModal";
 import { showAppError } from "./modals/ErrorMessagePage";
-import { IResult_wms_android_Доступы, IResult_wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_Получить_настройки_ТСД, _wms_android_Сохранить_настройки_ТСД } from "./generated-api";
+import { IResult_wms_android_Доступы, IResult_wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_Получить_настройки_ТСД, _wms_android_Сохранить_настройки_ТСД, IResult_wms_android_Список_настроек_WMS } from "./generated-api";
 import { sleep } from "./utils/sleep";
 
 
@@ -36,6 +36,7 @@ export class AppState {
     kadrId: number = -1;
     podrId: number = -1;
     userName: string = "";
+    настройкиWMS: IResult_wms_android_Список_настроек_WMS[] = [];
     доступы: IResult_wms_android_Доступы[] = [];
     новыеЗадания: IResult_wms_android_Главное_меню_Список_Новых_Заданий[] = [];
 
@@ -80,6 +81,16 @@ export class AppState {
             throw new Error("нет такой настройки ТСД: " + параметр);
 
         return this._настройки_ТСД[параметр];
+    }
+
+    настройки_WMS(параметр: string): string {
+
+        let item = this.настройкиWMS.find((i: IResult_wms_android_Список_настроек_WMS) => i.Значение.toUpperCase() == параметр.toUpperCase());
+
+        if (!item)
+            throw new Error("нет такой настройки WMS: " + параметр);
+
+        return item.Параметр;
     }
 
     get zoom() {
