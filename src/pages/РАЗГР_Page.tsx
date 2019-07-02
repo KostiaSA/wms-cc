@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -45,6 +45,22 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     barcodeProcessorHandler: any;
 
     isRepeatebleDog: boolean = false; // Режим повторного приема и отргрузки. 
+    isInputOst: boolean = false; // Режим ввода начальных остатков
+
+
+    clearPalleteId() {
+        this.intoType = "";
+        this.intoId = 0;
+        this.intoName = "не выбрано";
+        this.forceUpdate();
+    }
+
+    async setIntoPalleteId(palleteId: number) {
+        this.intoType = "PAL";
+        this.intoId = palleteId;
+        this.intoName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
+        this.forceUpdate();
+    }
 
     async barcodeProcessor() {
         if (!this.props.visible) return;
@@ -84,12 +100,27 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
 
             PlaySound.паллета_куда(barcode.barcode);
-            this.intoId = palleteId;
-            this.intoType = "PAL";
-            this.intoName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
-            this.forceUpdate();
+            await this.setIntoPalleteId(palleteId)
 
             return;
+        }
+
+        if (barcodePrefix == "CEL") {
+            if (!this.isInputOst) {
+                showError("Штрих-код ячейки допустим только при вводе начальных остатков!");
+                return;
+            }
+
+            let palleteRes = await _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки(barcode.barcode);
+            if (palleteRes.error) {
+                showError(palleteRes.error);
+                return;
+            }
+
+            PlaySound.паллета_куда(barcode.barcode);
+            await this.setIntoPalleteId(palleteRes.Паллета)
+            return;
+
         }
 
         if (this.isRepeatebleDog) {
@@ -100,7 +131,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         if (this.task.isCrossDoc == 1) {
 
             if (barcodePrefix != "CROSS") {
-                showError("Заявка 'Транзит'. Допустим только штрих - код CROSS");
+                showError("Заявка 'Транзит'. Допустим только штрих-код CROSS");
                 return;
             }
             // todo ProcessCross(fBarCode);       
