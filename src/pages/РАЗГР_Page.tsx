@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -25,6 +25,7 @@ import moment from "moment";
 import { parseGS1, IGS1Item } from "../utils/gs1";
 import { isDate } from '../utils/isDate';
 import { isNumber } from 'util';
+import { getConfirmation } from "../modals/ConfirmationPage";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -47,6 +48,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     isRepeatebleDog: boolean = false; // Режим повторного приема и отргрузки. 
     isInputOst: boolean = false; // Режим ввода начальных остатков
 
+    isBrak_Checked: boolean = false;
 
     clearPalleteId() {
         this.intoType = "";
@@ -198,9 +200,21 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
     }
 
+    приемБезЗадания(): boolean {
+        return this.task.СозданИзДопМеню
+    }
+
     async processTovarBarcode(tmcId: number, partId: number, barcodeKol: number) {
 
         let tmcInfo = await _wms_android_ТМЦ_инфо(tmcId);
+        let partInfo: IResult_wms_android_Партия_ТМЦ_инфо;
+        if (partId != 0) {
+            partInfo = await _wms_android_Партия_ТМЦ_инфо(partId);
+            if (partInfo.error) {
+                showError(partInfo.error);
+                return;
+            }
+        }
 
         if (tmcInfo.Поставщик != this.task.КлиентКлюч) {
             showError("Поставщик ТМЦ не соответствует клиенту в задании!");
@@ -225,6 +239,83 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             return;
         }
 
+        if (tmcInfo.КолВУпак == 0 && tmcInfo.ТипТовара.toUpperCase() == "ШТУЧНЫЙ") {
+            showError("Этот товар принимать нельзя. Заполните поле 'кол.в упаковке' в карточке товара.");
+            return;
+        }
+
+        if (!this.task.isReturn) {
+            if (partInfo.ДоговорПрихода != 0 && partInfo.ДоговорПрихода != this.task.ДоговорКлюч) {
+                showError("Партия создавалась по другому договору прихода.");
+                return;
+
+            }
+        }
+
+        if (this.task.isReturn && this.task.isBrak && partInfo.Брак.toUpperCase() != "БРАК") {
+            showError("В заявке разрешен прием только брака!");
+            return;
+        }
+
+        if (this.task.isReturn && !this.task.isBrak && partInfo.Брак.toUpperCase() == "БРАК") {
+            showError("В заявке прием брака запрещен!");
+            return;
+        }
+
+        if (!this.приемБезЗадания()) {
+
+            // При сканировании ШК ТМЦ (или при выборе через доп. меню) проверять его наличие на не завершенных паллетах в рамках этого задания РАЗГР. 
+            // Если такой товар есть выдавать сообщение "Данный товар уже размещен на паллете №…». Продолжить?".
+            let checkResult = await _wms_android_РАЗГР_Проверить_товар_на_других_паллетах(this.intoId, tmcId, this.props.taskId);
+            if (checkResult.ПаллетаНазвание != "") {
+                if (!(await getConfirmation("Данный товар уже размещен на паллете " + checkResult.ПаллетаНазвание + ". Продолжить?", "Нужно подтверждение", "Продолжить"))) {
+                    return;
+                }
+            }
+
+            if (tmcInfo.Партионный.toUpperCase() == "ПАРТИОННЫЙ" &&
+                partId == 0 &&
+                tmcInfo.ТипТовара.toUpperCase() != "ВЕСОВОЙ" &&
+                tmcInfo.ТипОтбора.toUpperCase() == "FIFO"
+            ) {
+
+                if (tmcInfo.ТипТовара.toUpperCase() != "ШТУЧНЫЙ" || tmcInfo.ТипТовара.toUpperCase() != "МЕРНЫЙ С ФИКС МЕТР") {
+
+                    if (tmcInfo.КарточкаНовойПартии != "") {
+                        // todo ShowForm(КарточкаНовойПартии, Self);
+                        /*            
+                            Flag := ShowForm(КарточкаНовойПартии, Self);
+                            if Flag then
+                            begin
+                                PartID := Param.Values('Новая партия');
+                                Param.Values('Партия') := Param.Values('Новая партия');
+                            end
+                            else
+                                Exit;
+                        */
+                    }
+                    else {
+                        // todo PartID := CreateNewPartFIFO(TaskID, CurPal, TMCID, IsBrak.Checked);
+                        /*
+                           PartID := CreateNewPartFIFO(TaskID, CurPal, TMCID, IsBrak.Checked);
+                           if PartID <> 0 then
+                              Param.Values('Партия') := PartID;
+                        */
+                    }
+
+                }
+            }
+
+            if (!this.isBrak_Checked) {
+
+                if (tmcInfo.Партионный.toUpperCase() == "ПАРТИОННЫЙ" && partId == 0) {
+                    showError("Необходимо считать партионную этикетку, либо разрешить ручной ввод количества.");
+                    return;
+                }
+
+            }
+
+        }
 
 
         // let res = await _wms_android_РАЗГР_обработка_шк_товара(

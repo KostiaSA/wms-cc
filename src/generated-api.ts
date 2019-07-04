@@ -1243,7 +1243,13 @@ export interface IResult_wms_android_ТМЦ_инфо {
     ДлинаБрутто: number;
     ШиринаБрутто: number;
     ОбъемБрутто: number;
-    ВысотаБрутто: number
+    ВысотаБрутто: number;
+    КолВУпак: number;
+    ТипТовара: string;
+    ТипОтбора: string;
+    Партионный: string;
+    КарточкаНовойПартии: string;
+    КарточкаНовогоБрака: string
 }
 
 export async function _wms_android_ТМЦ_инфо(tmcId: number): Promise<IResult_wms_android_ТМЦ_инфо> {
@@ -1273,7 +1279,19 @@ export async function _wms_android_ТМЦ_инфо(tmcId: number): Promise<IResu
             if (typeof(row.ОбъемБрутто) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'ОбъемБрутто'");
             if (typeof row.ОбъемБрутто != "number") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'ОбъемБрутто' должно быть числом");
             if (typeof(row.ВысотаБрутто) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'ВысотаБрутто'");
-            if (typeof row.ВысотаБрутто != "number") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'ВысотаБрутто' должно быть числом");            
+            if (typeof row.ВысотаБрутто != "number") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'ВысотаБрутто' должно быть числом");
+            if (typeof(row.КолВУпак) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'КолВУпак'");
+            if (typeof row.КолВУпак != "number") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'КолВУпак' должно быть числом");
+            if (typeof(row.ТипТовара) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'ТипТовара'");
+            if (typeof row.ТипТовара != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'ТипТовара' должно быть строкой");
+            if (typeof(row.ТипОтбора) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'ТипОтбора'");
+            if (typeof row.ТипОтбора != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'ТипОтбора' должно быть строкой");
+            if (typeof(row.Партионный) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'Партионный'");
+            if (typeof row.Партионный != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'Партионный' должно быть строкой");
+            if (typeof(row.КарточкаНовойПартии) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'КарточкаНовойПартии'");
+            if (typeof row.КарточкаНовойПартии != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'КарточкаНовойПартии' должно быть строкой");
+            if (typeof(row.КарточкаНовогоБрака) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'КарточкаНовогоБрака'");
+            if (typeof row.КарточкаНовогоБрака != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'КарточкаНовогоБрака' должно быть строкой");            
         }
     }
 
@@ -1326,6 +1344,67 @@ export async function _wms_android_РАЗГР_Проверить_способ_х
         if (!row.error) {
             if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Проверить_способ_хранения': не заполнена колонка 'Ok'");
             if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Проверить_способ_хранения': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Партия_ТМЦ_инфо {
+    error:string;
+    Ключ: number;
+    Номер: string;
+    Название: string;
+    НомерНазвание: string;
+    ДоговорПрихода: number;
+    Брак: string
+}
+
+export async function _wms_android_Партия_ТМЦ_инфо(partId: number): Promise<IResult_wms_android_Партия_ТМЦ_инфо> {
+    if (typeof partId != "number") throw new Error("вызов '_wms_android_Партия_ТМЦ_инфо': параметр 'partId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Партия_ТМЦ_инфо " + partId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Партия_ТМЦ_инфо: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Партия_ТМЦ_инфо: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ключ) == "undefined") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': не заполнена колонка 'Ключ'");
+            if (typeof row.Ключ != "number") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': значение в колонке 'Ключ' должно быть числом");
+            if (typeof(row.Номер) == "undefined") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': не заполнена колонка 'Номер'");
+            if (typeof row.Номер != "string") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': значение в колонке 'Номер' должно быть строкой");
+            if (typeof(row.Название) == "undefined") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': не заполнена колонка 'Название'");
+            if (typeof row.Название != "string") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': значение в колонке 'Название' должно быть строкой");
+            if (typeof(row.НомерНазвание) == "undefined") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': не заполнена колонка 'НомерНазвание'");
+            if (typeof row.НомерНазвание != "string") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': значение в колонке 'НомерНазвание' должно быть строкой");
+            if (typeof(row.ДоговорПрихода) == "undefined") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': не заполнена колонка 'ДоговорПрихода'");
+            if (typeof row.ДоговорПрихода != "number") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': значение в колонке 'ДоговорПрихода' должно быть числом");
+            if (typeof(row.Брак) == "undefined") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': не заполнена колонка 'Брак'");
+            if (typeof row.Брак != "string") throw new Error("результат выполнения '_wms_android_Партия_ТМЦ_инфо': значение в колонке 'Брак' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_РАЗГР_Проверить_товар_на_других_паллетах {
+    error:string;
+    ПаллетаНазвание: string
+}
+
+export async function _wms_android_РАЗГР_Проверить_товар_на_других_паллетах(currPalleteId: number, tmcId: number, taskId: number): Promise<IResult_wms_android_РАЗГР_Проверить_товар_на_других_паллетах> {
+    if (typeof currPalleteId != "number") throw new Error("вызов '_wms_android_РАЗГР_Проверить_товар_на_других_паллетах': параметр 'currPalleteId' должен быть числом");
+    if (typeof tmcId != "number") throw new Error("вызов '_wms_android_РАЗГР_Проверить_товар_на_других_паллетах': параметр 'tmcId' должен быть числом");
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_РАЗГР_Проверить_товар_на_других_паллетах': параметр 'taskId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_Проверить_товар_на_других_паллетах " + currPalleteId.toString() + "," + tmcId.toString() + "," + taskId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_Проверить_товар_на_других_паллетах: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_Проверить_товар_на_других_паллетах: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.ПаллетаНазвание) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Проверить_товар_на_других_паллетах': не заполнена колонка 'ПаллетаНазвание'");
+            if (typeof row.ПаллетаНазвание != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Проверить_товар_на_других_паллетах': значение в колонке 'ПаллетаНазвание' должно быть строкой");            
         }
     }
 
