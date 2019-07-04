@@ -1411,3 +1411,28 @@ export async function _wms_android_РАЗГР_Проверить_товар_на
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_РАЗГР_Сверка_с_заявкой {
+    error:string;
+    Результат: string
+}
+
+export async function _wms_android_РАЗГР_Сверка_с_заявкой(taskId: number, tmcId: number, partId: number, kol: number): Promise<IResult_wms_android_РАЗГР_Сверка_с_заявкой> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_РАЗГР_Сверка_с_заявкой': параметр 'taskId' должен быть числом");
+    if (typeof tmcId != "number") throw new Error("вызов '_wms_android_РАЗГР_Сверка_с_заявкой': параметр 'tmcId' должен быть числом");
+    if (typeof partId != "number") throw new Error("вызов '_wms_android_РАЗГР_Сверка_с_заявкой': параметр 'partId' должен быть числом");
+    if (typeof kol != "number") throw new Error("вызов '_wms_android_РАЗГР_Сверка_с_заявкой': параметр 'kol' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_Сверка_с_заявкой " + taskId.toString() + "," + tmcId.toString() + "," + partId.toString() + "," + kol.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_Сверка_с_заявкой: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_Сверка_с_заявкой: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Результат) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Сверка_с_заявкой': не заполнена колонка 'Результат'");
+            if (typeof row.Результат != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Сверка_с_заявкой': значение в колонке 'Результат' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -305,18 +305,49 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
                 }
             }
+        }
 
-            if (!this.isBrak_Checked) {
+        let flag: boolean = false;
+        if (!this.isBrak_Checked) {
+
+            if (!this.task.РучнойВводКоличества) {
 
                 if (tmcInfo.Партионный.toUpperCase() == "ПАРТИОННЫЙ" && partId == 0) {
                     showError("Необходимо считать партионную этикетку, либо разрешить ручной ввод количества.");
                     return;
                 }
 
+                if (this.task.Сверка.toUpperCase() == "ПРЕДУПРЕЖДЕНИЕ" || this.task.Сверка.toUpperCase() == "ЗАПРЕТ") {
+                    let sverka = await _wms_android_РАЗГР_Сверка_с_заявкой(this.props.taskId, tmcId, partId, barcodeKol);
+                    if (sverka.Результат != "Ok") {
+                        if (this.task.Сверка.toUpperCase() == "ЗАПРЕТ") {
+                            await showError('Лишний товар! ' + sverka.Результат);
+                            return
+                        }
+                        else {
+                            await showInfo('Лишний товар! ' + sverka.Результат);
+                        }
+                    }
+                }
+                flag = true;
             }
+            else {
+                // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
+                // todo barcodeKol=?
+                // todo partId=?
 
+            }
+        }
+        else {
+            // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
+            // todo barcodeKol=?
+            // todo partId=?
         }
 
+        if (!flag)
+            return;
+
+        let newKol = barcodeKol;
 
         // let res = await _wms_android_РАЗГР_обработка_шк_товара(
         //     0,
