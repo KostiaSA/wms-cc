@@ -421,8 +421,23 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     async componentDidMount() {
         this.task = await _wms_android_Информация_о_задании(this.props.taskId);
 
-        await showError("пиздец");
-        setTimeout(() => { appState.closeActivePage(); console.log("appState.closeActivePage()") }, 10);
+        if (this.task.КлиентКлюч == 0) {
+            await showError("В задании не указан 'Клиент'. Выполнение задания не возможно.");
+            setTimeout(() => { appState.closeActivePage(); }, 10);
+            return;
+        }
+
+        if (this.task.КлиентПаллетаКлюч == 0) {
+            await showError("В базе данных отсутствует паллета 'Организация'. Выполнение задания не возможно.");
+            setTimeout(() => { appState.closeActivePage(); }, 10);
+            return;
+        }
+
+        if (this.task.ЗонаКлюч == 0) {
+            await showError("В Задании не указана зона ПРР. Выполнение задания не возможно.");
+            setTimeout(() => { appState.closeActivePage(); }, 10);
+            return;
+        }
 
         this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
         this.forceUpdate();

@@ -76,12 +76,12 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                         zoom: appState.zoom
                     }}>
                     <BuhtaButton outline style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                        appState.closeAndDestroyActivePage();
+                        appState.closeActivePage();
                     }}>
                         Закрыть
                     </BuhtaButton>
                     <BuhtaButton outline style={{ marginRight: 3, marginTop: 3 }} onClick={() => {
-                        appState.closeAndDestroyActivePage();
+                        appState.closeActivePage();
                         appState.pushTestBarcode("8463943749437202383", "");
                     }}>
                         {"неизвестный штрих-код"}
@@ -92,7 +92,7 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                             return ([
                                 <BuhtaButton key={index} outline
                                     style={{ marginRight: 3, marginTop: 5, maxWidth: 250 }} onClick={() => {
-                                        appState.closeAndDestroyActivePage();
+                                        appState.closeActivePage();
                                         appState.pushTestBarcode(row.ШтрихКод, "");
                                     }}>
                                     <span style={{ color: row.Цвет, whiteSpace: "normal" }}>{row.Объект}</span>

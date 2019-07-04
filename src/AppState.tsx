@@ -173,11 +173,13 @@ export class AppState {
 
     closeActivePage() {
         this.closeAndDestroyActivePage();
+        //setTimeout(() => { this.closeAndDestroyActivePage(); }, 10);
+
         // this.activePageId.shift();
         // this.forceUpdate();
     }
 
-    closeAndDestroyActivePage() {
+    private closeAndDestroyActivePage() {
         if (!this.activePageId[0])
             throw "closeAndDestroyActivePage():!this.activePageId[0]";
 
