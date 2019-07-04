@@ -20,11 +20,21 @@ export async function showAppError(message: ReactNode, title: ReactNode = "Ош�
     zebraTextToSpeech("Ошибка приложения");
 }
 
-export async function showError(message: ReactNode, title: ReactNode = "Ошибка") {
+export async function showError(message: ReactNode, title: ReactNode = "Ошибка"): Promise<any> {
     appState.openModal(ErrorMessagePage, { pageId: getRandomString(), message, title });
     playSound("error");
     await sleep(700);
     zebraTextToSpeech("Ошибка");
+
+    return new Promise<any>(
+        async (resolve: (res: any) => void, reject: (error: string) => void) => {
+            while (typeof (appState.modalResult) == "undefined")
+                await sleep(10);
+            let this_modalResult = appState.modalResult;
+            appState.modalResult = undefined;
+            resolve(this_modalResult);
+        });
+
 }
 
 
@@ -55,7 +65,7 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="danger" className="cy-cancel cy-ok"
-                            onClick={() => appState.closeActiveModal()}>
+                            onClick={() => { appState.modalResult = true, appState.closeActiveModal() }}>
                             Закрыть
                         </BuhtaButton>
                     </ModalFooter>

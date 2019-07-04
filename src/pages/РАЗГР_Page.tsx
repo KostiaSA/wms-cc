@@ -421,6 +421,9 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     async componentDidMount() {
         this.task = await _wms_android_Информация_о_задании(this.props.taskId);
 
+        await showError("пиздец");
+        setTimeout(() => { appState.closeActivePage(); console.log("appState.closeActivePage()") }, 10);
+
         this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
         this.forceUpdate();
     }

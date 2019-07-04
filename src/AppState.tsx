@@ -172,8 +172,9 @@ export class AppState {
     }
 
     closeActivePage() {
-        this.activePageId.shift();
-        this.forceUpdate();
+        this.closeAndDestroyActivePage();
+        // this.activePageId.shift();
+        // this.forceUpdate();
     }
 
     closeAndDestroyActivePage() {
@@ -184,7 +185,8 @@ export class AppState {
         let pageIndex = this.pages.map((p: IOpenedPage) => p.props.pageId).indexOf(this.activePageId[0]);
         this.pages.splice(pageIndex, 1);
 
-        this.closeActivePage();
+        this.activePageId.shift();
+        this.forceUpdate();
     }
 
     onReadBarcodeHandler(barcode: string, barcodeType: string) {

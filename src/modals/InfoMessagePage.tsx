@@ -49,7 +49,7 @@ class InfoMessagePage extends React.Component<IInfoMessagePageProps, any> {
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="light" className="cy-cancel cy-ok"
-                            onClick={() => appState.closeActiveModal()}>
+                            onClick={() => { appState.modalResult = true, appState.closeActiveModal() }}>
                             Закрыть
                         </BuhtaButton>
                     </ModalFooter>
