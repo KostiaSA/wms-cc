@@ -128,7 +128,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             return;
         }
 
-        if (this.task.isCrossDoc == 1) {
+        if (this.task.isCrossDoc) {
 
             if (barcodePrefix != "CROSS") {
                 showError("Заявка 'Транзит'. Допустим только штрих-код CROSS");

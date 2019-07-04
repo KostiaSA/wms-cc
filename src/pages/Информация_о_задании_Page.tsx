@@ -193,7 +193,7 @@ export class Информация_о_задании_Page extends React.Component
         }
 
         let пропустьУпаковку = null;
-        if (this.task.ПропускУпакРазрешен == 1) {
+        if (this.task.ПропускУпакРазрешен) {
             пропустьУпаковку = (
                 <BuhtaButton
                     className="btn-sm"

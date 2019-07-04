@@ -118,8 +118,8 @@ export async function _wms_android_ПИК_получить_задание(KadrId
 
 export interface IResult_wms_android_Информация_о_задании {
     error:string;
-    РучнаяПогрузка: number;
-    СрочнаяОтгрузка: number;
+    РучнаяПогрузка: boolean;
+    СрочнаяОтгрузка: boolean;
     ВремяНачалаПлан: Moment;
     ВремяОкончанияПлан: Moment;
     Автомобиль: string;
@@ -127,7 +127,7 @@ export interface IResult_wms_android_Информация_о_задании {
     Подразделение2: string;
     Сотрудник: string;
     ЕстьСпецификация: number;
-    ПропускУпакРазрешен: number;
+    ПропускУпакРазрешен: boolean;
     НазваниеЗадания: string;
     Откуда: string;
     Куда: string;
@@ -144,9 +144,9 @@ export interface IResult_wms_android_Информация_о_задании {
     ПовторнаяОтгрузка: number;
     ЗавершенноеЗадание: number;
     РучнойВводКоличества: number;
-    isCrossDoc: number;
-    isBrak: number;
-    isReturn: number
+    isCrossDoc: boolean;
+    isBrak: boolean;
+    isReturn: boolean
 }
 
 export async function _wms_android_Информация_о_задании(taskId: number): Promise<IResult_wms_android_Информация_о_задании> {
@@ -158,9 +158,9 @@ export async function _wms_android_Информация_о_задании(taskId
     for (let row of lastRecordset) {
         if (!row.error) {
             if (typeof(row.РучнаяПогрузка) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'РучнаяПогрузка'");
-            if (typeof row.РучнаяПогрузка != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'РучнаяПогрузка' должно быть числом");
+            if (typeof row.РучнаяПогрузка != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'РучнаяПогрузка' должно быть true/false");
             if (typeof(row.СрочнаяОтгрузка) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'СрочнаяОтгрузка'");
-            if (typeof row.СрочнаяОтгрузка != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'СрочнаяОтгрузка' должно быть числом");
+            if (typeof row.СрочнаяОтгрузка != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'СрочнаяОтгрузка' должно быть true/false");
             if (typeof(row.ВремяНачалаПлан) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ВремяНачалаПлан'");
             if (!row.ВремяНачалаПлан.constructor || row.ВремяНачалаПлан.constructor.name != "Moment") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ВремяНачалаПлан' должно быть датой (Moment)");
             if (typeof(row.ВремяОкончанияПлан) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ВремяОкончанияПлан'");
@@ -176,7 +176,7 @@ export async function _wms_android_Информация_о_задании(taskId
             if (typeof(row.ЕстьСпецификация) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ЕстьСпецификация'");
             if (typeof row.ЕстьСпецификация != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ЕстьСпецификация' должно быть числом");
             if (typeof(row.ПропускУпакРазрешен) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ПропускУпакРазрешен'");
-            if (typeof row.ПропускУпакРазрешен != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ПропускУпакРазрешен' должно быть числом");
+            if (typeof row.ПропускУпакРазрешен != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ПропускУпакРазрешен' должно быть true/false");
             if (typeof(row.НазваниеЗадания) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'НазваниеЗадания'");
             if (typeof row.НазваниеЗадания != "string") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'НазваниеЗадания' должно быть строкой");
             if (typeof(row.Откуда) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Откуда'");
@@ -210,11 +210,11 @@ export async function _wms_android_Информация_о_задании(taskId
             if (typeof(row.РучнойВводКоличества) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'РучнойВводКоличества'");
             if (typeof row.РучнойВводКоличества != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'РучнойВводКоличества' должно быть числом");
             if (typeof(row.isCrossDoc) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'isCrossDoc'");
-            if (typeof row.isCrossDoc != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'isCrossDoc' должно быть числом");
+            if (typeof row.isCrossDoc != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'isCrossDoc' должно быть true/false");
             if (typeof(row.isBrak) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'isBrak'");
-            if (typeof row.isBrak != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'isBrak' должно быть числом");
+            if (typeof row.isBrak != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'isBrak' должно быть true/false");
             if (typeof(row.isReturn) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'isReturn'");
-            if (typeof row.isReturn != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'isReturn' должно быть числом");            
+            if (typeof row.isReturn != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'isReturn' должно быть true/false");            
         }
     }
 
