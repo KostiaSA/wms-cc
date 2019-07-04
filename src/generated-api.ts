@@ -1308,3 +1308,27 @@ export async function _wms_android_Список_настроек_WMS(): Promise<
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_РАЗГР_Проверить_способ_хранения {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_РАЗГР_Проверить_способ_хранения(ТМЦ: number, Паллета: number, Задание: number): Promise<IResult_wms_android_РАЗГР_Проверить_способ_хранения> {
+    if (typeof ТМЦ != "number") throw new Error("вызов '_wms_android_РАЗГР_Проверить_способ_хранения': параметр 'ТМЦ' должен быть числом");
+    if (typeof Паллета != "number") throw new Error("вызов '_wms_android_РАЗГР_Проверить_способ_хранения': параметр 'Паллета' должен быть числом");
+    if (typeof Задание != "number") throw new Error("вызов '_wms_android_РАЗГР_Проверить_способ_хранения': параметр 'Задание' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_Проверить_способ_хранения " + ТМЦ.toString() + "," + Паллета.toString() + "," + Задание.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_Проверить_способ_хранения: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_Проверить_способ_хранения: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Проверить_способ_хранения': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Проверить_способ_хранения': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

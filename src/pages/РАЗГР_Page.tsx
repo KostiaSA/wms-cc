@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -206,6 +206,25 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             showError("Поставщик ТМЦ не соответствует клиенту в задании!");
             return;
         }
+
+        if (tmcInfo.Вес == 0 || tmcInfo.ДлинаБрутто == 0 || tmcInfo.ШиринаБрутто == 0 || tmcInfo.ОбъемБрутто == 0 || tmcInfo.ВысотаБрутто == 0) {
+            // todo  NotifyAdminUsers('Не заполнены ОВХ для ТМЦ №' + GetValueFromSQL('SELECT Номер FROM [ТМЦ view] ТМЦ WITH(NOLOCK) WHERE Ключ = ' + VarToStr(TMCID)));
+            if (appState.настройки_WMS("Включить контроль грузогабаритных характеристик при вводе заявок") == "1") {
+                // todo Result:= ShowForm('скл_терминал_ОВХ_товар', Self)
+                showError("У товара незаполнены ОВ характеристики. Такой товар принимать запрещено!");
+                return;
+
+            }
+
+
+        }
+
+        let res1 = await _wms_android_РАЗГР_Проверить_способ_хранения(tmcId, this.intoId, this.props.taskId);
+        if (res1.Ok != "Ok") {
+            showError(res1.Ok);
+            return;
+        }
+
 
 
         // let res = await _wms_android_РАЗГР_обработка_шк_товара(
