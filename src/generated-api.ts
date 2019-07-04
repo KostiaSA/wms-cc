@@ -126,7 +126,7 @@ export interface IResult_wms_android_Информация_о_задании {
     Водитель: string;
     Подразделение2: string;
     Сотрудник: string;
-    ЕстьСпецификация: number;
+    ЕстьСпецификация: boolean;
     ПропускУпакРазрешен: boolean;
     НазваниеЗадания: string;
     Откуда: string;
@@ -136,14 +136,14 @@ export interface IResult_wms_android_Информация_о_задании {
     ЗаявкаНомер: string;
     ЗаявкаДата: string;
     ЗаявкаПримечание: string;
-    Объединенная: number;
+    Объединенная: boolean;
     Тип: number;
     ДоговорКлюч: number;
-    ДоговорПодразделение: number;
-    Клиент: number;
-    ПовторнаяОтгрузка: number;
-    ЗавершенноеЗадание: number;
-    РучнойВводКоличества: number;
+    ДоговорПодразделениеКлюч: number;
+    КлиентКлюч: number;
+    ПовторнаяОтгрузка: boolean;
+    ЗавершенноеЗадание: boolean;
+    РучнойВводКоличества: boolean;
     isCrossDoc: boolean;
     isBrak: boolean;
     isReturn: boolean
@@ -174,7 +174,7 @@ export async function _wms_android_Информация_о_задании(taskId
             if (typeof(row.Сотрудник) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Сотрудник'");
             if (typeof row.Сотрудник != "string") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'Сотрудник' должно быть строкой");
             if (typeof(row.ЕстьСпецификация) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ЕстьСпецификация'");
-            if (typeof row.ЕстьСпецификация != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ЕстьСпецификация' должно быть числом");
+            if (typeof row.ЕстьСпецификация != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ЕстьСпецификация' должно быть true/false");
             if (typeof(row.ПропускУпакРазрешен) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ПропускУпакРазрешен'");
             if (typeof row.ПропускУпакРазрешен != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ПропускУпакРазрешен' должно быть true/false");
             if (typeof(row.НазваниеЗадания) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'НазваниеЗадания'");
@@ -194,21 +194,21 @@ export async function _wms_android_Информация_о_задании(taskId
             if (typeof(row.ЗаявкаПримечание) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ЗаявкаПримечание'");
             if (typeof row.ЗаявкаПримечание != "string") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ЗаявкаПримечание' должно быть строкой");
             if (typeof(row.Объединенная) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Объединенная'");
-            if (typeof row.Объединенная != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'Объединенная' должно быть числом");
+            if (typeof row.Объединенная != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'Объединенная' должно быть true/false");
             if (typeof(row.Тип) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Тип'");
             if (typeof row.Тип != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'Тип' должно быть числом");
             if (typeof(row.ДоговорКлюч) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ДоговорКлюч'");
             if (typeof row.ДоговорКлюч != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ДоговорКлюч' должно быть числом");
-            if (typeof(row.ДоговорПодразделение) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ДоговорПодразделение'");
-            if (typeof row.ДоговорПодразделение != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ДоговорПодразделение' должно быть числом");
-            if (typeof(row.Клиент) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'Клиент'");
-            if (typeof row.Клиент != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'Клиент' должно быть числом");
+            if (typeof(row.ДоговорПодразделениеКлюч) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ДоговорПодразделениеКлюч'");
+            if (typeof row.ДоговорПодразделениеКлюч != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ДоговорПодразделениеКлюч' должно быть числом");
+            if (typeof(row.КлиентКлюч) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'КлиентКлюч'");
+            if (typeof row.КлиентКлюч != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'КлиентКлюч' должно быть числом");
             if (typeof(row.ПовторнаяОтгрузка) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ПовторнаяОтгрузка'");
-            if (typeof row.ПовторнаяОтгрузка != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ПовторнаяОтгрузка' должно быть числом");
+            if (typeof row.ПовторнаяОтгрузка != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ПовторнаяОтгрузка' должно быть true/false");
             if (typeof(row.ЗавершенноеЗадание) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'ЗавершенноеЗадание'");
-            if (typeof row.ЗавершенноеЗадание != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ЗавершенноеЗадание' должно быть числом");
+            if (typeof row.ЗавершенноеЗадание != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'ЗавершенноеЗадание' должно быть true/false");
             if (typeof(row.РучнойВводКоличества) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'РучнойВводКоличества'");
-            if (typeof row.РучнойВводКоличества != "number") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'РучнойВводКоличества' должно быть числом");
+            if (typeof row.РучнойВводКоличества != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'РучнойВводКоличества' должно быть true/false");
             if (typeof(row.isCrossDoc) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'isCrossDoc'");
             if (typeof row.isCrossDoc != "boolean") throw new Error("результат выполнения '_wms_android_Информация_о_задании': значение в колонке 'isCrossDoc' должно быть true/false");
             if (typeof(row.isBrak) == "undefined") throw new Error("результат выполнения '_wms_android_Информация_о_задании': не заполнена колонка 'isBrak'");
@@ -641,7 +641,7 @@ export interface IResult_wms_android_ПИК_обработка_шк_товара
     Заявка_14700: number
 }
 
-export async function _wms_android_ПИК_обработка_шк_товара(mode: number, taskId: number, tmcId: number, partId: number, SkladKol: number, barcode: string, currentFromPalleteId: number, currentIntoPalleteId: number, isZamena: number, clientID: number, requestEdit_Value: number, otherParty: number, changePalOld: number, changePartOld: number, userID: number, newKol_ответ_юзера: number): Promise<IResult_wms_android_ПИК_обработка_шк_товара> {
+export async function _wms_android_ПИК_обработка_шк_товара(mode: number, taskId: number, tmcId: number, partId: number, SkladKol: number, barcode: string, currentFromPalleteId: number, currentIntoPalleteId: number, isZamena: number, clientID: number, requestEdit_Value: boolean, otherParty: number, changePalOld: number, changePartOld: number, userID: number, newKol_ответ_юзера: number): Promise<IResult_wms_android_ПИК_обработка_шк_товара> {
     if (typeof mode != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'mode' должен быть числом");
     if (typeof taskId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'taskId' должен быть числом");
     if (typeof tmcId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'tmcId' должен быть числом");
@@ -652,13 +652,13 @@ export async function _wms_android_ПИК_обработка_шк_товара(m
     if (typeof currentIntoPalleteId != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'currentIntoPalleteId' должен быть числом");
     if (typeof isZamena != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'isZamena' должен быть числом");
     if (typeof clientID != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'clientID' должен быть числом");
-    if (typeof requestEdit_Value != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'requestEdit_Value' должен быть числом");
+    if (typeof requestEdit_Value != "boolean") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'requestEdit_Value' должен быть boolean");
     if (typeof otherParty != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'otherParty' должен быть числом");
     if (typeof changePalOld != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'changePalOld' должен быть числом");
     if (typeof changePartOld != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'changePartOld' должен быть числом");
     if (typeof userID != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'userID' должен быть числом");
     if (typeof newKol_ответ_юзера != "number") throw new Error("вызов '_wms_android_ПИК_обработка_шк_товара': параметр 'newKol_ответ_юзера' должен быть числом");
-    let recordsets = await executeSql("_wms_android_ПИК_обработка_шк_товара " + mode.toString() + "," + taskId.toString() + "," + tmcId.toString() + "," + partId.toString() + "," + SkladKol.toString() + "," + stringAsSql(barcode) + "," + currentFromPalleteId.toString() + "," + currentIntoPalleteId.toString() + "," + isZamena.toString() + "," + clientID.toString() + "," + requestEdit_Value.toString() + "," + otherParty.toString() + "," + changePalOld.toString() + "," + changePartOld.toString() + "," + userID.toString() + "," + newKol_ответ_юзера.toString());
+    let recordsets = await executeSql("_wms_android_ПИК_обработка_шк_товара " + mode.toString() + "," + taskId.toString() + "," + tmcId.toString() + "," + partId.toString() + "," + SkladKol.toString() + "," + stringAsSql(barcode) + "," + currentFromPalleteId.toString() + "," + currentIntoPalleteId.toString() + "," + isZamena.toString() + "," + clientID.toString() + "," + (requestEdit_Value?1:0) + "," + otherParty.toString() + "," + changePalOld.toString() + "," + changePartOld.toString() + "," + userID.toString() + "," + newKol_ответ_юзера.toString());
     let lastRecordset = recordsets[recordsets.length - 1];
     if (!lastRecordset) return { error: "_wms_android_ПИК_обработка_шк_товара: не вернула результатов" } as any;
     if (lastRecordset.length > 1) return { error: "_wms_android_ПИК_обработка_шк_товара: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;

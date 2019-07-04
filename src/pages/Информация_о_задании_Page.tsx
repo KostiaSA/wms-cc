@@ -167,7 +167,7 @@ export class Информация_о_задании_Page extends React.Component
         }
 
         let объединенная = null;
-        if (this.task.Объединенная > 0)
+        if (this.task.Объединенная)
             объединенная = <div style={{ color: "brown" }}>Объединенная заявка!</div>;
 
         let спецификация = null;

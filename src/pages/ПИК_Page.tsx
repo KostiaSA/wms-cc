@@ -44,7 +44,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
     intoName: string = "не выбрано";
 
     isReplaceMode: number = 0;
-    isЗапросКоличестваMode: number = 0;
+    isЗапросКоличестваMode: boolean = false;
     //otherParty: number = 0;
     changeTMCID: number = 0;
 
@@ -60,7 +60,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         if (!barcode) return;
         let barcodePrefix = barcode.barcode.substr(0, 3).toUpperCase();
 
-        if (this.task.ЗавершенноеЗадание != 0) {
+        if (this.task.ЗавершенноеЗадание) {
             showError("ПИК уже завершен.");
             return;
         }
@@ -90,11 +90,11 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             }
         }
 
-        let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.Клиент)).ТМЦ;
+        let tmcId = (await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.КлиентКлюч)).ТМЦ;
 
         let partId = 0;
         if (tmcId == 0) {
-            let res = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент);
+            let res = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.КлиентКлюч);
             partId = res.Партия;
             tmcId = res.ТМЦ;
         }
@@ -213,7 +213,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
             this.fromId,
             this.intoId,
             this.isReplaceMode,
-            this.task.Клиент,
+            this.task.КлиентКлюч,
             this.isЗапросКоличестваMode,
             otherParty,
             0, // todo @ChangePalOld
@@ -248,7 +248,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                     this.fromId,
                     this.intoId,
                     this.isReplaceMode,
-                    this.task.Клиент,
+                    this.task.КлиентКлюч,
                     this.isЗапросКоличестваMode,
                     otherParty,
                     0, // todo @ChangePalOld
@@ -359,7 +359,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
 
 
         let объединенная = null;
-        if (this.task.Объединенная > 0)
+        if (this.task.Объединенная)
             объединенная = <div style={{ color: "brown" }}>Объединенная заявка!</div>;
 
         let паллета4 = null;

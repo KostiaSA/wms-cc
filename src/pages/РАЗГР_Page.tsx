@@ -71,7 +71,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         if (barcode.barcode.toUpperCase().startsWith("CROSS"))
             barcodePrefix = "CROSS";
 
-        if (this.task.ЗавершенноеЗадание != 0) {
+        if (this.task.ЗавершенноеЗадание) {
             showError("РАЗГРУЗКА завершена.");
             return;
         }
@@ -147,13 +147,13 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
 
 
-        let tmcRes = await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.Клиент);
+        let tmcRes = await _wms_android_Получить_ТМЦ_по_штрих_коду(barcode.barcode, this.task.КлиентКлюч);
         let tmcId = tmcRes.ТМЦ;
         let barCodeKol = tmcRes.Количество;
         let partId = 0;
 
         if (tmcId == 0) {
-            let partRes = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.Клиент);
+            let partRes = await _wms_android_Получить_Партию_по_штрих_коду(barcode.barcode, this.task.КлиентКлюч);
             partId = partRes.Партия;
             tmcId = partRes.ТМЦ;
             barCodeKol = partRes.Количество;
@@ -163,7 +163,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         if ((tmcId == 0 && partId == 0) || (tmcId != 0 && partId == 0)) {
             //fCreateedPartID:= 0;
             //fFindTMC:= 0;
-            let res = await CreatePart_FromBarCode(barcode.barcode, this.task.Клиент, this.task.ДоговорКлюч);
+            let res = await CreatePart_FromBarCode(barcode.barcode, this.task.КлиентКлюч, this.task.ДоговорКлюч);
             if (res.Ok) {
                 if (tmcId != 0 && tmcId != res.FindedTMC) {
                     //bmWarning('Штрих-код привязан к ТМЦ (Ключ=' + IntToStr(TMCID) + '), код ТМЦ в считанном штрих-коде (Ключ=' + IntToStr(fFindTMC) + '). На склад будет принят ТМЦ с ключом=' + IntToStr(fFindTMC));
@@ -202,7 +202,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
         let tmcInfo = await _wms_android_ТМЦ_инфо(tmcId);
 
-        if (tmcInfo.Поставщик != this.task.Клиент) {
+        if (tmcInfo.Поставщик != this.task.КлиентКлюч) {
             showError("Поставщик ТМЦ не соответствует клиенту в задании!");
             return;
         }
@@ -348,7 +348,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
 
         let объединенная = null;
-        if (this.task.Объединенная > 0)
+        if (this.task.Объединенная)
             объединенная = <div style={{ color: "brown" }}>Объединенная заявка!</div>;
 
         let паллета4 = null;
