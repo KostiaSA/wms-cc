@@ -5,7 +5,7 @@ import { appState } from "../AppState";
 import { playSound, playSound_ButtonClick } from "../utils/playSound";
 
 import { BuhtaButton } from "../ui/BuhtaButton";
-import { IResult_wms_android_тестовые_штрихкоды, _wms_android_тестовые_штрихкоды } from "../generated-api";
+import { IResult_wms_android_Тестовые_штрихкоды, _wms_android_Тестовые_штрихкоды } from "../generated-api";
 
 export interface ITestBarcodesPageProps extends IAppPageProps {
     taskId: number;
@@ -36,11 +36,11 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
     }
 
     //recordset: any[] = [];
-    data: IResult_wms_android_тестовые_штрихкоды[];
+    data: IResult_wms_android_Тестовые_штрихкоды[];
 
     async loadFromSql() {
         if (!this.data && this.props.pageId == appState.activePageId[0]) {
-            this.data = await _wms_android_тестовые_штрихкоды(this.props.taskId, this.props.palleteFrom);
+            this.data = await _wms_android_Тестовые_штрихкоды(this.props.taskId, this.props.palleteFrom);
             this.forceUpdate();
         }
         //debugger
@@ -88,7 +88,7 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
                     </BuhtaButton>
                     <br />
                     {
-                        (this.data || []).map((row: IResult_wms_android_тестовые_штрихкоды, index: number) => {
+                        (this.data || []).map((row: IResult_wms_android_Тестовые_штрихкоды, index: number) => {
                             return ([
                                 <BuhtaButton key={index} outline
                                     style={{ marginRight: 3, marginTop: 5, maxWidth: 250 }} onClick={() => {

@@ -245,7 +245,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
 
         if (!this.task.isReturn) {
-            if (partInfo.ДоговорПрихода != 0 && partInfo.ДоговорПрихода != this.task.ДоговорКлюч) {
+            if (partInfo && partInfo.ДоговорПрихода != 0 && partInfo.ДоговорПрихода != this.task.ДоговорКлюч) {
                 showError("Партия создавалась по другому договору прихода.");
                 return;
 
@@ -335,6 +335,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
                 // todo barcodeKol=?
                 // todo partId=?
+                showError("1 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
 
             }
         }
@@ -342,6 +343,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
             // todo barcodeKol=?
             // todo partId=?
+            showError("2 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
         }
 
         if (!flag)
