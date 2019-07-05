@@ -1255,7 +1255,10 @@ export interface IResult_wms_android_ТМЦ_инфо {
     ТипОтбора: string;
     Партионный: string;
     КарточкаНовойПартии: string;
-    КарточкаНовогоБрака: string
+    КарточкаНовогоБрака: string;
+    ЕдИзм: string;
+    ЕдИзм2: string;
+    СписокУпаковок: string
 }
 
 export async function _wms_android_ТМЦ_инфо(tmcId: number): Promise<IResult_wms_android_ТМЦ_инфо> {
@@ -1297,7 +1300,13 @@ export async function _wms_android_ТМЦ_инфо(tmcId: number): Promise<IResu
             if (typeof(row.КарточкаНовойПартии) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'КарточкаНовойПартии'");
             if (typeof row.КарточкаНовойПартии != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'КарточкаНовойПартии' должно быть строкой");
             if (typeof(row.КарточкаНовогоБрака) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'КарточкаНовогоБрака'");
-            if (typeof row.КарточкаНовогоБрака != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'КарточкаНовогоБрака' должно быть строкой");            
+            if (typeof row.КарточкаНовогоБрака != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'КарточкаНовогоБрака' должно быть строкой");
+            if (typeof(row.ЕдИзм) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'ЕдИзм'");
+            if (typeof row.ЕдИзм != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'ЕдИзм' должно быть строкой");
+            if (typeof(row.ЕдИзм2) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'ЕдИзм2'");
+            if (typeof row.ЕдИзм2 != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'ЕдИзм2' должно быть строкой");
+            if (typeof(row.СписокУпаковок) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'СписокУпаковок'");
+            if (typeof row.СписокУпаковок != "string") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'СписокУпаковок' должно быть строкой");            
         }
     }
 

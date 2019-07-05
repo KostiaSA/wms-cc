@@ -24,6 +24,7 @@ import { playSound_ButtonClick } from "../utils/playSound";
 export interface I_РАЗГР_запрос_партии_и_количества_PageProps extends IAppPageProps {
     task: IResult_wms_android_Информация_о_задании;
     tmc: IResult_wms_android_ТМЦ_инфо;
+    barcodeKol: number;
 }
 
 export interface I_РАЗГР_запрос_партии_и_количества_Result {
@@ -31,9 +32,14 @@ export interface I_РАЗГР_запрос_партии_и_количества_
     selectedPartId: number;
 }
 
-export async function get_РАЗГР_запрос_партии_и_количества(task: IResult_wms_android_Информация_о_задании, tmc: IResult_wms_android_ТМЦ_инфо): Promise<I_РАЗГР_запрос_партии_и_количества_Result> {
+export async function get_РАЗГР_запрос_партии_и_количества(
+    task: IResult_wms_android_Информация_о_задании,
+    tmc: IResult_wms_android_ТМЦ_инфо,
+    barcodeKol: number
+): Promise<I_РАЗГР_запрос_партии_и_количества_Result> {
+
     appState.modalResult = undefined;
-    appState.openModal(РАЗГР_запрос_партии_и_количества_Page, { pageId: getRandomString(), task, tmc });
+    appState.openModal(РАЗГР_запрос_партии_и_количества_Page, { pageId: getRandomString(), task, tmc, barcodeKol });
     return new Promise<I_РАЗГР_запрос_партии_и_количества_Result>(
         async (resolve: (res: I_РАЗГР_запрос_партии_и_количества_Result) => void, reject: (error: string) => void) => {
             while (typeof (appState.modalResult) == "undefined")
@@ -56,9 +62,23 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     gridColumnApi: any;
     selectedPartId: number = 0;
 
+    kolInBox: number = 0;
+    UpTypeEdit_Value: string = "";
+    MestEdit_Value: number = 0;
+    KolEdit_Value: number = 0;
+    BoxLabel_Caption: string = "";
+    UnitLabel_Caption: string = "";
+    error: string = "";
+
     async componentDidMount() {
         PlaySound.выберите_партию();
-    };
+        this.UpTypeEdit_Value = this.props.tmc.ЕдИзм;
+        if (this.UpTypeEdit_Value == "")
+            this.UpTypeEdit_Value = this.props.tmc.ЕдИзм2;
+
+        this.KolEdit_Value = this.props.barcodeKol;
+        this.kolInBox = this.props.barcodeKol;
+    }
 
     onTovarsGridReady = (params: any) => {
         this.gridApi = params.api;
@@ -152,12 +172,6 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         // }
     }
 
-    UpTypeEdit_Value: number = 0;
-    MestEdit_Value: number = 0;
-    KolEdit_Value: number = 0;
-    BoxLabel_Caption: string = "";
-    UnitLabel_Caption: string = "";
-    error: string = "";
 
     render(): React.ReactNode {
 
@@ -171,12 +185,15 @@ export class РАЗГР_запрос_партии_и_количества_Page e
             padding: 3,
         };
 
-        let items = null;//this.info.UpTypeEdit_ComboItems_Text.split("\r").map((item: string, index: number) => <option key={index} value={item}>{item}</option>);
+        let kol_disabled: boolean = !(this.props.task.РучнойВводКоличества || this.props.tmc.ТипТовара.toUpperCase() == "МЕРНЫЙ");
+
+        let items = this.props.tmc.СписокУпаковок.split("\r").map((item: string, index: number) => <option key={index} value={item}>{item}</option>);
         let тип_упак = (
             <tr>
                 <td style={labelStyle}>тип уп.</td>
                 <td style={textStyle}>
                     <select
+                        disabled={kol_disabled}
                         className="form-control form-control"
                         name="select3"
                         value={this.UpTypeEdit_Value}
@@ -186,8 +203,6 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                         }}
                     >
                         {items}
-                        {/* <option value="коробка" selected>коробка</option>
-                        <option value="шт">шт</option> */}
                     </select>
                 </td>
             </tr>
@@ -205,6 +220,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             color="warning"
                             style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#ffc10747" }}
                             onClick={() => { this.MestEdit_Value--; this.MestEditChanged(); this.forceUpdate() }}
+                            disabled={kol_disabled}
+
                         >
                             <i className="fa fa-minus"></i>
                         </BuhtaButton>
@@ -215,6 +232,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             style={{ width: 60, display: "inline", color: this.error == "" ? "#ffc107" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.MestEdit_Value}
                             onChange={(event) => { this.MestEdit_Value = Number.parseFloat(event.target.value); this.MestEditChanged(); this.forceUpdate() }}
+                            disabled={kol_disabled}
+
                         >
                         </input>
                         <BuhtaButton
@@ -222,6 +241,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             color="warning"
                             style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#ffc10747" }}
                             onClick={() => { this.MestEdit_Value++; this.MestEditChanged(); this.forceUpdate() }}
+                            disabled={kol_disabled}
                         >
                             <i className="fa fa-plus"></i>
                         </BuhtaButton>
@@ -233,6 +253,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         // if (this.info.MestPanel_Visible == 0 || this.props.запрос_количества_MaxKol < this.info.InBox)
         //     упак = null;
 
+        //KolEdit.Enabled := Param.Values('Разрешить ручной ввод количества') or AnsiSameText(Param.Values('ТипТовара'), 'Мерный');
+
         let кол = (
             <tr>
                 <td style={labelStyle}>единиц</td>
@@ -243,21 +265,25 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             color="success"
                             style={{ borderRadius: "1rem", marginRight: 3, borderColor: "#4dbd743d" }}
                             onClick={() => { this.KolEdit_Value--; this.KolEditChanged(); this.forceUpdate() }}
+                            disabled={kol_disabled}
 
                         >
                             <i className="fa fa-minus"></i>
                         </BuhtaButton>
                         <input
+                            disabled={kol_disabled}
                             required
                             type="number"
                             className="form-control"
                             style={{ width: 60, display: "inline", color: this.error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.KolEdit_Value}
                             onChange={(event) => { this.KolEdit_Value = Number.parseFloat(event.target.value); this.KolEditChanged(); this.forceUpdate() }}
+
                         >
 
                         </input>
                         <BuhtaButton
+                            disabled={kol_disabled}
                             outline
                             color="success"
                             style={{ borderRadius: "1rem", marginLeft: 3, borderColor: "#4dbd743d" }}

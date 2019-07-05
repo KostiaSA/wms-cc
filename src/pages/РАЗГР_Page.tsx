@@ -333,7 +333,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 flag = true;
             }
             else {
-                let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo);
+                let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, barcodeKol);
                 // todo barcodeKol=?
                 // todo partId=?
                 //showError("1 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
@@ -341,7 +341,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
         }
         else {
-            let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo);
+            let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, barcodeKol);
             // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
             // todo barcodeKol=?
             // todo partId=?
