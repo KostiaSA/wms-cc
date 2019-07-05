@@ -26,6 +26,7 @@ import { parseGS1, IGS1Item } from "../utils/gs1";
 import { isDate } from '../utils/isDate';
 import { isNumber } from 'util';
 import { getConfirmation } from "../modals/ConfirmationPage";
+import { get_РАЗГР_запрос_партии_и_количества } from "../modals/РАЗГР_запрос_партии_и_количества";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -332,18 +333,19 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 flag = true;
             }
             else {
-                // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
+                let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo);
                 // todo barcodeKol=?
                 // todo partId=?
-                showError("1 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
+                //showError("1 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
 
             }
         }
         else {
+            let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo);
             // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
             // todo barcodeKol=?
             // todo partId=?
-            showError("2 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
+            //showError("2 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
         }
 
         if (!flag)
