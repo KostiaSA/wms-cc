@@ -14,10 +14,11 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете, IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании } from "../generated-api";
+import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете, IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
+import moment from "moment";
 
 
 
@@ -57,7 +58,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         super(props, context);
     }
 
-    data: IResult_wms_android_ПИК_список_партий_на_паллете[] = [];
+    partList: IResult_wms_android_РАЗГР_список_партий_по_договору[] = [];
     gridApi: any;
     gridColumnApi: any;
     selectedPartId: number = 0;
@@ -68,7 +69,13 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     KolEdit_Value: number = 0;
     BoxLabel_Caption: string = "";
     UnitLabel_Caption: string = "";
-    error: string = "";
+
+    СрокРеализДнEdit_Value: number = 0;
+    ДатаВыпукаEdit_Value: Date = new Date();
+    СрокРеализEdit_Value: Date = new Date();
+
+    kol_error: string = "";
+    part_error: string = "";
 
     async componentDidMount() {
         PlaySound.выберите_партию();
@@ -78,6 +85,10 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
         this.KolEdit_Value = this.props.barcodeKol;
         this.kolInBox = this.props.barcodeKol;
+
+        this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.Ключ, this.props.tmc.Ключ);
+        this.forceUpdate();
+
     }
 
     onTovarsGridReady = (params: any) => {
@@ -91,7 +102,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
             return;
 
         //this.data = await _wms_android_ПИК_список_партий_на_паллете(this.props.palleteId, this.props.tmcId, this.props.taskId);
-        this.gridApi.setRowData(this.data);
+        this.gridApi.setRowData(this.partList);
         this.gridApi.sizeColumnsToFit();
         this.gridApi.resetRowHeights();
         this.forceUpdate();
@@ -105,6 +116,17 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         this.forceUpdate();
     }
 
+    СрокРеализДн_Changed() {
+
+    }
+
+    ДатаВыпука_Changed() {
+
+    }
+
+    СрокРеализ_Changed() {
+
+    }
 
     KolEditChanged() {
         // if (this.info.bSimpleWeight == 1) {
@@ -229,7 +251,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             required
                             type="number"
                             className="form-control"
-                            style={{ width: 60, display: "inline", color: this.error == "" ? "#ffc107" : "red", fontWeight: "bold", textAlign: "center" }}
+                            style={{ width: 60, display: "inline", color: this.kol_error == "" ? "#ffc107" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.MestEdit_Value}
                             onChange={(event) => { this.MestEdit_Value = Number.parseFloat(event.target.value); this.MestEditChanged(); this.forceUpdate() }}
                             disabled={kol_disabled}
@@ -275,7 +297,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             required
                             type="number"
                             className="form-control"
-                            style={{ width: 60, display: "inline", color: this.error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
+                            style={{ width: 60, display: "inline", color: this.kol_error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.KolEdit_Value}
                             onChange={(event) => { this.KolEdit_Value = Number.parseFloat(event.target.value); this.KolEditChanged(); this.forceUpdate() }}
 
@@ -299,22 +321,75 @@ export class РАЗГР_запрос_партии_и_количества_Page e
             </tr >
         )
 
+
+        let срокДн: any;
+        if (this.props.tmc.СрокГодностиДни > 0)
+            срокДн = (
+                <tr>
+                    <td colSpan={2} style={{ ...textStyle, color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>срок годности {this.props.tmc.СрокГодностиДни} дн.</td>
+                </tr >
+            )
+        if (this.props.tmc.СрокГодностиМес > 0)
+            срокДн = (
+                <tr>
+                    <td colSpan={2} style={{ ...textStyle, color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>срок годности {this.props.tmc.СрокГодностиМес} мес.</td>
+                </tr >
+            )
+
+        let датаВыпуска = (
+            <tr>
+                <td style={labelStyle}>дата выпуска</td>
+                <td style={textStyle}>
+                    <div className="input-groupx">
+                        <input
+                            required
+                            type="date"
+                            className="form-control"
+                            style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
+                            value={moment(this.ДатаВыпукаEdit_Value).format("YYYY-MM-DD")}
+                            onChange={(event) => { this.ДатаВыпукаEdit_Value = event.target.valueAsDate; this.ДатаВыпука_Changed(); this.forceUpdate() }}
+                        >
+                        </input>
+                    </div>
+                </td>
+            </tr >
+        )
+
+        let срокРеализ = (
+            <tr>
+                <td style={labelStyle}>срок реализ.</td>
+                <td style={textStyle}>
+                    <div className="input-groupx">
+                        <input
+                            required
+                            type="date"
+                            className="form-control"
+                            style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
+                            value={moment(this.СрокРеализEdit_Value).format("YYYY-MM-DD")}
+                            onChange={(event) => { this.СрокРеализEdit_Value = event.target.valueAsDate; this.ДатаВыпука_Changed(); this.forceUpdate() }}
+                        >
+                        </input>
+                    </div>
+                </td>
+            </tr >
+        )
+
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>Выбор партии</div>
-                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>
-                            {this.data[0] ? this.data[0].НазваниеПаллеты : ""}
-                        </div>
+                        {/* <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>
+                            {this.partList[0] ? this.partList[0].НазваниеПаллеты : ""}
+                        </div> */}
                         <div style={{ color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, textAlign: "left", fontSize: 11 }}>
-                            {this.data[0] ? this.data[0].НазваниеТМЦ : ""}
+                            {this.props.tmc.НомерНазвание}
                         </div>
                     </ModalHeader>
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 340, }}>
                         <div className="card-body" style={{ zoom: appState.zoom, padding: 5 }}>
 
-                            <div className="ag-theme-balham" style={{ height: 140, width: "100%", marginBottom: 5 }}>
+                            <div className="ag-theme-balham" style={{ height: 140, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>
                                 <AgGridReact
                                     suppressLoadingOverlay
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
@@ -333,7 +408,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 </AgGridReact>
                             </div>
 
-                            <table>
+                            <table style={{ marginBottom: 5 }}>
                                 <tbody>
                                     {тип_упак}
                                     {упак}
@@ -341,6 +416,17 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 </tbody>
                             </table>
 
+                            <div style={{ width: "100%", marginBottom: 5, display: this.partList.length == 0 ? "block" : "none" }}>
+                                <div style={{ textAlign: "center" }}>Создание новой партии</div>
+                                <table>
+                                    <tbody>
+                                        {срокДн}
+                                        {датаВыпуска}
+                                        {срокРеализ}
+                                    </tbody>
+                                </table>
+
+                            </div>
                         </div>
 
 
