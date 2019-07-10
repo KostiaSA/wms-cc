@@ -374,11 +374,15 @@ export class РАЗГР_запрос_партии_и_количества_Page e
             </tr >
         )
 
+        let title = "Выбор партии";
+        if (this.partList.length == 0)
+            title = "Новая партия";
+
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
-                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>Выбор партии</div>
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>{title}</div>
                         {/* <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>
                             {this.partList[0] ? this.partList[0].НазваниеПаллеты : ""}
                         </div> */}

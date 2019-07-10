@@ -15,6 +15,7 @@ import { getConfirmation } from "../modals/ConfirmationPage";
 import { show_Информация_о_задании } from "./Информация_о_задании_Page";
 import { show_НастройкаТСД } from "./НастройкаТСД_Page";
 import { I_РАЗГР_меню_PageProps, РАЗГР_меню_Page_ModalResult, РАЗГР_меню_Page } from "../modals/РАЗГР_меню";
+import { get_Выбор_задания_в_работу } from "../modals/Выбор_задания_в_работу";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -39,7 +40,10 @@ let mainMenuItems: IMainMenuItem[] = [
             let res = await appState.getModalResult<I_РАЗГР_меню_PageProps, РАЗГР_меню_Page_ModalResult>(РАЗГР_меню_Page, { pageId: getRandomString() });
             //   | "Назначить задание (auto)" |  | "Нет";
             if (res == "Выбор задания") {
-                showError("Пока не работает");
+                let res = await get_Выбор_задания_в_работу("РАЗГР");
+                if (res.result == "Ok") {
+                    show_Информация_о_задании(res.selectedTaskId);
+                }
             }
             else if (res == "Прием без задания") {
                 showError("Пока не работает");

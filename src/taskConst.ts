@@ -1,3 +1,5 @@
+import { _wms_android_РАЗГР_выбрать_задание_список } from "./generated-api";
+
 export type TaskType =
     "РАЗГР" |
     "ПИК" |
@@ -29,6 +31,7 @@ export interface ITaskConst {
     показыватьЗонуВИнфо?: boolean;
     показыватьОткудаКудаВИнфо?: boolean;
     показыватьПаллетуВИнфо?: boolean;
+    выбрать_задание_api?: (kadrId: number) => Promise<any>;
 
 }
 
@@ -58,7 +61,8 @@ taskConst["РАЗГР"] = {
     headerBackground: "lightcyan",
     показыватьЗаявкуВИнфо: true,
     показыватьАвтомобильВИнфо: true,
-    показыватьЗонуВИнфо: true
+    показыватьЗонуВИнфо: true,
+    выбрать_задание_api: _wms_android_РАЗГР_выбрать_задание_список
 }
 
 taskConst["ПИК"] = {
