@@ -33,7 +33,7 @@ export interface IMainMenuItem {
 let mainMenuItems: IMainMenuItem[] = [
     {
         group: "ОСНОВНЫЕ ОПЕРАЦИИ",
-        label: "ПРИЕМ",
+        label: "РАЗГР",
         code: "РАЗГР",
         onClick: async () => {
             playSound_ButtonClick();

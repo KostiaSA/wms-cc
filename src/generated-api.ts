@@ -1567,3 +1567,25 @@ export async function _wms_android_РАЗГР_выбрать_задание_сп
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_cypress_Очистка_общая {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_cypress_Очистка_общая(dbname: string): Promise<IResult_wms_android_cypress_Очистка_общая> {
+    if (typeof dbname != "string") throw new Error("вызов '_wms_android_cypress_Очистка_общая': параметр 'dbname' должен быть строкой");
+    let recordsets = await executeSql("_wms_android_cypress_Очистка_общая " + stringAsSql(dbname));
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_cypress_Очистка_общая: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_cypress_Очистка_общая: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_cypress_Очистка_общая': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_cypress_Очистка_общая': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
