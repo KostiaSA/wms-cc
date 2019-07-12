@@ -14,11 +14,12 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете, IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору } from "../generated-api";
+import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете, IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
 import moment from "moment";
+import { Moment } from 'moment';
 
 
 
@@ -68,17 +69,20 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     MestEdit_Value: number = 0;
     KolEdit_Value: number = 0;
     BoxLabel_Caption: string = "";
-    UnitLabel_Caption: string = "";
+    осталосьПринятьКоличество: number = 0;
+    осталосьПринятьУпаковки: string = "";
 
     СрокРеализДнEdit_Value: number = 0;
-    ДатаВыпукаEdit_Value: Date = new Date();
-    СрокРеализEdit_Value: Date = new Date();
+    ДатаВыпускаEdit_Value: Moment = moment();
+    СрокРеализEdit_Value: Moment = moment();
 
     kol_error: string = "";
     part_error: string = "";
 
     async componentDidMount() {
-        PlaySound.выберите_партию();
+        if (this.props.tmc.Весовой)
+            throw new Error("Весовой товар пока не работает");
+
         this.UpTypeEdit_Value = this.props.tmc.ЕдИзм;
         if (this.UpTypeEdit_Value == "")
             this.UpTypeEdit_Value = this.props.tmc.ЕдИзм2;
@@ -86,7 +90,16 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         this.KolEdit_Value = this.props.barcodeKol;
         this.kolInBox = this.props.barcodeKol;
 
+        this.ДатаВыпуска_Changed();
+
         this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.Ключ, this.props.tmc.Ключ);
+        if (this.partList.length > 0)
+            PlaySound.выберите_партию();
+        else
+            PlaySound.новая_партия();
+
+        this.осталосьПринятьКоличество = (await _wms_android_РАЗГР_осталось_принять_ТМЦ(this.props.task.Ключ, this.props.task.ДоговорКлюч, this.props.tmc.Ключ)).Количество;
+        this.осталосьПринятьУпаковки = (await _wms_android_Партия_штуки_в_упаковки(this.props.tmc.Ключ, 0, this.осталосьПринятьКоличество)).Упаковки;
         this.forceUpdate();
 
     }
@@ -116,15 +129,23 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         this.forceUpdate();
     }
 
-    СрокРеализДн_Changed() {
-
-    }
-
-    ДатаВыпука_Changed() {
+    ДатаВыпуска_Changed() {
+        if (this.props.tmc.СрокГодностиДни > 0) {
+            this.СрокРеализEdit_Value = moment(this.ДатаВыпускаEdit_Value).add(this.props.tmc.СрокГодностиДни, "days")
+        }
+        else if (this.props.tmc.СрокГодностиМес > 0) {
+            this.СрокРеализEdit_Value = moment(this.ДатаВыпускаEdit_Value).add(this.props.tmc.СрокГодностиМес, "months")
+        }
 
     }
 
     СрокРеализ_Changed() {
+        if (this.props.tmc.СрокГодностиДни > 0) {
+            this.ДатаВыпускаEdit_Value = moment(this.СрокРеализEdit_Value).add(-this.props.tmc.СрокГодностиДни, "days")
+        }
+        else if (this.props.tmc.СрокГодностиМес > 0) {
+            this.ДатаВыпускаEdit_Value = moment(this.СрокРеализEdit_Value).add(-this.props.tmc.СрокГодностиМес, "months")
+        }
 
     }
 
@@ -157,24 +178,13 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     }
 
     checkError() {
-        // this.error = "";
+        this.kol_error = "";
         // //MestEdit.DoChangeValue;
         // //KolEdit.DoChangeValue;
-        // if (this.info.KolEdit_Value <= 0 || (this.info.bSimpleWeight == 1 && this.info.ClearEdit_Value <= 0)) {
-        //     this.error = "неверное количество";
-        //     return;
-        //     //KolEdit.SetFocus;
-        //     //PlaySoundOnPocketPC('Error01');
-        // }
-
-        // if (this.info.bSimpleWeight == 1 && this.info.ClearEdit_Value > this.props.запрос_количества_MaxKol) {
-        //     this.error = 'Нельзя ввести больше ' + this.props.запрос_количества_MaxKol;
-        //     return;
-        // }
-
-        // if (this.info.bSimpleWeight == 0 && this.info.KolEdit_Value > this.props.запрос_количества_MaxKol) {
-        //     this.error = 'Нельзя ввести больше ' + this.props.запрос_количества_MaxKol;
-        // }
+        if (this.KolEdit_Value <= 0) {
+            this.kol_error = "неверное количество";
+            return;
+        }
 
         // if (this.info.ShtH == 0 && this.info.PlaceID > 0) {
         //     if (this.info.InUp > 0 && this.info.KolEdit_Value % this.info.InUp > 0) {
@@ -197,6 +207,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
     render(): React.ReactNode {
 
+        this.checkError();
         let overlayNoRowsTemplate = "<span class='ag-overlay-loading-center'>пустой список</span>";
 
         let labelStyle: CSSProperties = {
@@ -229,8 +240,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                 </td>
             </tr>
         )
-        //if (this.info.MestPanel_Visible == 0 || this.props.запрос_количества_MaxKol < this.info.InBox)
-        //  тип_упак = null;
+        if (this.props.tmc.КолВУпак <= 1)
+            тип_упак = null;
 
         let упак = (
             <tr>
@@ -272,8 +283,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                 </td>
             </tr>
         )
-        // if (this.info.MestPanel_Visible == 0 || this.props.запрос_количества_MaxKol < this.info.InBox)
-        //     упак = null;
+        if (this.props.tmc.КолВУпак <= 1)
+            упак = null;
 
         //KolEdit.Enabled := Param.Values('Разрешить ручной ввод количества') or AnsiSameText(Param.Values('ТипТовара'), 'Мерный');
 
@@ -313,7 +324,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                         >
                             <i className="fa fa-plus"></i>
                         </BuhtaButton>
-                        <span style={{ marginLeft: 3 }}> {this.UnitLabel_Caption}</span>
+                        <span style={{ marginLeft: 3 }}> {this.props.tmc.ЕдИзм}</span>
 
 
                     </div>
@@ -344,10 +355,10 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                         <input
                             required
                             type="date"
-                            className="form-control"
+                            className="form-control cy-production-date"
                             style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
-                            value={moment(this.ДатаВыпукаEdit_Value).format("YYYY-MM-DD")}
-                            onChange={(event) => { this.ДатаВыпукаEdit_Value = event.target.valueAsDate; this.ДатаВыпука_Changed(); this.forceUpdate() }}
+                            value={this.ДатаВыпускаEdit_Value.format("YYYY-MM-DD")}
+                            onChange={(event) => { this.ДатаВыпускаEdit_Value = moment(event.target.valueAsDate); this.ДатаВыпуска_Changed(); this.forceUpdate() }}
                         >
                         </input>
                     </div>
@@ -363,10 +374,10 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                         <input
                             required
                             type="date"
-                            className="form-control"
+                            className="form-control cy-realize-date"
                             style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
-                            value={moment(this.СрокРеализEdit_Value).format("YYYY-MM-DD")}
-                            onChange={(event) => { this.СрокРеализEdit_Value = event.target.valueAsDate; this.ДатаВыпука_Changed(); this.forceUpdate() }}
+                            value={this.СрокРеализEdit_Value.format("YYYY-MM-DD")}
+                            onChange={(event) => { this.СрокРеализEdit_Value = moment(event.target.valueAsDate); this.СрокРеализ_Changed(); this.forceUpdate() }}
                         >
                         </input>
                     </div>
@@ -377,6 +388,14 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         let title = "Выбор партии";
         if (this.partList.length == 0)
             title = "Новая партия";
+
+        let kol_error: any = null;
+        if (this.kol_error != "")
+            kol_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.kol_error}</div>
+
+        let part_error: any = null;
+        if (this.part_error != "")
+            part_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.part_error}</div>
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
@@ -412,6 +431,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 </AgGridReact>
                             </div>
 
+                            <div style={{ textAlign: "center", marginBottom: 5 }}>Осталось принять {this.осталосьПринятьУпаковки}</div>
                             <table style={{ marginBottom: 5 }}>
                                 <tbody>
                                     {тип_упак}
@@ -419,8 +439,9 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                     {кол}
                                 </tbody>
                             </table>
+                            {kol_error}
 
-                            <div style={{ width: "100%", marginBottom: 5, display: this.partList.length == 0 ? "block" : "none" }}>
+                            <div style={{ width: "100%", marginBottom: 5, marginTop: 5, display: this.partList.length == 0 ? "block" : "none" }}>
                                 <div style={{ textAlign: "center" }}>Создание новой партии</div>
                                 <table>
                                     <tbody>
@@ -431,6 +452,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 </table>
 
                             </div>
+                            {part_error}
                         </div>
 
 
@@ -440,7 +462,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             <BuhtaButton color="primary"
                                 className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
-                                disabled={this.selectedPartId == 0}
+                                disabled={this.selectedPartId == 0 || this.kol_error != "" || this.part_error != ""}
                                 onClick={() => {
                                     appState.setModalResult<I_РАЗГР_запрос_партии_и_количества_Result>({ result: "Ok", selectedPartId: this.selectedPartId });
                                 }}>

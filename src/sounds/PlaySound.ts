@@ -165,6 +165,11 @@ export class PlaySound {
         zebraTextToSpeech("выберите партию");
     }
 
+    static async новая_партия() {
+        //showSnack("товар " + barcode + " подобран", "success");
+        zebraTextToSpeech("новая партия");
+    }
+
     static async выберите_задание() {
         //showSnack("товар " + barcode + " подобран", "success");
         zebraTextToSpeech("выберите задание");

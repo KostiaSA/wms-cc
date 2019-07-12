@@ -1263,7 +1263,8 @@ export interface IResult_wms_android_ТМЦ_инфо {
     ЕдИзм2: string;
     СписокУпаковок: string;
     СрокГодностиДни: number;
-    СрокГодностиМес: number
+    СрокГодностиМес: number;
+    Весовой: boolean
 }
 
 export async function _wms_android_ТМЦ_инфо(tmcId: number): Promise<IResult_wms_android_ТМЦ_инфо> {
@@ -1315,7 +1316,9 @@ export async function _wms_android_ТМЦ_инфо(tmcId: number): Promise<IResu
             if (typeof(row.СрокГодностиДни) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'СрокГодностиДни'");
             if (typeof row.СрокГодностиДни != "number") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'СрокГодностиДни' должно быть числом");
             if (typeof(row.СрокГодностиМес) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'СрокГодностиМес'");
-            if (typeof row.СрокГодностиМес != "number") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'СрокГодностиМес' должно быть числом");            
+            if (typeof row.СрокГодностиМес != "number") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'СрокГодностиМес' должно быть числом");
+            if (typeof(row.Весовой) == "undefined") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': не заполнена колонка 'Весовой'");
+            if (typeof row.Весовой != "boolean") throw new Error("результат выполнения '_wms_android_ТМЦ_инфо': значение в колонке 'Весовой' должно быть true/false");            
         }
     }
 
@@ -1583,6 +1586,54 @@ export async function _wms_android_cypress_Очистка_общая(dbname: str
         if (!row.error) {
             if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_cypress_Очистка_общая': не заполнена колонка 'Ok'");
             if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_cypress_Очистка_общая': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Партия_штуки_в_упаковки {
+    error:string;
+    Упаковки: string
+}
+
+export async function _wms_android_Партия_штуки_в_упаковки(tmcId: number, partId: number, kol: number): Promise<IResult_wms_android_Партия_штуки_в_упаковки> {
+    if (typeof tmcId != "number") throw new Error("вызов '_wms_android_Партия_штуки_в_упаковки': параметр 'tmcId' должен быть числом");
+    if (typeof partId != "number") throw new Error("вызов '_wms_android_Партия_штуки_в_упаковки': параметр 'partId' должен быть числом");
+    if (typeof kol != "number") throw new Error("вызов '_wms_android_Партия_штуки_в_упаковки': параметр 'kol' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Партия_штуки_в_упаковки " + tmcId.toString() + "," + partId.toString() + "," + kol.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Партия_штуки_в_упаковки: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Партия_штуки_в_упаковки: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Упаковки) == "undefined") throw new Error("результат выполнения '_wms_android_Партия_штуки_в_упаковки': не заполнена колонка 'Упаковки'");
+            if (typeof row.Упаковки != "string") throw new Error("результат выполнения '_wms_android_Партия_штуки_в_упаковки': значение в колонке 'Упаковки' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_РАЗГР_осталось_принять_ТМЦ {
+    error:string;
+    Количество: number
+}
+
+export async function _wms_android_РАЗГР_осталось_принять_ТМЦ(taskId: number, dogId: number, tmcId: number): Promise<IResult_wms_android_РАЗГР_осталось_принять_ТМЦ> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_РАЗГР_осталось_принять_ТМЦ': параметр 'taskId' должен быть числом");
+    if (typeof dogId != "number") throw new Error("вызов '_wms_android_РАЗГР_осталось_принять_ТМЦ': параметр 'dogId' должен быть числом");
+    if (typeof tmcId != "number") throw new Error("вызов '_wms_android_РАЗГР_осталось_принять_ТМЦ': параметр 'tmcId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_осталось_принять_ТМЦ " + taskId.toString() + "," + dogId.toString() + "," + tmcId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_осталось_принять_ТМЦ: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_осталось_принять_ТМЦ: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Количество) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_осталось_принять_ТМЦ': не заполнена колонка 'Количество'");
+            if (typeof row.Количество != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_осталось_принять_ТМЦ': значение в колонке 'Количество' должно быть числом");            
         }
     }
 
