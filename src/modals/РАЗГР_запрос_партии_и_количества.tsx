@@ -14,7 +14,7 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете, IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ } from "../generated-api";
+import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете, IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
@@ -32,6 +32,7 @@ export interface I_РАЗГР_запрос_партии_и_количества_
 export interface I_РАЗГР_запрос_партии_и_количества_Result {
     result: "Ok" | "Cancel";
     selectedPartId: number;
+    selectedKol: number;
 }
 
 export async function get_РАЗГР_запрос_партии_и_количества(
@@ -72,9 +73,9 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     осталосьПринятьКоличество: number = 0;
     осталосьПринятьУпаковки: string = "";
 
-    СрокРеализДнEdit_Value: number = 0;
-    ДатаВыпускаEdit_Value: Moment = moment();
-    СрокРеализEdit_Value: Moment = moment();
+    //СрокРеализДнEdit_Value: number = 0;
+    ДатаВыпуска: Moment = moment().startOf("day");
+    СрокРеализ: Moment = moment().startOf("day");
 
     kol_error: string = "";
     part_error: string = "";
@@ -93,10 +94,14 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         this.ДатаВыпуска_Changed();
 
         this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.Ключ, this.props.tmc.Ключ);
-        if (this.partList.length > 0)
+        if (this.partList.length > 0) {
+            this.selectedPartId = 0;
             PlaySound.выберите_партию();
-        else
+        }
+        else {
+            this.selectedPartId = -1;
             PlaySound.новая_партия();
+        }
 
         this.осталосьПринятьКоличество = (await _wms_android_РАЗГР_осталось_принять_ТМЦ(this.props.task.Ключ, this.props.task.ДоговорКлюч, this.props.tmc.Ключ)).Количество;
         this.осталосьПринятьУпаковки = (await _wms_android_Партия_штуки_в_упаковки(this.props.tmc.Ключ, 0, this.осталосьПринятьКоличество)).Упаковки;
@@ -131,20 +136,20 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
     ДатаВыпуска_Changed() {
         if (this.props.tmc.СрокГодностиДни > 0) {
-            this.СрокРеализEdit_Value = moment(this.ДатаВыпускаEdit_Value).add(this.props.tmc.СрокГодностиДни, "days")
+            this.СрокРеализ = moment(this.ДатаВыпуска).add(this.props.tmc.СрокГодностиДни, "days")
         }
         else if (this.props.tmc.СрокГодностиМес > 0) {
-            this.СрокРеализEdit_Value = moment(this.ДатаВыпускаEdit_Value).add(this.props.tmc.СрокГодностиМес, "months")
+            this.СрокРеализ = moment(this.ДатаВыпуска).add(this.props.tmc.СрокГодностиМес, "months")
         }
 
     }
 
     СрокРеализ_Changed() {
         if (this.props.tmc.СрокГодностиДни > 0) {
-            this.ДатаВыпускаEdit_Value = moment(this.СрокРеализEdit_Value).add(-this.props.tmc.СрокГодностиДни, "days")
+            this.ДатаВыпуска = moment(this.СрокРеализ).add(-this.props.tmc.СрокГодностиДни, "days")
         }
         else if (this.props.tmc.СрокГодностиМес > 0) {
-            this.ДатаВыпускаEdit_Value = moment(this.СрокРеализEdit_Value).add(-this.props.tmc.СрокГодностиМес, "months")
+            this.ДатаВыпуска = moment(this.СрокРеализ).add(-this.props.tmc.СрокГодностиМес, "months")
         }
 
     }
@@ -183,7 +188,16 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         // //KolEdit.DoChangeValue;
         if (this.KolEdit_Value <= 0) {
             this.kol_error = "неверное количество";
-            return;
+        }
+
+        this.part_error = "";
+        // //MestEdit.DoChangeValue;
+        // //KolEdit.DoChangeValue;
+        if (this.СрокРеализ.diff(moment().startOf("day"), "days") < 0) {
+            this.part_error = "товар просрочен";
+        }
+        if (moment().startOf("day").diff(this.ДатаВыпуска, "days") < 0) {
+            this.part_error = "неверная дата выпуска";
         }
 
         // if (this.info.ShtH == 0 && this.info.PlaceID > 0) {
@@ -204,6 +218,15 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         // }
     }
 
+
+    async ok() {
+
+        if (this.selectedPartId == -1) {
+            this.selectedPartId = (await _wms_android_РАЗГР_создать_партию(this.props.task.ДоговорКлюч, this.props.tmc.Ключ, this.ДатаВыпуска, this.СрокРеализ, 0)).Партия;
+        }
+        appState.setModalResult<I_РАЗГР_запрос_партии_и_количества_Result>({ result: "Ok", selectedPartId: this.selectedPartId, selectedKol: this.KolEdit_Value });
+
+    }
 
     render(): React.ReactNode {
 
@@ -357,8 +380,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             type="date"
                             className="form-control cy-production-date"
                             style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
-                            value={this.ДатаВыпускаEdit_Value.format("YYYY-MM-DD")}
-                            onChange={(event) => { this.ДатаВыпускаEdit_Value = moment(event.target.valueAsDate); this.ДатаВыпуска_Changed(); this.forceUpdate() }}
+                            value={this.ДатаВыпуска.format("YYYY-MM-DD")}
+                            onChange={(event) => { this.ДатаВыпуска = moment(event.target.valueAsDate); this.ДатаВыпуска_Changed(); this.forceUpdate() }}
                         >
                         </input>
                     </div>
@@ -376,8 +399,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             type="date"
                             className="form-control cy-realize-date"
                             style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
-                            value={this.СрокРеализEdit_Value.format("YYYY-MM-DD")}
-                            onChange={(event) => { this.СрокРеализEdit_Value = moment(event.target.valueAsDate); this.СрокРеализ_Changed(); this.forceUpdate() }}
+                            value={this.СрокРеализ.format("YYYY-MM-DD")}
+                            onChange={(event) => { this.СрокРеализ = moment(event.target.valueAsDate); this.СрокРеализ_Changed(); this.forceUpdate() }}
                         >
                         </input>
                     </div>
@@ -396,6 +419,15 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         let part_error: any = null;
         if (this.part_error != "")
             part_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.part_error}</div>
+
+        let осталосьПринять = <div style={{ textAlign: "center", marginBottom: 5 }}>Осталось принять {this.осталосьПринятьУпаковки}</div>;
+        if (this.осталосьПринятьКоличество == 0) {
+            осталосьПринять = <div style={{ textAlign: "center", marginBottom: 5, color: "red", fontWeight: "bold" }}>Весь товар принят</div>;
+        }
+        else if (this.осталосьПринятьКоличество < 0) {
+            осталосьПринять = <div style={{ textAlign: "center", marginBottom: 5, color: "red", fontWeight: "bold" }}>Принято больше на {this.осталосьПринятьУпаковки.replace("-", "")}</div>;
+        }
+
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
@@ -431,7 +463,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 </AgGridReact>
                             </div>
 
-                            <div style={{ textAlign: "center", marginBottom: 5 }}>Осталось принять {this.осталосьПринятьУпаковки}</div>
+                            {осталосьПринять}
+
                             <table style={{ marginBottom: 5 }}>
                                 <tbody>
                                     {тип_упак}
@@ -463,9 +496,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
                                 disabled={this.selectedPartId == 0 || this.kol_error != "" || this.part_error != ""}
-                                onClick={() => {
-                                    appState.setModalResult<I_РАЗГР_запрос_партии_и_количества_Result>({ result: "Ok", selectedPartId: this.selectedPartId });
-                                }}>
+                                onClick={this.ok.bind(this)}>
                                 Ok
                             </BuhtaButton>
                             <BuhtaButton
@@ -473,7 +504,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 style={{ float: "right" }}
                                 color="light"
                                 onClick={() => {
-                                    appState.setModalResult<I_РАЗГР_запрос_партии_и_количества_Result>({ result: "Cancel", selectedPartId: 0 });
+                                    appState.setModalResult<I_РАЗГР_запрос_партии_и_количества_Result>({ result: "Cancel", selectedPartId: 0, selectedKol: 0 });
                                 }}>
                                 Отмена
                             </BuhtaButton>

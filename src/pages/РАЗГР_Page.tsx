@@ -334,6 +334,17 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
             else {
                 let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, barcodeKol);
+                if (res.result == "Ok") {
+                    barcodeKol = res.selectedKol;
+                    partId = res.selectedPartId;
+                    partInfo = await _wms_android_Партия_ТМЦ_инфо(partId);
+                    if (partInfo.error) {
+                        showError(partInfo.error);
+                        return;
+                    }
+                    flag = true;
+
+                }
                 // todo barcodeKol=?
                 // todo partId=?
                 //showError("1 todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);");
@@ -342,6 +353,17 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
         else {
             let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, barcodeKol);
+            if (res.result == "Ok") {
+                barcodeKol = res.selectedKol;
+                partId = res.selectedPartId;
+                partInfo = await _wms_android_Партия_ТМЦ_инфо(partId);
+                if (partInfo.error) {
+                    showError(partInfo.error);
+                    return;
+                }
+                flag = true;
+
+            }
             // todo Flag := ShowForm('скл_терминал_РАЗГ_запрос количества EX', Self);
             // todo barcodeKol=?
             // todo partId=?

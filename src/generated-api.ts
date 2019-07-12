@@ -1204,7 +1204,7 @@ export async function _wms_android_РАЗГР_Создать_партию_из_�
     if (!ReleaseDate.constructor || ReleaseDate.constructor.name != "Moment") throw new Error("параметр 'ReleaseDate' должен быть датой (Moment)");
     if (!ExpiredDate.constructor || ExpiredDate.constructor.name != "Moment") throw new Error("параметр 'ExpiredDate' должен быть датой (Moment)");
     if (typeof PartNum != "string") throw new Error("вызов '_wms_android_РАЗГР_Создать_партию_из_штрих_кода': параметр 'PartNum' должен быть строкой");
-    let recordsets = await executeSql("_wms_android_РАЗГР_Создать_партию_из_штрих_кода " + stringAsSql(BarCode) + "," + DogID.toString() + "," + ClientID.toString() + "," + TMC.toString() + "," + ReleaseDate.format('YYYYMMDD HH:mm:ss') + "," + ExpiredDate.format('YYYYMMDD HH:mm:ss') + "," + stringAsSql(PartNum));
+    let recordsets = await executeSql("_wms_android_РАЗГР_Создать_партию_из_штрих_кода " + stringAsSql(BarCode) + "," + DogID.toString() + "," + ClientID.toString() + "," + TMC.toString() + "," + stringAsSql(ReleaseDate.format('YYYYMMDD HH:mm:ss')) + "," + stringAsSql(ExpiredDate.format('YYYYMMDD HH:mm:ss')) + "," + stringAsSql(PartNum));
     let lastRecordset = recordsets[recordsets.length - 1];
     if (!lastRecordset) return { error: "_wms_android_РАЗГР_Создать_партию_из_штрих_кода: не вернула результатов" } as any;
     if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_Создать_партию_из_штрих_кода: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
@@ -1634,6 +1634,32 @@ export async function _wms_android_РАЗГР_осталось_принять_Т
         if (!row.error) {
             if (typeof(row.Количество) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_осталось_принять_ТМЦ': не заполнена колонка 'Количество'");
             if (typeof row.Количество != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_осталось_принять_ТМЦ': значение в колонке 'Количество' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_РАЗГР_создать_партию {
+    error:string;
+    Партия: number
+}
+
+export async function _wms_android_РАЗГР_создать_партию(ДоговорПрихода: number, ТМЦ: number, ДатаВыпуска: Moment, СрокРеализации: Moment, ВесУпаковки: number): Promise<IResult_wms_android_РАЗГР_создать_партию> {
+    if (typeof ДоговорПрихода != "number") throw new Error("вызов '_wms_android_РАЗГР_создать_партию': параметр 'ДоговорПрихода' должен быть числом");
+    if (typeof ТМЦ != "number") throw new Error("вызов '_wms_android_РАЗГР_создать_партию': параметр 'ТМЦ' должен быть числом");
+    if (!ДатаВыпуска.constructor || ДатаВыпуска.constructor.name != "Moment") throw new Error("параметр 'ДатаВыпуска' должен быть датой (Moment)");
+    if (!СрокРеализации.constructor || СрокРеализации.constructor.name != "Moment") throw new Error("параметр 'СрокРеализации' должен быть датой (Moment)");
+    if (typeof ВесУпаковки != "number") throw new Error("вызов '_wms_android_РАЗГР_создать_партию': параметр 'ВесУпаковки' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_создать_партию " + ДоговорПрихода.toString() + "," + ТМЦ.toString() + "," + stringAsSql(ДатаВыпуска.format('YYYYMMDD HH:mm:ss')) + "," + stringAsSql(СрокРеализации.format('YYYYMMDD HH:mm:ss')) + "," + ВесУпаковки.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_создать_партию: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_создать_партию: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Партия) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_создать_партию': не заполнена колонка 'Партия'");
+            if (typeof row.Партия != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_создать_партию': значение в колонке 'Партия' должно быть числом");            
         }
     }
 
