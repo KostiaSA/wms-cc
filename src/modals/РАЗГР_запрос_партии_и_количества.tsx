@@ -14,7 +14,7 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ПИК_список_партий_на_паллете, _wms_android_ПИК_список_партий_на_паллете, IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию } from "../generated-api";
+import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
@@ -93,7 +93,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
         this.ДатаВыпуска_Changed();
 
-        this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.Ключ, this.props.tmc.Ключ);
+        this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.ДоговорКлюч, this.props.tmc.Ключ);
         if (this.partList.length > 0) {
             this.selectedPartId = 0;
             PlaySound.выберите_партию();
@@ -119,8 +119,11 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         if (!this.gridApi)
             return;
 
-        //this.data = await _wms_android_ПИК_список_партий_на_паллете(this.props.palleteId, this.props.tmcId, this.props.taskId);
+        if (this.partList.length > 0) {
+            this.selectedPartId = this.partList[0].Ключ;
+        }
         this.gridApi.setRowData(this.partList);
+
         this.gridApi.sizeColumnsToFit();
         this.gridApi.resetRowHeights();
         this.forceUpdate();
@@ -128,9 +131,12 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
     onGridRowClicked(e: any) {
         playSound_ButtonClick();
-        let row: IResult_wms_android_ПИК_список_партий_на_паллете = e.data;
-        this.selectedPartId = row.PartKey;
-        console.log(row);
+        let row: IResult_wms_android_РАЗГР_список_партий_по_договору = e.data;
+        this.selectedPartId = row.Ключ;
+        //this.gridApi.refreshCells({ force: true });
+        this.gridApi.redrawRows();
+        this.gridApi.ref
+        //console.log(row);
         this.forceUpdate();
     }
 
@@ -444,21 +450,29 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 340, }}>
                         <div className="card-body" style={{ zoom: appState.zoom, padding: 5 }}>
 
-                            <div className="ag-theme-balham" style={{ height: 140, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>
+                            <div className="ag-theme-balham" style={{ fontSize: 11, height: 120, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>
                                 <AgGridReact
                                     suppressLoadingOverlay
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onTovarsGridReady}
-                                    rowHeight={40}
+                                    rowHeight={28}
                                     onRowClicked={this.onGridRowClicked.bind(this)}
+                                    headerHeight={24}
                                 >
                                     <AgGridColumn
-                                        headerName="Партия"
+                                        headerName="Выберите партию из списка"
                                         field="Партия"
-                                        cellStyle={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, whiteSpace: "normal" }}
+                                        cellStyle={(param: any) => {
+                                            let row = param.data as IResult_wms_android_РАЗГР_список_партий_по_договору;
+                                            if (row.Ключ != this.selectedPartId) {
+                                                return { color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, whiteSpace: "normal" }
+                                            }
+                                            else {
+                                                return { fontWeight: "bold", color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, whiteSpace: "normal" }
+                                            }
+                                        }}
                                     >
                                     </AgGridColumn>
-                                    <AgGridColumn headerName="Кол-во" field="Кол_во" width={100} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>

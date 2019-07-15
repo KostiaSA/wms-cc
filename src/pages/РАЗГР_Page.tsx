@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -14,9 +14,9 @@ import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { replaceAll } from '../utils/replaceAll';
 import { escapeHtml } from '../utils/escapeHtml';
-import { agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererForTMC, agGridMultiRowCellRendererForTMC_for_table_cell } from '../utils/agGridMultiRowCellRenderer';
+import { agGridMultiRowCellRendererForCellPallete, agGridMultiRowCellRendererForTMC, agGridMultiRowCellRendererForTMC_for_table_cell, agGridMultiRowCellRenderer } from '../utils/agGridMultiRowCellRenderer';
 import { showInfo } from "../modals/InfoMessagePage";
-import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО } from "../const";
+import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ЯЧЕЙКА, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_НОМЕР_ТМЦ } from "../const";
 import { playSound_ButtonClick } from "../utils/playSound";
 import { isNormalPallete } from "../utils/isNormalPallete";
 import { number } from "prop-types";
@@ -27,6 +27,7 @@ import { isDate } from '../utils/isDate';
 import { isNumber } from 'util';
 import { getConfirmation } from "../modals/ConfirmationPage";
 import { get_РАЗГР_запрос_партии_и_количества } from "../modals/РАЗГР_запрос_партии_и_количества";
+import { playSound } from '../utils/playSoundPallete';
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -51,10 +52,15 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
     isBrak_Checked: boolean = false;
 
+    tovarsGridApi: any;
+    tovarsGridColumnApi: any;
+    tovarsGridData: IResult_wms_android_РАЗГР_Список_товара_на_паллете[];
+
     clearPalleteId() {
         this.intoType = "";
         this.intoId = 0;
         this.intoName = "не выбрано";
+        this.loadTovarsGridData();
         this.forceUpdate();
     }
 
@@ -62,6 +68,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         this.intoType = "PAL";
         this.intoId = palleteId;
         this.intoName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
+        this.loadTovarsGridData();
         this.forceUpdate();
     }
 
@@ -381,6 +388,9 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             this.task.isReturn, partInfo.ДоговорПрихода
         );
 
+        PlaySound.принято_товаров_X(newKol);
+        this.loadTovarsGridData();
+
         if (this.task.Сверка.toUpperCase() == "ПРЕДУПРЕЖДЕНИЕ" || this.task.Сверка.toUpperCase() == "ЗАПРЕТ") {
             let sverkaFull = await _wms_android_РАЗГР_Сверка_с_заявкой_полная(this.props.taskId, tmcId);
             if (sverkaFull.Результат == "Ok") {
@@ -487,9 +497,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     }
 
 
-    tovarsGridApi: any;
-    tovarsGridColumnApi: any;
-    //tovarsGridData: IResult_wms_android_РАЗГР_список_товара_на_паллете[];
 
     onTovarsGridReady = (params: any) => {
         this.tovarsGridApi = params.api;
@@ -498,18 +505,18 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     };
 
     async loadTovarsGridData() {
-        // if (!this.tovarsGridApi)
-        //     return;
-        // if (this.fromId > 0) {
-        //     this.tovarsGridData = await _wms_android_РАЗГР_список_товара_на_паллете(this.props.taskId, this.fromId, this.isReplaceMode, this.changeTMCID);
-        //     this.tovarsGridApi.setRowData(this.tovarsGridData);
-        //     this.tovarsGridApi.sizeColumnsToFit();
-        //     this.tovarsGridApi.resetRowHeights();
-        // }
-        // else {
-        //     this.tovarsGridData = [];
-        //     this.tovarsGridApi.setRowData(this.tovarsGridData);
-        // }
+        if (!this.tovarsGridApi)
+            return;
+        if (this.intoId > 0) {
+            this.tovarsGridData = await _wms_android_РАЗГР_Список_товара_на_паллете(this.intoId);
+            this.tovarsGridApi.setRowData(this.tovarsGridData);
+            this.tovarsGridApi.sizeColumnsToFit();
+            this.tovarsGridApi.resetRowHeights();
+        }
+        else {
+            this.tovarsGridData = [];
+            this.tovarsGridApi.setRowData(this.tovarsGridData);
+        }
     }
 
     palletesGridGetRowHeight(params: any): number {
@@ -606,6 +613,16 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             [getSubcontoTextColorClass(this.intoType)]: this.intoType != ""
         });
 
+        let tovarCellRenderer = (param: any) => {
+            let row: IResult_wms_android_РАЗГР_Список_товара_на_паллете = param.data;
+            return (
+                "<div style='color:" + ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ + "'>" + escapeHtml(row.ТоварНазвание) + "</div>" +
+                "<div style='color:" + ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ + "'>" + escapeHtml(row.Партия) + "</div>" +
+                "<div style='color:" + ЦВЕТ_ТЕКСТА_НОМЕР_ТМЦ + "'>" + escapeHtml(row.ТоварНомер) + "</div>"
+            )
+        }
+
+
         return (
             <div className={"app cy-razgr-page"} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
 
@@ -645,23 +662,20 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 <AgGridReact
                                     //headerHeight={25}
                                     suppressLoadingOverlay
-                                    // rowData={this.palletesGridData}
-                                    //  overlayLoadingTemplate={overlayLoadingTemplate}
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onTovarsGridReady}
-                                    // onColumnResized={() => { this.palletesGridApi.resetRowHeights(); }}
-                                    rowHeight={80}
+                                    rowHeight={70}
                                     onRowClicked={this.onTovarGridRowClicked.bind(this)}
                                 >
                                     <AgGridColumn
-                                        headerName="Товар"
-                                        field="ТМЦ"
-                                        cellRenderer={agGridMultiRowCellRendererForTMC}
+                                        headerName="Товар/Партия"
+                                        field="Товар"
+                                        cellRenderer={tovarCellRenderer}
                                         cellStyle={{ whiteSpace: "normal" }}
                                     >
                                     </AgGridColumn>
-                                    {/* <AgGridColumn headerName="Взять" field="Взять" width={50} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_РАЗГР_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>
-                                    <AgGridColumn headerName="шт" field="Шт" width={30} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_РАЗГР_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn> */}
+                                    <AgGridColumn headerName="Кол" field="Кол" width={45} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
+                                    <AgGridColumn headerName="Упак" field="Кор" width={65} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>

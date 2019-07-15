@@ -160,6 +160,62 @@ export class PlaySound {
         zebraTextToSpeech("введите количество");
     }
 
+    static async принято_X_штук(edIzm: string, kol: number) {
+        //showSnack("товар " + barcode + " подобран", "success");
+        let s = kol.toString().split(".")[0];
+        let last = s.slice(-1);
+        let last2 = s.substr(-2, 2);
+        if (last2 == "10") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "11") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "12") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "13") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "14") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "15") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "16") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "17") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "18") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "19") zebraTextToSpeech("принято " + s + " штук");
+        else if (last2 == "20") zebraTextToSpeech("принято " + s + " штук");
+        else if (last == "1") zebraTextToSpeech("принята " + s + " штука");
+        else if (last == "2") zebraTextToSpeech("принято " + s + " штуки");
+        else if (last == "3") zebraTextToSpeech("принято " + s + " штуки");
+        else if (last == "4") zebraTextToSpeech("принято " + s + " штуки");
+        else if (last == "5") zebraTextToSpeech("принято " + s + " штук");
+        else if (last == "6") zebraTextToSpeech("принято " + s + " штук");
+        else if (last == "7") zebraTextToSpeech("принято " + s + " штук");
+        else if (last == "8") zebraTextToSpeech("принято " + s + " штук");
+        else if (last == "9") zebraTextToSpeech("принято " + s + " штук");
+        else if (last == "0") zebraTextToSpeech("принято " + s + " штук");
+
+    }
+
+    static async принято_товаров_X(kol: number) {
+        let s = kol.toString().split(".")[0];
+        showSnack("принято товаров " + s, "success");
+        if (s == "1") zebraTextToSpeech("принят 1 товар");
+        else if (s == "2") zebraTextToSpeech("принято 2 товара");
+        else if (s == "3") zebraTextToSpeech("принято 3 товара");
+        else if (s == "4") zebraTextToSpeech("принято 4 товара");
+        else if (s == "5") zebraTextToSpeech("принято 5 товарав");
+        else if (s == "6") zebraTextToSpeech("принято 6 товаров");
+        else if (s == "7") zebraTextToSpeech("принято 7 товаров");
+        else if (s == "8") zebraTextToSpeech("принято 8 товаров");
+        else if (s == "9") zebraTextToSpeech("принято 9 товаров");
+        else if (s == "10") zebraTextToSpeech("принято 10 товаров");
+        else if (s == "11") zebraTextToSpeech("принято 11 товаров");
+        else if (s == "12") zebraTextToSpeech("принято 12 товаров");
+        else if (s == "13") zebraTextToSpeech("принято 13 товаров");
+        else if (s == "14") zebraTextToSpeech("принято 14 товаров");
+        else if (s == "15") zebraTextToSpeech("принято 15 товаров");
+        else if (s == "16") zebraTextToSpeech("принято 16 товаров");
+        else if (s == "17") zebraTextToSpeech("принято 17 товаров");
+        else if (s == "18") zebraTextToSpeech("принято 18 товаров");
+        else if (s == "19") zebraTextToSpeech("принято 19 товаров");
+        else if (s == "20") zebraTextToSpeech("принято 20 товаров");
+        else zebraTextToSpeech("принято товаров " + s);
+
+    }
+
     static async выберите_партию() {
         //showSnack("товар " + barcode + " подобран", "success");
         zebraTextToSpeech("выберите партию");

@@ -1666,3 +1666,43 @@ export async function _wms_android_РАЗГР_создать_партию(Дог
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_РАЗГР_Список_товара_на_паллете {
+    error:string;
+    Кол: number;
+    ТоварНазвание: string;
+    Партия: string;
+    ТоварНомер: string;
+    TMCKey: number;
+    PartKey: number;
+    Кор: string
+}
+
+export async function _wms_android_РАЗГР_Список_товара_на_паллете(Паллета: number): Promise<IResult_wms_android_РАЗГР_Список_товара_на_паллете[]> {
+    if (typeof Паллета != "number") throw new Error("вызов '_wms_android_РАЗГР_Список_товара_на_паллете': параметр 'Паллета' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_Список_товара_на_паллете " + Паллета.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Кол) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': не заполнена колонка 'Кол'");
+            if (typeof row.Кол != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': значение в колонке 'Кол' должно быть числом");
+            if (typeof(row.ТоварНазвание) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': не заполнена колонка 'ТоварНазвание'");
+            if (typeof row.ТоварНазвание != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': значение в колонке 'ТоварНазвание' должно быть строкой");
+            if (typeof(row.Партия) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': не заполнена колонка 'Партия'");
+            if (typeof row.Партия != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': значение в колонке 'Партия' должно быть строкой");
+            if (typeof(row.ТоварНомер) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': не заполнена колонка 'ТоварНомер'");
+            if (typeof row.ТоварНомер != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': значение в колонке 'ТоварНомер' должно быть строкой");
+            if (typeof(row.TMCKey) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': не заполнена колонка 'TMCKey'");
+            if (typeof row.TMCKey != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': значение в колонке 'TMCKey' должно быть числом");
+            if (typeof(row.PartKey) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': не заполнена колонка 'PartKey'");
+            if (typeof row.PartKey != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': значение в колонке 'PartKey' должно быть числом");
+            if (typeof(row.Кор) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': не заполнена колонка 'Кор'");
+            if (typeof row.Кор != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Список_товара_на_паллете': значение в колонке 'Кор' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset;
+
+}
