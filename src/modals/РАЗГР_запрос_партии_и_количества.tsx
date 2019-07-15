@@ -91,6 +91,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         this.KolEdit_Value = this.props.barcodeKol;
         this.kolInBox = this.props.barcodeKol;
 
+        this.KolEditChanged();
         this.ДатаВыпуска_Changed();
 
         this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.ДоговорКлюч, this.props.tmc.Ключ);
@@ -161,31 +162,12 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     }
 
     KolEditChanged() {
-        // if (this.info.bSimpleWeight == 1) {
-        //     if (this.info.InBox > 0)
-        //         this.info.MestEdit_Value = Math.trunc(this.info.KolEdit_Value / this.info.InBox);
-
-        //     this.info.ClearEdit_Value = this.info.KolEdit_Value - this.info.MestEdit_Value * this.info.cBoxWeight;
-
-        //     if (this.info.ClearEdit_Value < 0)
-        //         this.info.ClearEdit_Value = 0;
-        // }
-        // else {
-        //     if (this.info.InBox > 0 && this.info.bSimpleWeight == 0)
-        //         this.info.MestEdit_Value = Math.trunc(this.info.KolEdit_Value / this.info.InBox);
-        // }
-
+        if (this.props.tmc.КолВУпак > 0)
+            this.MestEdit_Value = Math.trunc(this.KolEdit_Value / this.props.tmc.КолВУпак);
     }
 
     MestEditChanged() {
-        // if (this.info.bSimpleWeight == 1) {
-        //     this.info.ClearEdit_Value = this.info.KolEdit_Value - this.info.cBoxWeight * this.info.MestEdit_Value;
-        //     if (this.info.ClearEdit_Value < 0)
-        //         this.info.ClearEdit_Value = 0;
-        // }
-        // else {
-        //     this.info.KolEdit_Value = this.info.MestEdit_Value * this.info.InBox;
-        // }
+        this.KolEdit_Value = this.MestEdit_Value * this.props.tmc.КолВУпак;
     }
 
     checkError() {
@@ -431,7 +413,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
             осталосьПринять = <div style={{ textAlign: "center", marginBottom: 5, color: "red", fontWeight: "bold" }}>Весь товар принят</div>;
         }
         else if (this.осталосьПринятьКоличество < 0) {
-            осталосьПринять = <div style={{ textAlign: "center", marginBottom: 5, color: "red", fontWeight: "bold" }}>Принято больше на {this.осталосьПринятьУпаковки.replace("-", "")}</div>;
+            осталосьПринять = <div style={{ textAlign: "center", marginBottom: 5, color: "red", fontWeight: "bold" }}>Принято больше на <span style={{ whiteSpace: "nowrap" }}>{this.осталосьПринятьУпаковки.replace("-", "")}</span></div>;
         }
 
 
@@ -476,17 +458,20 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
                                 </AgGridReact>
                             </div>
-
-                            {осталосьПринять}
-
-                            <table style={{ marginBottom: 5 }}>
-                                <tbody>
-                                    {тип_упак}
-                                    {упак}
-                                    {кол}
-                                </tbody>
-                            </table>
-                            {kol_error}
+                            <div style={{ minHeight: 20, display: this.partList.length > 0 ? "block" : "none" }}>
+                                <BuhtaButton
+                                    style={{ float: "right" }}
+                                    color="info"
+                                    outline
+                                    small
+                                    onClick={() => {
+                                        this.partList = [];
+                                        this.selectedPartId = -1;
+                                        this.forceUpdate();
+                                    }}>
+                                    новая партия
+                                </BuhtaButton>
+                            </div>
 
                             <div style={{ width: "100%", marginBottom: 5, marginTop: 5, display: this.partList.length == 0 ? "block" : "none" }}>
                                 <div style={{ textAlign: "center" }}>Создание новой партии</div>
@@ -500,6 +485,19 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
                             </div>
                             {part_error}
+
+
+                            {осталосьПринять}
+
+                            <table style={{ marginBottom: 5 }}>
+                                <tbody>
+                                    {/* {тип_упак} */}
+                                    {упак}
+                                    {кол}
+                                </tbody>
+                            </table>
+                            {kol_error}
+
                         </div>
 
 
