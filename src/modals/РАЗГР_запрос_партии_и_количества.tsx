@@ -430,9 +430,9 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                         </div>
                     </ModalHeader>
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 340, }}>
-                        <div className="card-body" style={{ zoom: appState.zoom, padding: 5 }}>
+                        <div className="card-body" style={{ padding: 5 }}>
 
-                            <div className="ag-theme-balham" style={{ fontSize: 11, height: 120, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>
+                            <div className="ag-theme-balham" style={{ height: 160, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>
                                 <AgGridReact
                                     suppressLoadingOverlay
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
@@ -458,7 +458,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
                                 </AgGridReact>
                             </div>
-                            <div style={{ minHeight: 20, display: this.partList.length > 0 ? "block" : "none" }}>
+                            <div style={{ marginBottom: 5, minHeight: 30, display: this.partList.length > 0 ? "block" : "none" }}>
                                 <BuhtaButton
                                     style={{ float: "right" }}
                                     color="info"
