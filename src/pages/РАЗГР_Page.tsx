@@ -28,6 +28,8 @@ import { isNumber } from 'util';
 import { getConfirmation } from "../modals/ConfirmationPage";
 import { get_РАЗГР_запрос_партии_и_количества } from "../modals/РАЗГР_запрос_партии_и_количества";
 import { playSound } from '../utils/playSoundPallete';
+import { show_Help } from "./Help_Page";
+import { HelpButton } from "../ui/HelpButton";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -692,9 +694,12 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 </div>
                 <div style={{ zoom: appState.zoom, textAlign: "right" }}>
                     <div style={{ marginTop: 10, paddingRight: 4 }}>
-                        {паллета4}
-                        {паллетаОткуда}
-                        {паллетаКуда}
+                        <BuhtaButton small outline color="primary" style={{ marginLeft: 3 }}>Доп.меню</BuhtaButton>
+                        <BuhtaButton small outline style={{ marginLeft: 3 }}>ШК</BuhtaButton>
+                        <BuhtaButton small outline style={{ marginLeft: 3 }}>Товар</BuhtaButton>
+                        <BuhtaButton small outline color="success" style={{ marginLeft: 3 }}>Изм.кол.</BuhtaButton>
+                        <BuhtaButton small outline color="danger" style={{ marginLeft: 3 }}>Откат</BuhtaButton>
+
                     </div>
 
                     <div style={{ marginTop: 10, paddingBottom: 10, paddingRight: 4 }}>
@@ -727,17 +732,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                         </BuhtaButton> */}
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
-                            className="btn-sm"
-                            color="danger"
-                            outline
-                            onClick={async () => {
-                                //await get_РАЗГР_запрос_партии(this.props.taskId, 1886, 13184);
-                            }}
-                        >
-                            ЗП
-                        </BuhtaButton>
-                        <BuhtaButton
-                            style={{ marginLeft: 10 }}
                             className="btn-sm cy-test-barcodes"
                             color="danger"
                             outline
@@ -751,6 +745,11 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                         >
                             ШТРИХ
                         </BuhtaButton>
+
+                        <HelpButton>
+                            {this.getHelpBody()}
+                        </HelpButton>
+
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
                             className="btn-sm"
@@ -760,7 +759,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 appState.closeActivePage();
                             }}
                         >
-                            выход
+                            Выход
                         </BuhtaButton>
                         <BuhtaButton
                             style={{ marginLeft: 10 }}
@@ -770,7 +769,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 //                                this.doExecuteTask();
                             }}
                         >
-                            завершить РАЗГР
+                            Завершить
                         </BuhtaButton>
                     </div>
                 </div>
@@ -818,6 +817,41 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         // else {
         //     throw new Error("doExecuteTask(): не сделано для задания типа " + this.task.Тип);
         // }
+    }
+
+    getHelpBody() {
+        return (
+            <React.Fragment>
+                <div className="card-header" style={{ textAlign: "center", zoom: appState.zoom, backgroundColor: "white" }}>
+                    <div>режим РАЗГРУЗКА</div>
+                </div>
+                <div className="card-body" style={{ zoom: appState.zoom, padding: 10 }}>
+                    <h5>назначение кнопок:</h5>
+                    <p>
+                        <BuhtaButton small outline color="primary">Доп.меню</BuhtaButton>
+                        вызов дополнительного меню
+                    </p>
+                    <p>
+                        <BuhtaButton small outline>ШК</BuhtaButton>
+                        ввод штрих-кода с клавиатуры
+                    </p>
+                    <p>
+                        <BuhtaButton small outline>Товар</BuhtaButton>
+                        выбор товара из списка (поиск по номеру, названию)
+                    </p>
+                    <p>
+                        <BuhtaButton small outline color="success">Изм.кол.</BuhtaButton>
+                        изменить количество товара (предварительно надо выбрать строку с товаром в списке)
+                    </p>
+                    <p>
+                        <BuhtaButton small outline color="danger">Откат</BuhtaButton>
+                        отменить последнее действие по приему товара на паллету
+                    </p>
+
+
+                </div>
+            </React.Fragment>
+        )
     }
 }
 

@@ -16,6 +16,7 @@ import { show_Информация_о_задании } from "./Информац�
 import { show_НастройкаТСД } from "./НастройкаТСД_Page";
 import { I_РАЗГР_меню_PageProps, РАЗГР_меню_Page_ModalResult, РАЗГР_меню_Page } from "../modals/РАЗГР_меню";
 import { get_Выбор_задания_в_работу } from "../modals/Выбор_задания_в_работу";
+import { show_Help } from "./Help_Page";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -261,6 +262,17 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                 <h5 className={"text-center"} style={titleStyle}>НАСТРОЙКИ</h5>
                 <ul className="list-group">
                     {this.renderGroup("НАСТРОЙКИ")}
+                </ul>
+                <h5 className={"text-center"} style={titleStyle}>ПОМОЩЬ</h5>
+                <ul className="list-group">
+                    <li className="list-group-item"
+                        onClick={() => {
+                            playSound_ButtonClick();
+                            show_Help(<div>пусто</div>);
+                        }}
+
+                    ><i className="fa fa-user" style={{ marginRight: 5 }}></i>Открыть подсказку
+                    </li>
                 </ul>
                 <h5 className={"text-center"} style={titleStyle}>КОНЕЦ РАБОТЫ</h5>
                 <ul className="list-group">

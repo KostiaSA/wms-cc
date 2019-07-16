@@ -1,4 +1,5 @@
 import * as  React from "react";
+import Iframe from 'react-iframe'
 import {
     zebraTextToSpeech,
     zebraGetDeviceId,
@@ -29,6 +30,7 @@ import { VERSION } from '../const';
 import { CSSProperties } from 'react';
 import { replaceAll } from "../utils/replaceAll";
 import { parseGS1 } from '../utils/gs1';
+import { show_Help } from './Help_Page';
 
 export interface ILoginPageProps extends IAppPageProps {
 
@@ -197,9 +199,8 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                     <Col xs="6">
                                         <BuhtaButton className="px-4" outline
                                             onClick={() => {
-                                                // let xxx = parseGS1("0114607018272899111903141719091310100190314371021203180");
-                                                // console.log(xxx);
-                                                zebraReloadWebView()
+                                                zebraReloadWebView();
+
                                             }}>
                                             Reload
                                         </BuhtaButton>
@@ -215,6 +216,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
 
 
                     </Col>
+
                     {infoTable}
 
                 </Container>
