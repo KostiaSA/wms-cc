@@ -109,6 +109,9 @@ body {
 .help-table td {
     padding: 4px;
     vertical-align: middle;
+    border-bottom: 1px solid #c0c0c08f;
+    border-top: 1px solid #c0c0c08f;
+    border: 1px solid #c0c0c08f;
 }
 
 .help-page .card-body {
