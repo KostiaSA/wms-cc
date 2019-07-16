@@ -1,7 +1,7 @@
 import * as  React from "react";
 import { IAppPageProps } from "./AppWindow";
 import { appState } from '../AppState';
-import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание, IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Взять_задание_в_работу_ПИК, _wms_android_Взять_задание_в_работу_РАЗГР } from "../generated-api";
+import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание, IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_ПИК_Взять_задание_в_работу, _wms_android_РАЗГР_Взять_задание_в_работу } from "../generated-api";
 import Container from "reactstrap/lib/Container";
 import CardBody from "reactstrap/lib/CardBody";
 import { CSSProperties } from 'react';
@@ -275,7 +275,7 @@ export class Информация_о_задании_Page extends React.Component
 
     async doExecuteTask() {
         if (this.task.Тип == 1) {// РАЗГР
-            let result = await _wms_android_Взять_задание_в_работу_РАЗГР(this.props.taskId, appState.kadrId);
+            let result = await _wms_android_РАЗГР_Взять_задание_в_работу(this.props.taskId, appState.kadrId);
             if (result.error) {
                 showError(result.error);
             }
@@ -283,7 +283,7 @@ export class Информация_о_задании_Page extends React.Component
             show_РАЗГР(this.props.taskId);
         }
         else if (this.task.Тип == 2) {// ПИК
-            let result = await _wms_android_Взять_задание_в_работу_ПИК(this.props.taskId, appState.kadrId);
+            let result = await _wms_android_ПИК_Взять_задание_в_работу(this.props.taskId, appState.kadrId);
             if (result.error) {
                 showError(result.error);
             }

@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -47,7 +47,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     intoName: string = "не выбрано";
     barcodeProcessorHandler: any;
 
-    isRepeatebleDog: boolean = false; // Режим повторного приема и отргрузки. 
+    isReturnOk: boolean = false; // Режим возврата
     isInputOst: boolean = false; // Режим ввода начальных остатков
 
     isBrak_Checked: boolean = false;
@@ -109,6 +109,18 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 return;
             }
 
+            let checkResult = await _wms_android_РАЗГР_Проверить_паллету(palleteId, this.task.ДоговорКлюч, this.props.taskId, this.isInputOst, this.isReturnOk);
+            if (checkResult.error) {
+                showError(checkResult.error);
+                return;
+            }
+
+            let takeResult = await _wms_android_РАЗГР_Взять_паллету_в_задание(palleteId, this.props.taskId, this.task.ЗонаКлюч);
+            if (takeResult.error) {
+                showError(takeResult.error);
+                return;
+            }
+
             PlaySound.паллета_куда(barcode.barcode);
             await this.setIntoPalleteId(palleteId)
 
@@ -131,11 +143,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             await this.setIntoPalleteId(palleteRes.Паллета)
             return;
 
-        }
-
-        if (this.isRepeatebleDog) {
-            showError('Режим повторного приема и отргрузки. Разрешено сканировать только паллеты!');
-            return;
         }
 
         if (this.task.isCrossDoc) {
