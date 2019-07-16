@@ -24,9 +24,9 @@ export class Help_Page extends React.Component<IHelp_PageProps> {
     render() {
 
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
+            <div className={"app"} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, height: "100%", width: "100%" }}>
 
-                <div className="card" style={{ marginBottom: 0 }}>
+                <div className="card help-page" style={{ flex: 1, zoom: appState.zoom, marginBottom: 0, overflow: "auto" }}>
                     {this.props.body}
                     {/* <div className="card-header" style={{ textAlign: "center", zoom: appState.zoom, backgroundColor: "white" }}>
                         <div>режим РАЗГРУЗКА</div>
@@ -36,9 +36,9 @@ export class Help_Page extends React.Component<IHelp_PageProps> {
                     </div> */}
                 </div>
                 <div style={{ zoom: appState.zoom, textAlign: "right" }}>
-                    <div style={{ marginTop: 10 }}>
+                    <div style={{ marginTop: 5 }}>
                         <BuhtaButton
-                            style={{ marginLeft: 10 }}
+                            style={{ marginRight: 5, marginBottom: 5 }}
                             className="btn-sm"
                             color="secondary"
                             outline

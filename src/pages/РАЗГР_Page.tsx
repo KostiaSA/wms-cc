@@ -822,33 +822,78 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     getHelpBody() {
         return (
             <React.Fragment>
-                <div className="card-header" style={{ textAlign: "center", zoom: appState.zoom, backgroundColor: "white" }}>
-                    <div>режим РАЗГРУЗКА</div>
-                </div>
-                <div className="card-body" style={{ zoom: appState.zoom, padding: 10 }}>
+                <div className="card-header">режим РАЗГРУЗКА</div>
+                <div className="card-body">
                     <h5>назначение кнопок:</h5>
-                    <p>
-                        <BuhtaButton small outline color="primary">Доп.меню</BuhtaButton>
-                        вызов дополнительного меню
-                    </p>
-                    <p>
-                        <BuhtaButton small outline>ШК</BuhtaButton>
-                        ввод штрих-кода с клавиатуры
-                    </p>
-                    <p>
-                        <BuhtaButton small outline>Товар</BuhtaButton>
-                        выбор товара из списка (поиск по номеру, названию)
-                    </p>
-                    <p>
-                        <BuhtaButton small outline color="success">Изм.кол.</BuhtaButton>
-                        изменить количество товара (предварительно надо выбрать строку с товаром в списке)
-                    </p>
-                    <p>
-                        <BuhtaButton small outline color="danger">Откат</BuhtaButton>
-                        отменить последнее действие по приему товара на паллету
-                    </p>
 
-
+                    <table className="help-table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <BuhtaButton small outline color="success">завершить</BuhtaButton>
+                                </td>
+                                <td>
+                                    завершить прием товара на данную паллету
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <BuhtaButton small outline color="primary">Доп.меню</BuhtaButton>
+                                </td>
+                                <td>
+                                    вызов дополнительного меню
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <BuhtaButton small outline>ШК</BuhtaButton>
+                                </td>
+                                <td>
+                                    ввод штрих-кода с клавиатуры
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <BuhtaButton small outline>Товар</BuhtaButton>
+                                </td>
+                                <td>
+                                    выбор товара из списка (поиск по номеру, названию)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <BuhtaButton small outline color="success">Изм.кол.</BuhtaButton>
+                                </td>
+                                <td>
+                                    изменить количество товара (предварительно надо выбрать строку с товаром в списке)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <BuhtaButton small outline color="danger">Откат</BuhtaButton>
+                                </td>
+                                <td>
+                                    отменить последнее действие по приему товара на паллету
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <BuhtaButton color="secondary" outline>Выход</BuhtaButton>
+                                </td>
+                                <td>
+                                    временно прекратить работу с заданием (потом можно будет взять в работу опять)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <BuhtaButton color="success">Завершить</BuhtaButton>
+                                </td>
+                                <td>
+                                    завершить задание, когда весь товар разгружен
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </React.Fragment>
         )
