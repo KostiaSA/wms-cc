@@ -272,7 +272,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                         <input
                             required
                             type="number"
-                            className="form-control"
+                            className="form-control cy-upak"
                             style={{ width: 60, display: "inline", color: this.kol_error == "" ? "#ffc107" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.MestEdit_Value}
                             onChange={(event) => { this.MestEdit_Value = Number.parseFloat(event.target.value); this.MestEditChanged(); this.forceUpdate() }}
@@ -318,7 +318,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             disabled={kol_disabled}
                             required
                             type="number"
-                            className="form-control"
+                            className="form-control cy-kol"
                             style={{ width: 60, display: "inline", color: this.kol_error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
                             value={this.KolEdit_Value}
                             onChange={(event) => { this.KolEdit_Value = Number.parseFloat(event.target.value); this.KolEditChanged(); this.forceUpdate() }}
