@@ -419,7 +419,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal isOpen centered fade={false}>
+                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>{title}</div>
                         {/* <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>

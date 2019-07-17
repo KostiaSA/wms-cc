@@ -89,72 +89,72 @@ export class Запрос_штрих_кода_Page extends React.Component<I_З�
 
 
         return (
-            <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal isOpen centered={false} fade={false}>
-                    <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
-                        <div style={{ color: "steelblue" }}>Введите штрих-код</div>
-                    </ModalHeader>
-                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 110, }}>
-                        <div className="card-body" style={{ padding: 15, textAlign: "center" }}>
-                            <span>{this.mode + " "}</span>
-                            <input
-                                required
-                                type={this.alphaMode ? "string" : "number"}
-                                pattern={this.pattern}
-                                className="form-control"
-                                style={{ width: "80%", display: "inline", fontWeight: "bold" }}
-                                value={this.barcode}
-                                onChange={(event) => {
-                                    this.barcode = event.target.value;
-                                    this.forceUpdate()
-                                }}
-                            >
-                            </input>
-                            <div style={{ textAlign: "center", marginTop: 10 }}>
-                                <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "PAL"; this.forceUpdate() }}>PAL</BuhtaButton>
-                                <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "CEL"; this.forceUpdate() }}>CEL</BuhtaButton>
-                                <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "PAR"; this.forceUpdate() }}>PAR</BuhtaButton>
-                                <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "BRA"; this.forceUpdate() }}>BRA</BuhtaButton>
-                                <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "ZAK"; this.forceUpdate() }}>ZAK</BuhtaButton>
-                                <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "T"; this.forceUpdate() }}>T</BuhtaButton>
-
-                            </div>
+            //<div className={"app " + (this.props.visible ? "active-win" : "")} style={{ display: this.props.visible ? "" : "none" }}>
+            <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered={false} fade={false}>
+                <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
+                    <div style={{ color: "steelblue" }}>Введите штрих-код</div>
+                </ModalHeader>
+                <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 110, }}>
+                    <div className="card-body" style={{ padding: 15, textAlign: "center" }}>
+                        <span style={{ fontWeight: "bold" }}>{this.mode + " "}</span>
+                        <input
+                            required
+                            type={this.alphaMode ? "string" : "number"}
+                            pattern={this.pattern}
+                            className="form-control cy-barcode-input"
+                            style={{ width: "80%", display: "inline", fontWeight: "bold" }}
+                            value={this.barcode}
+                            onChange={(event) => {
+                                this.barcode = event.target.value;
+                                this.forceUpdate()
+                            }}
+                        >
+                        </input>
+                        <div style={{ textAlign: "center", marginTop: 10 }}>
+                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "PAL"; this.forceUpdate() }}>PAL</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "CEL"; this.forceUpdate() }}>CEL</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "PAR"; this.forceUpdate() }}>PAR</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "BRA"; this.forceUpdate() }}>BRA</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "ZAK"; this.forceUpdate() }}>ZAK</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "T"; this.forceUpdate() }}>T</BuhtaButton>
 
                         </div>
 
-                    </ModalBody>
-                    <ModalFooter style={{ zoom: appState.zoom }}>
-                        <div style={{ width: "100%" }}>
-                            <BuhtaButton color="primary"
-                                className="cy-ok"
-                                style={{ float: "right", minWidth: 45, marginLeft: 5 }}
-                                disabled={this.barcode == ""}
-                                onClick={this.ok.bind(this)}>
-                                Ok
-                            </BuhtaButton>
-                            <BuhtaButton
-                                className="cy-cancel"
-                                style={{ float: "right" }}
-                                color="light"
-                                onClick={() => {
-                                    appState.setModalResult<I_Запрос_штрих_кода_Result>({ result: "Cancel", barcode: "" });
-                                }}>
-                                Отмена
-                            </BuhtaButton>
-                            <BuhtaButton
+                    </div>
 
-                                style={{ float: "left", display: this.alphaMode ? "none" : undefined }}
-                                color="light"
-                                onClick={() => {
-                                    this.alphaMode = true;
-                                    this.forceUpdate();
-                                }}>
-                                Вкл.буквы
+                </ModalBody>
+                <ModalFooter style={{ zoom: appState.zoom }}>
+                    <div style={{ width: "100%" }}>
+                        <BuhtaButton color="primary"
+                            className="cy-ok"
+                            style={{ float: "right", minWidth: 45, marginLeft: 5 }}
+                            disabled={this.barcode == ""}
+                            onClick={this.ok.bind(this)}>
+                            Ok
                             </BuhtaButton>
-                        </div>
-                    </ModalFooter>
-                </Modal>
-            </div >
+                        <BuhtaButton
+                            className="cy-cancel"
+                            style={{ float: "right" }}
+                            color="light"
+                            onClick={() => {
+                                appState.setModalResult<I_Запрос_штрих_кода_Result>({ result: "Cancel", barcode: "" });
+                            }}>
+                            Отмена
+                            </BuhtaButton>
+                        <BuhtaButton
+
+                            style={{ float: "left", display: this.alphaMode ? "none" : undefined }}
+                            color="light"
+                            onClick={() => {
+                                this.alphaMode = true;
+                                this.forceUpdate();
+                            }}>
+                            Вкл.буквы
+                            </BuhtaButton>
+                    </div>
+                </ModalFooter>
+            </Modal>
+            //</div >
         )
     }
 

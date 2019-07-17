@@ -67,7 +67,7 @@ export class TestBarcodesPage extends React.Component<ITestBarcodesPageProps> {
             return (
 
                 <div
-                    className="cy-test-barcodes-page"
+                    className={"cy-test-barcodes-page " + (this.props.visible ? "active-win" : "")}
                     style={{
                         paddingLeft: 5,
                         paddingRight: 5,

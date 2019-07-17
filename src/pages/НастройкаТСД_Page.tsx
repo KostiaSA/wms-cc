@@ -25,7 +25,7 @@ export class НастройкаТСД_Page extends React.Component<IНастро
     render() {
 
         return (
-            <div className={"app"} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
+            <div className={"app cy-nastroika-tsd " + (this.props.visible ? "active-win" : "")} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
 
                 <div className="card" style={{ marginBottom: 0 }}>
                     <div className="card-header" style={{ textAlign: "center", zoom: appState.zoom, backgroundColor: "white" }}>
