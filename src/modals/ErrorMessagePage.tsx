@@ -20,11 +20,12 @@ export async function showAppError(message: ReactNode, title: ReactNode = "Ош�
     zebraTextToSpeech("Ошибка приложения");
 }
 
-export async function showError(message: ReactNode, title: ReactNode = "Ошибка"): Promise<any> {
-    appState.openModal(ErrorMessagePage, { pageId: getRandomString(), message, title });
+export async function showError(message: ReactNode, textToSpeech: string = ""): Promise<any> {
+    appState.openModal(ErrorMessagePage, { pageId: getRandomString(), message, title: "Ошибка" });
     playSound("error");
     await sleep(700);
-    zebraTextToSpeech("Ошибка");
+    if (textToSpeech != "")
+        zebraTextToSpeech(textToSpeech);
 
     return new Promise<any>(
         async (resolve: (res: any) => void, reject: (error: string) => void) => {

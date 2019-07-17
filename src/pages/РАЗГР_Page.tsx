@@ -198,6 +198,10 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
 
         if (tmcId != 0) {
+            if (this.intoId == 0) {
+                showError("Паллета не выбрана!", "Палета не выбрана!");
+                return;
+            }
             // todo if TMCID = - 666 then
             // begin
             //   if bmConfirmation('Товар имеет неуникальный штрих-код. Напечатать этикетку?') then
@@ -211,7 +215,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
         }
         else {
-            showError("Неизвестный штрих-код");
+            showError("Неизвестный штрих-код", "Неизвестный штрих код");
         }
 
 
