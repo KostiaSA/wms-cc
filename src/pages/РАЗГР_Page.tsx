@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание, IResult_wms_android_Паллета_инфо } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -47,6 +47,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
     intoType: string = "";
     intoId: number = 0;
+    intoInfo: IResult_wms_android_Паллета_инфо;
     intoName: string = "не выбрано";
     barcodeProcessorHandler: any;
 
@@ -67,10 +68,11 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         this.forceUpdate();
     }
 
-    async setIntoPalleteId(palleteId: number) {
+    async setIntoPalleteId(palleteId: number, info: IResult_wms_android_Паллета_инфо) {
         this.intoType = "PAL";
         this.intoId = palleteId;
-        this.intoName = (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
+        this.intoInfo = info;
+        this.intoName = info.Название;// (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
         this.loadTovarsGridData();
         this.forceUpdate();
     }
@@ -125,7 +127,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
 
             PlaySound.паллета_куда(barcode.barcode);
-            await this.setIntoPalleteId(palleteId)
+            await this.setIntoPalleteId(palleteId, pal)
 
             return;
         }
@@ -143,7 +145,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
 
             PlaySound.паллета_куда(barcode.barcode);
-            await this.setIntoPalleteId(palleteRes.Паллета)
+            let palInfo = await _wms_android_Паллета_инфо(palleteRes.Паллета);
+            await this.setIntoPalleteId(palleteRes.Паллета, palInfo)
             return;
 
         }
@@ -502,6 +505,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             return;
         }
 
+        //this.clientInfo=
+
         this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
         this.forceUpdate();
     }
@@ -663,8 +668,16 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                         <td style={{ ...labelStyle }}>куда</td>
                                         <td className={intoInputClassName} style={{ ...textStyle }}>{this.intoName}</td>
                                         <td>
-                                            <BuhtaButton small outline color="primary">новая</BuhtaButton>
-                                            <BuhtaButton small outline color="success" style={{ marginLeft: 5 }}>завершить</BuhtaButton>
+                                            {/* <BuhtaButton small outline color="primary">новая</BuhtaButton> */}
+                                            <BuhtaButton
+                                                small outline
+                                                color="success"
+                                                style={{ marginLeft: 5 }}
+                                                onClick={this.завершить_паллету.bind(this)}
+                                                hidden={this.intoId == 0}
+                                            >
+                                                завершить паллету
+                                                </BuhtaButton>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -818,17 +831,32 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         // showInfo(info);
     }
 
-    async doExecuteTask() {
-        // if (this.task.Тип == 2) {// РАЗГР
-        //     let result = await _wms_android_Взять_задание_в_работу_РАЗГР(this.props.taskId, appState.kadrId);
-        //     if (result.error) {
-        //         showError(result.error);
-        //     }
+    async завершить_паллету() {
+        if (this.intoId == 0)
+            return
+        if (this.intoInfo._Неперемещаемая) {
+            // todo not bmConfirmation('Завершить работу с ячейкой ' +  GetCellNameByPalleta(Pal)) then        
+            /*
+    if not bmConfirmation('Завершить работу с ячейкой ' +  GetCellNameByPalleta(Pal)) then
+       Exit;
 
-        // }
-        // else {
-        //     throw new Error("doExecuteTask(): не сделано для задания типа " + this.task.Тип);
-        // }
+    SQL := 'INSERT скл_Перемещение (Задание, Паллета, Откуда, Куда, Дата, ЗаданиеОткуда, ЗаданиеКуда)'#10#13 +
+           'SELECT ' + IntToStr(TaskID) + ', Паллета, Ячейка, Ячейка, GetDate(), Задание, 0'#10#13 +
+           'FROM скл_Размещение WITH(NOLOCK)'#10#13 +
+           'WHERE Паллета = '  +  VarToStr(Pal);
+    ExecuteSQL(SQL);
+            */
+        }
+        else {
+            if (this.task.ЗапрашиватьГабаритыПаллеты) {
+
+            }
+            else {
+
+            }
+
+        }
+
     }
 
     getHelpBody() {
@@ -842,7 +870,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                         <tbody>
                             <tr>
                                 <td>
-                                    <BuhtaButton small outline color="success">завершить</BuhtaButton>
+                                    <BuhtaButton small outline color="success">завершить паллету</BuhtaButton>
                                 </td>
                                 <td>
                                     завершить прием товара на данную паллету
