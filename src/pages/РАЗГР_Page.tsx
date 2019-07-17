@@ -30,6 +30,7 @@ import { get_РАЗГР_запрос_партии_и_количества } from
 import { playSound } from '../utils/playSoundPallete';
 import { show_Help } from "./Help_Page";
 import { HelpButton } from "../ui/HelpButton";
+import { get_Запрос_штрих_кода } from "../modals/Запрос_штрих_кода";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -534,6 +535,13 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         return 45;
     }
 
+    async ШК_button_click() {
+        let res = await get_Запрос_штрих_кода();
+        if (res.result == "Ok") {
+
+        }
+    }
+
     render() {
         let overlayLoadingTemplate = '<i class="fa fa-spinner fa-spin ag-overlay-loading-center" style="color:darkgray;font-size:28px;border:0px"></i>';
         let overlayNoRowsTemplate = "<span class='ag-overlay-loading-center'>пустой список</span>";
@@ -695,7 +703,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 <div style={{ zoom: appState.zoom, textAlign: "right" }}>
                     <div style={{ marginTop: 10, paddingRight: 4 }}>
                         <BuhtaButton small outline color="primary" style={{ marginLeft: 3 }}>Доп.меню</BuhtaButton>
-                        <BuhtaButton small outline style={{ marginLeft: 3 }}>ШК</BuhtaButton>
+                        <BuhtaButton small outline style={{ marginLeft: 3, minWidth: 40 }} onClick={this.ШК_button_click.bind(this)}>ШК</BuhtaButton>
                         <BuhtaButton small outline style={{ marginLeft: 3 }}>Товар</BuhtaButton>
                         <BuhtaButton small outline color="success" style={{ marginLeft: 3 }}>Изм.кол.</BuhtaButton>
                         <BuhtaButton small outline color="danger" style={{ marginLeft: 3 }}>Откат</BuhtaButton>
