@@ -90,6 +90,11 @@ export class PlaySound {
         zebraTextToSpeech("палета " + barcodeToString_00_00(barcode) + " взята в подбор");
     }
 
+    static async паллета_завершена(barcode: string) {
+        showSnack("паллета " + barcode + " завершена", "info");
+        zebraTextToSpeech("палета " + barcodeToString_00_00(barcode) + " завершена");
+    }
+
     static async коробка_взята_в_подбор(barcode: string) {
         showSnack("коробка " + barcode + " взята в подбор", "info");
         zebraTextToSpeech("коробка " + barcodeToString_00_00(barcode) + " взята в подбор");

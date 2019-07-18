@@ -835,31 +835,16 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     async завершить_паллету() {
         if (this.intoPalleteId == 0)
             return
-        if (this.intoPalleteInfo._Неперемещаемая) {
-            // todo not bmConfirmation('Завершить работу с ячейкой ' +  GetCellNameByPalleta(Pal)) then        
-            /*
-    if not bmConfirmation('Завершить работу с ячейкой ' +  GetCellNameByPalleta(Pal)) then
-       Exit;
 
-    SQL := 'INSERT скл_Перемещение (Задание, Паллета, Откуда, Куда, Дата, ЗаданиеОткуда, ЗаданиеКуда)'#10#13 +
-           'SELECT ' + IntToStr(TaskID) + ', Паллета, Ячейка, Ячейка, GetDate(), Задание, 0'#10#13 +
-           'FROM скл_Размещение WITH(NOLOCK)'#10#13 +
-           'WHERE Паллета = '  +  VarToStr(Pal);
-    ExecuteSQL(SQL);
-            */
+        let res = await get_РАЗГР_запрос_габаритов_паллеты(this.task, this.intoPalleteInfo, this.isInputOst);
+        if (res.result == "Ok") {
+            this.clearPalleteId();
         }
-        else {
-            if (this.task.ЗапрашиватьГабаритыПаллеты) {
-                await get_РАЗГР_запрос_габаритов_паллеты(this.task, this.intoPalleteInfo, this.isInputOst);
-            }
-            else {
 
-
-            }
-
-        }
 
     }
+
+
 
     getHelpBody() {
         return (

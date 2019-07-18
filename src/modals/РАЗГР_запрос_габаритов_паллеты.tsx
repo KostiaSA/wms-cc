@@ -22,6 +22,7 @@ import moment from "moment";
 import { Moment } from 'moment';
 import { zebraTextToSpeech } from "../zebra/ZebraApi";
 import { number } from "prop-types";
+import { showError } from "./ErrorMessagePage";
 
 
 
@@ -165,12 +166,16 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
             this.ширина,
             this.глубина,
             this.высота,
-            0, // яч куда
             this.props.pallete._Неперемещаемая,
             this.props.isInputOst,
-            true  //создатьЗаданиеНаРазмещение
         );
 
+        if (res.error) {
+            showError(res.error);
+            return
+        }
+
+        PlaySound.паллета_завершена(this.props.pallete.Название);
         appState.setModalResult<I_РАЗГР_запрос_габаритов_паллеты_Result>({ result: "Ok" });
 
     }
@@ -294,6 +299,26 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
             </tr>
         )
 
+        let печатать_А4 = (
+            <tr>
+                <td style={labelStyle}></td>
+                <td style={{ ...textStyle, paddingTop: 10 }} colSpan={2}>
+                    <div className="form-check">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="a4"
+                            style={{ transform: "scale(1.35)" }}
+                        />
+                        <label className="form-check-label" htmlFor="a4" style={{ marginLeft: 5 }}>
+                            печатать этикетку A4
+                        </label>
+                    </div>
+                </td>
+            </tr>
+        )
+
 
 
         // let kol_error: any = null;
@@ -316,11 +341,11 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                                     {ширина}
                                     {глубина}
                                     {высота}
+                                    {печатать_А4}
                                 </tbody>
                             </table>
 
                         </div>
-
 
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
