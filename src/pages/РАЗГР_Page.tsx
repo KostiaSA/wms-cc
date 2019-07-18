@@ -31,6 +31,7 @@ import { playSound } from '../utils/playSoundPallete';
 import { show_Help } from "./Help_Page";
 import { HelpButton } from "../ui/HelpButton";
 import { get_Запрос_штрих_кода } from "../modals/Запрос_штрих_кода";
+import { get_РАЗГР_запрос_габаритов_паллеты } from "../modals/РАЗГР_запрос_габаритов_паллеты";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -46,8 +47,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     task: IResult_wms_android_Информация_о_задании;
 
     intoType: string = "";
-    intoId: number = 0;
-    intoInfo: IResult_wms_android_Паллета_инфо;
+    intoPalleteId: number = 0;
+    intoPalleteInfo: IResult_wms_android_Паллета_инфо;
     intoName: string = "не выбрано";
     barcodeProcessorHandler: any;
 
@@ -62,7 +63,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
     clearPalleteId() {
         this.intoType = "";
-        this.intoId = 0;
+        this.intoPalleteId = 0;
         this.intoName = "не выбрано";
         this.loadTovarsGridData();
         this.forceUpdate();
@@ -70,8 +71,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
     async setIntoPalleteId(palleteId: number, info: IResult_wms_android_Паллета_инфо) {
         this.intoType = "PAL";
-        this.intoId = palleteId;
-        this.intoInfo = info;
+        this.intoPalleteId = palleteId;
+        this.intoPalleteInfo = info;
         this.intoName = info.Название;// (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
         this.loadTovarsGridData();
         this.forceUpdate();
@@ -201,7 +202,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
 
         if (tmcId != 0) {
-            if (this.intoId == 0) {
+            if (this.intoPalleteId == 0) {
                 showError("Паллета не выбрана!", "Палета не выбрана!");
                 return;
             }
@@ -258,7 +259,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
         }
 
-        let res1 = await _wms_android_РАЗГР_Проверить_способ_хранения(tmcId, this.intoId, this.props.taskId);
+        let res1 = await _wms_android_РАЗГР_Проверить_способ_хранения(tmcId, this.intoPalleteId, this.props.taskId);
         if (res1.Ok != "Ok") {
             showError(res1.Ok);
             return;
@@ -291,7 +292,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
             // При сканировании ШК ТМЦ (или при выборе через доп. меню) проверять его наличие на не завершенных паллетах в рамках этого задания РАЗГР. 
             // Если такой товар есть выдавать сообщение "Данный товар уже размещен на паллете №…». Продолжить?".
-            let checkResult = await _wms_android_РАЗГР_Проверить_товар_на_других_паллетах(this.intoId, tmcId, this.props.taskId);
+            let checkResult = await _wms_android_РАЗГР_Проверить_товар_на_других_паллетах(this.intoPalleteId, tmcId, this.props.taskId);
             if (checkResult.ПаллетаНазвание != "") {
                 if (!(await getConfirmation("Данный товар уже размещен на паллете " + checkResult.ПаллетаНазвание + ". Продолжить?", "Нужно подтверждение", "Продолжить"))) {
                     return;
@@ -400,7 +401,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         let newKol = barcodeKol;
 
         await _wms_android_РАЗГР_INSERT_скл_Комплектация(
-            tmcId, this.task.КлиентПаллетаКлюч, this.intoId, newKol,
+            tmcId, this.task.КлиентПаллетаКлюч, this.intoPalleteId, newKol,
             appState.kadrId, partId, this.props.taskId,
             this.task.isReturn, partInfo.ДоговорПрихода
         );
@@ -526,8 +527,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     async loadTovarsGridData() {
         if (!this.tovarsGridApi)
             return;
-        if (this.intoId > 0) {
-            this.tovarsGridData = await _wms_android_РАЗГР_Список_товара_на_паллете(this.intoId);
+        if (this.intoPalleteId > 0) {
+            this.tovarsGridData = await _wms_android_РАЗГР_Список_товара_на_паллете(this.intoPalleteId);
             this.tovarsGridApi.setRowData(this.tovarsGridData);
             this.tovarsGridApi.sizeColumnsToFit();
             this.tovarsGridApi.resetRowHeights();
@@ -674,7 +675,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                                 color="success"
                                                 style={{ marginLeft: 5 }}
                                                 onClick={this.завершить_паллету.bind(this)}
-                                                hidden={this.intoId == 0}
+                                                hidden={this.intoPalleteId == 0}
                                             >
                                                 завершить паллету
                                                 </BuhtaButton>
@@ -683,7 +684,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 </tbody>
                             </table>
                         </div>
-                        <div style={{ display: this.intoId > 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }}>
+                        <div style={{ display: this.intoPalleteId > 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }}>
                             <div style={{ height: "100%", width: "100%", position: "absolute", display: "flex", justifyContent: "center", alignItems: "center", padding: 10 }}>
                                 <div style={{ fontSize: 18, textAlign: "center", color: "darkorange" }}>
                                     <div style={{ marginBottom: 30 }}>Паллета не выбрана!</div>
@@ -691,7 +692,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ display: this.intoId == 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
+                        <div style={{ display: this.intoPalleteId == 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
                             <div style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
                                     //headerHeight={25}
@@ -832,9 +833,9 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     }
 
     async завершить_паллету() {
-        if (this.intoId == 0)
+        if (this.intoPalleteId == 0)
             return
-        if (this.intoInfo._Неперемещаемая) {
+        if (this.intoPalleteInfo._Неперемещаемая) {
             // todo not bmConfirmation('Завершить работу с ячейкой ' +  GetCellNameByPalleta(Pal)) then        
             /*
     if not bmConfirmation('Завершить работу с ячейкой ' +  GetCellNameByPalleta(Pal)) then
@@ -849,9 +850,10 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
         else {
             if (this.task.ЗапрашиватьГабаритыПаллеты) {
-
+                await get_РАЗГР_запрос_габаритов_паллеты(this.task, this.intoPalleteInfo);
             }
             else {
+
 
             }
 

@@ -65,7 +65,7 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
     kolInBox: number = 0;
     UpTypeEdit_Value: string = "";
     MestEdit_Value: number = 0;
-    KolEdit_Value: number = 0;
+    ширина: number = 0;
     BoxLabel_Caption: string = "";
     осталосьПринятьКоличество: number = 0;
     осталосьПринятьУпаковки: string = "";
@@ -74,8 +74,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
     ДатаВыпуска: Moment = moment().startOf("day");
     СрокРеализ: Moment = moment().startOf("day");
 
-    kol_error: string = "";
-    part_error: string = "";
+    ширина_error: string = "";
+    all_errors: string = "";
 
     async componentDidMount() {
 
@@ -90,39 +90,19 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
 
 
     checkError() {
-        this.kol_error = "";
+        this.ширина_error = "";
         // //MestEdit.DoChangeValue;
         // //KolEdit.DoChangeValue;
-        if (this.KolEdit_Value <= 0) {
-            this.kol_error = "неверное количество";
+        if (this.ширина <= 0.01) {
+            this.ширина_error = "ширина меньше 0.01 m";
+        }
+        if (this.ширина > 3) {
+            this.ширина_error = "ширина больше 3 m";
         }
 
-        this.part_error = "";
-        // //MestEdit.DoChangeValue;
-        // //KolEdit.DoChangeValue;
-        if (this.СрокРеализ.diff(moment().startOf("day"), "days") < 0) {
-            this.part_error = "товар просрочен";
-        }
-        if (moment().startOf("day").diff(this.ДатаВыпуска, "days") < 0) {
-            this.part_error = "неверная дата выпуска";
-        }
-
-        // if (this.info.ShtH == 0 && this.info.PlaceID > 0) {
-        //     if (this.info.InUp > 0 && this.info.KolEdit_Value % this.info.InUp > 0) {
-        //         if (this.info.DopF == 1 && this.info.InUp2 > 0) {
-        //             if (this.info.KolEdit_Value % this.info.InUp2 > 0) {
-        //                 this.error = 'Количество д.б. кратным ' + this.info.InUp2;
-        //                 return;
-        //             }
-        //             else
-        //                 return;
-
-        //         }
-        //         this.error = 'Количество д.б. кратным ' + this.info.InUp;
-        //         return;
-        //     }
-
-        // }
+        this.all_errors = [
+            this.ширина_error,
+        ].join(", ");
     }
 
 
@@ -171,7 +151,7 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
         //     тип_упак = null;
 
 
-        let кол = (
+        let ширина: ReactNode = (
             <tr>
                 <td style={labelStyle}>ширина</td>
                 <td style={textStyle}>
@@ -179,21 +159,23 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                         <input
                             required
                             type="number"
-                            className="form-control cy-kol"
-                            style={{ width: 60, display: "inline", color: this.kol_error == "" ? "#4dbd74" : "red", fontWeight: "bold", textAlign: "center" }}
-                            value={this.KolEdit_Value}
+                            className="form-control cy-shirina"
+                            style={{ width: 80, display: "inline" }}
+                            value={this.ширина}
                             onChange={(event) => {
-                                this.KolEdit_Value = Number.parseFloat(event.target.value);
-
-                                this.forceUpdate()
+                                this.ширина = Number.parseFloat(event.target.value);
+                                this.checkError();
+                                this.forceUpdate();
                             }}
 
                         >
 
                         </input>
-                        <span style={{ marginLeft: 3 }}> см</span>
-
+                        <span style={{ marginLeft: 3 }}> м</span>
                     </div>
+                </td>
+                <td style={{ color: "red", maxWidth: 100, paddingLeft: 5 }}>
+                    {this.ширина_error}
                 </td>
             </tr >
         )
@@ -202,8 +184,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
 
 
         let kol_error: any = null;
-        if (this.kol_error != "")
-            kol_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.kol_error}</div>
+        if (this.ширина_error != "")
+            kol_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.ширина_error}</div>
 
 
         return (
@@ -217,7 +199,7 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
 
                             <table style={{ marginBottom: 5 }}>
                                 <tbody>
-                                    {кол}
+                                    {ширина}
                                 </tbody>
                             </table>
                             {kol_error}
@@ -231,7 +213,7 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                             <BuhtaButton color="primary"
                                 className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
-                                disabled={this.selectedPartId == 0 || this.kol_error != "" || this.part_error != ""}
+                                disabled={this.selectedPartId == 0 || this.ширина_error != "" || this.all_errors != ""}
                                 onClick={this.ok.bind(this)}>
                                 Ok
                             </BuhtaButton>
