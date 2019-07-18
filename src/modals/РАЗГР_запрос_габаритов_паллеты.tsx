@@ -14,19 +14,21 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_Паллета_инфо, IResult_wms_android_Типы_паллет, _wms_android_Типы_паллет } from "../generated-api";
+import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_Паллета_инфо, IResult_wms_android_Типы_паллет, _wms_android_Типы_паллет, _wms_android_Общий_объем_товара_на_паллете, _wms_android_РАЗГР_завершить_паллету } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
 import moment from "moment";
 import { Moment } from 'moment';
 import { zebraTextToSpeech } from "../zebra/ZebraApi";
+import { number } from "prop-types";
 
 
 
 export interface I_РАЗГР_запрос_габаритов_паллеты_PageProps extends IAppPageProps {
     task: IResult_wms_android_Информация_о_задании;
     pallete: IResult_wms_android_Паллета_инфо;
+    isInputOst: boolean;
 }
 
 export interface I_РАЗГР_запрос_габаритов_паллеты_Result {
@@ -35,11 +37,12 @@ export interface I_РАЗГР_запрос_габаритов_паллеты_Res
 
 export async function get_РАЗГР_запрос_габаритов_паллеты(
     task: IResult_wms_android_Информация_о_задании,
-    pallete: IResult_wms_android_Паллета_инфо
+    pallete: IResult_wms_android_Паллета_инфо,
+    isInputOst: boolean
 ): Promise<I_РАЗГР_запрос_габаритов_паллеты_Result> {
 
     appState.modalResult = undefined;
-    appState.openModal(РАЗГР_запрос_габаритов_паллеты_Page, { pageId: getRandomString(), task, pallete });
+    appState.openModal(РАЗГР_запрос_габаритов_паллеты_Page, { pageId: getRandomString(), task, pallete, isInputOst });
     return new Promise<I_РАЗГР_запрос_габаритов_паллеты_Result>(
         async (resolve: (res: I_РАЗГР_запрос_габаритов_паллеты_Result) => void, reject: (error: string) => void) => {
             while (typeof (appState.modalResult) == "undefined")
@@ -87,10 +90,28 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
         zebraTextToSpeech("завершение палеты");
         this.тип_паллеты = this.props.pallete.Тип;
         this.palleteTypes = await _wms_android_Типы_паллет();
+        await this.onChange_Тип_паллеты();
         //this.KolEditChanged();
         //this.ДатаВыпуска_Changed();
 
         this.forceUpdate();
+
+    }
+
+    async onChange_Тип_паллеты() {
+        let typeInfo: IResult_wms_android_Типы_паллет = this.palleteTypes.find((t: IResult_wms_android_Типы_паллет) => t.Ключ == this.тип_паллеты);
+        if (typeInfo) {
+            this.ширина = typeInfo.Ширина / 1000;
+            this.глубина = typeInfo.Глубина / 1000;
+            let площадь = this.ширина * this.глубина;
+            if (площадь > 0) {
+                let объем = (await _wms_android_Общий_объем_товара_на_паллете(this.props.pallete.Ключ)).Объем_М3;
+                this.высота = Number.parseFloat((объем / площадь * 1.1).toFixed(2));
+                if (this.высота > 3)
+                    this.высота = 3;
+
+            }
+        }
 
     }
 
@@ -136,9 +157,20 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
 
     async ok() {
 
-        // if (this.selectedPartId == -1) {
-        //     this.selectedPartId = (await _wms_android_РАЗГР_создать_партию(this.props.task.ДоговорКлюч, this.props.tmc.Ключ, this.ДатаВыпуска, this.СрокРеализ, 0)).Партия;
-        // }
+
+        let res = await _wms_android_РАЗГР_завершить_паллету(
+            this.props.task.Ключ,
+            this.props.pallete.Ключ,
+            this.тип_паллеты,
+            this.ширина,
+            this.глубина,
+            this.высота,
+            0, // яч куда
+            this.props.pallete._Неперемещаемая,
+            this.props.isInputOst,
+            true  //создатьЗаданиеНаРазмещение
+        );
+
         appState.setModalResult<I_РАЗГР_запрос_габаритов_паллеты_Result>({ result: "Ok" });
 
     }
@@ -251,7 +283,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                         name="select3"
                         value={this.тип_паллеты}
                         onChange={async (event: any) => {
-                            this.тип_паллеты = event.target.value;
+                            this.тип_паллеты = Number.parseFloat(event.target.value);
+                            await this.onChange_Тип_паллеты();
                             this.forceUpdate();
                         }}
                     >

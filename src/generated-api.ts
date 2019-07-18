@@ -1791,3 +1791,56 @@ export async function _wms_android_Типы_паллет(): Promise<IResult_wms_
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_Общий_объем_товара_на_паллете {
+    error:string;
+    Объем_М3: number
+}
+
+export async function _wms_android_Общий_объем_товара_на_паллете(palleteId: number): Promise<IResult_wms_android_Общий_объем_товара_на_паллете> {
+    if (typeof palleteId != "number") throw new Error("вызов '_wms_android_Общий_объем_товара_на_паллете': параметр 'palleteId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Общий_объем_товара_на_паллете " + palleteId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Общий_объем_товара_на_паллете: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Общий_объем_товара_на_паллете: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Объем_М3) == "undefined") throw new Error("результат выполнения '_wms_android_Общий_объем_товара_на_паллете': не заполнена колонка 'Объем_М3'");
+            if (typeof row.Объем_М3 != "number") throw new Error("результат выполнения '_wms_android_Общий_объем_товара_на_паллете': значение в колонке 'Объем_М3' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_РАЗГР_завершить_паллету {
+    error:string;
+    ЗаданиеНаРазмещение: number
+}
+
+export async function _wms_android_РАЗГР_завершить_паллету(taskId: number, palleteId: number, palleteType: number, ширина: number, глубина: number, высота: number, ЯчейкаКуда: number, неперемещаемая: boolean, режимВводаОстатков: boolean, создатьЗаданиеНаРазмещение: boolean): Promise<IResult_wms_android_РАЗГР_завершить_паллету> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'taskId' должен быть числом");
+    if (typeof palleteId != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'palleteId' должен быть числом");
+    if (typeof palleteType != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'palleteType' должен быть числом");
+    if (typeof ширина != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'ширина' должен быть числом");
+    if (typeof глубина != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'глубина' должен быть числом");
+    if (typeof высота != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'высота' должен быть числом");
+    if (typeof ЯчейкаКуда != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'ЯчейкаКуда' должен быть числом");
+    if (typeof неперемещаемая != "boolean") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'неперемещаемая' должен быть boolean");
+    if (typeof режимВводаОстатков != "boolean") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'режимВводаОстатков' должен быть boolean");
+    if (typeof создатьЗаданиеНаРазмещение != "boolean") throw new Error("вызов '_wms_android_РАЗГР_завершить_паллету': параметр 'создатьЗаданиеНаРазмещение' должен быть boolean");
+    let recordsets = await executeSql("_wms_android_РАЗГР_завершить_паллету " + taskId.toString() + "," + palleteId.toString() + "," + palleteType.toString() + "," + ширина.toString() + "," + глубина.toString() + "," + высота.toString() + "," + ЯчейкаКуда.toString() + "," + (неперемещаемая?1:0) + "," + (режимВводаОстатков?1:0) + "," + (создатьЗаданиеНаРазмещение?1:0));
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_завершить_паллету: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_завершить_паллету: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.ЗаданиеНаРазмещение) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_завершить_паллету': не заполнена колонка 'ЗаданиеНаРазмещение'");
+            if (typeof row.ЗаданиеНаРазмещение != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_завершить_паллету': значение в колонке 'ЗаданиеНаРазмещение' должно быть числом");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

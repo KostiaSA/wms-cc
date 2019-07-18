@@ -850,7 +850,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
         else {
             if (this.task.ЗапрашиватьГабаритыПаллеты) {
-                await get_РАЗГР_запрос_габаритов_паллеты(this.task, this.intoPalleteInfo);
+                await get_РАЗГР_запрос_габаритов_паллеты(this.task, this.intoPalleteInfo, this.isInputOst);
             }
             else {
 
