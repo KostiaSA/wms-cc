@@ -419,7 +419,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false}>
+                <Modal className={(this.props.visible ? "active-win" : "")} isOpen fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>{title}</div>
                         {/* <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>
@@ -429,7 +429,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                             {this.props.tmc.НомерНазвание}
                         </div>
                     </ModalHeader>
-                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 340, }}>
+                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0 }}>
                         <div className="card-body" style={{ padding: 5 }}>
 
                             <div className="ag-theme-balham" style={{ height: 160, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>

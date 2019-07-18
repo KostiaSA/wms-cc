@@ -14,7 +14,7 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_Паллета_инфо } from "../generated-api";
+import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_Паллета_инфо, IResult_wms_android_Типы_паллет, _wms_android_Типы_паллет } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
@@ -57,52 +57,80 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
         super(props, context);
     }
 
-    partList: IResult_wms_android_РАЗГР_список_партий_по_договору[] = [];
-    gridApi: any;
-    gridColumnApi: any;
-    selectedPartId: number = 0;
+    // partList: IResult_wms_android_РАЗГР_список_партий_по_договору[] = [];
+    // gridApi: any;
+    // gridColumnApi: any;
+    // selectedPartId: number = 0;
 
-    kolInBox: number = 0;
-    UpTypeEdit_Value: string = "";
-    MestEdit_Value: number = 0;
-    ширина: number = 0;
-    BoxLabel_Caption: string = "";
-    осталосьПринятьКоличество: number = 0;
-    осталосьПринятьУпаковки: string = "";
+    // kolInBox: number = 0;
+    // UpTypeEdit_Value: string = "";
+    // MestEdit_Value: number = 0;
+    // BoxLabel_Caption: string = "";
+    // осталосьПринятьКоличество: number = 0;
+    // осталосьПринятьУпаковки: string = "";
 
-    //СрокРеализДнEdit_Value: number = 0;
-    ДатаВыпуска: Moment = moment().startOf("day");
-    СрокРеализ: Moment = moment().startOf("day");
+    тип_паллеты: number;
 
+    ширина: number = 0.8;
     ширина_error: string = "";
+    глубина: number = 1.2;
+    глубина_error: string = "";
+    высота: number = 0;
+    высота_error: string = "";
+
     all_errors: string = "";
+
+    palleteTypes: IResult_wms_android_Типы_паллет[] = [];
 
     async componentDidMount() {
 
-        zebraTextToSpeech("завершение задания");
+        zebraTextToSpeech("завершение палеты");
+        this.тип_паллеты = this.props.pallete.Тип;
+        this.palleteTypes = await _wms_android_Типы_паллет();
         //this.KolEditChanged();
         //this.ДатаВыпуска_Changed();
 
-        //this.forceUpdate();
+        this.forceUpdate();
 
     }
 
-
+    isErrors(): boolean {
+        if (this.ширина_error != "")
+            return true;
+        if (this.глубина_error != "")
+            return true;
+        if (this.высота_error != "")
+            return true;
+    }
 
     checkError() {
         this.ширина_error = "";
-        // //MestEdit.DoChangeValue;
-        // //KolEdit.DoChangeValue;
-        if (this.ширина <= 0.01) {
-            this.ширина_error = "ширина меньше 0.01 m";
+        if (this.ширина < 0.01) {
+            this.ширина_error = "ширина меньше 0.01 м";
         }
         if (this.ширина > 3) {
-            this.ширина_error = "ширина больше 3 m";
+            this.ширина_error = "ширина больше 3 м";
         }
 
-        this.all_errors = [
-            this.ширина_error,
-        ].join(", ");
+        this.глубина_error = "";
+        if (this.глубина < 0.01) {
+            this.глубина_error = "глубина меньше 0.01 м";
+        }
+        if (this.глубина > 3) {
+            this.глубина_error = "глубина больше 3 м";
+        }
+
+        this.высота_error = "";
+        if (this.высота < 0.01) {
+            this.высота_error = "высота меньше 0.01 м";
+        }
+        if (this.высота > 3) {
+            this.высота_error = "высота больше 3 м";
+        }
+
+        // this.all_errors = [
+        //     this.ширина_error,
+        // ].join(", ");
     }
 
 
@@ -127,37 +155,13 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
             padding: 3,
         };
 
-        // let items = this.props.tmc.СписокУпаковок.split("\r").map((item: string, index: number) => <option key={index} value={item}>{item}</option>);
-        // let тип_упак = (
-        //     <tr>
-        //         <td style={labelStyle}>тип уп.</td>
-        //         <td style={textStyle}>
-        //             <select
-        //                 disabled={kol_disabled}
-        //                 className="form-control form-control"
-        //                 name="select3"
-        //                 value={this.UpTypeEdit_Value}
-        //                 onChange={async (event: any) => {
-        //                     console.log(event.target.value); //await appState.сохранить_настройки_ТСД("zoom", Number.parseFloat(event.target.value)); 
-        //                     this.forceUpdate();
-        //                 }}
-        //             >
-        //                 {items}
-        //             </select>
-        //         </td>
-        //     </tr>
-        // )
-        // if (this.props.tmc.КолВУпак <= 1)
-        //     тип_упак = null;
-
 
         let ширина: ReactNode = (
             <tr>
                 <td style={labelStyle}>ширина</td>
                 <td style={textStyle}>
-                    <div className="input-groupx">
+                    <div className="input-groupx" style={{ whiteSpace: "nowrap" }}>
                         <input
-                            required
                             type="number"
                             className="form-control cy-shirina"
                             style={{ width: 80, display: "inline" }}
@@ -180,29 +184,107 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
             </tr >
         )
 
+        let высота: ReactNode = (
+            <tr>
+                <td style={labelStyle}>высота</td>
+                <td style={textStyle}>
+                    <div className="input-groupx" style={{ whiteSpace: "nowrap" }}>
+                        <input
+                            type="number"
+                            className="form-control cy-shirina"
+                            style={{ width: 80, display: "inline" }}
+                            value={this.высота}
+                            onChange={(event) => {
+                                this.высота = Number.parseFloat(event.target.value);
+                                this.checkError();
+                                this.forceUpdate();
+                            }}
+
+                        >
+
+                        </input>
+                        <span style={{ marginLeft: 3 }}> м</span>
+                    </div>
+                </td>
+                <td style={{ color: "red", maxWidth: 100, paddingLeft: 5 }}>
+                    {this.высота_error}
+                </td>
+            </tr >
+        )
+
+        let глубина: ReactNode = (
+            <tr>
+                <td style={labelStyle}>глубина</td>
+                <td style={textStyle}>
+                    <div className="input-groupx" style={{ whiteSpace: "nowrap" }}>
+                        <input
+                            type="number"
+                            className="form-control cy-shirina"
+                            style={{ width: 80, display: "inline" }}
+                            value={this.глубина}
+                            onChange={(event) => {
+                                this.глубина = Number.parseFloat(event.target.value);
+                                this.checkError();
+                                this.forceUpdate();
+                            }}
+
+                        >
+
+                        </input>
+                        <span style={{ marginLeft: 3 }}> м</span>
+                    </div>
+                </td>
+                <td style={{ color: "red", maxWidth: 100, paddingLeft: 5 }}>
+                    {this.глубина_error}
+                </td>
+            </tr >
+        )
+
+        let items = this.palleteTypes.map((item: IResult_wms_android_Типы_паллет, index: number) => <option key={index} value={item.Ключ}>{item.Название}</option>);
+        let тип_паллеты = (
+            <tr>
+                <td style={labelStyle}>тип паллеты</td>
+                <td style={textStyle} colSpan={2}>
+                    <select
+                        style={{ width: 160 }}
+                        className="form-control .cy-pallete-type"
+                        name="select3"
+                        value={this.тип_паллеты}
+                        onChange={async (event: any) => {
+                            this.тип_паллеты = event.target.value;
+                            this.forceUpdate();
+                        }}
+                    >
+                        {items}
+                    </select>
+                </td>
+            </tr>
+        )
 
 
 
-        let kol_error: any = null;
-        if (this.ширина_error != "")
-            kol_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.ширина_error}</div>
+        // let kol_error: any = null;
+        // if (this.ширина_error != "")
+        //     kol_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.ширина_error}</div>
 
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false}>
+                <Modal className={(this.props.visible ? "active-win" : "")} isOpen fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
-                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>Завершение паллеты {this.props.pallete.Название}</div>
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>Завершение паллеты  <span style={{ whiteSpace: "nowrap" }}> {this.props.pallete.Название}</span></div>
                     </ModalHeader>
-                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 340, }}>
+                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: undefined, }}>
                         <div className="card-body" style={{ padding: 5 }}>
 
                             <table style={{ marginBottom: 5 }}>
                                 <tbody>
+                                    {тип_паллеты}
                                     {ширина}
+                                    {глубина}
+                                    {высота}
                                 </tbody>
                             </table>
-                            {kol_error}
 
                         </div>
 
@@ -210,12 +292,12 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
                         <div style={{ width: "100%" }}>
-                            <BuhtaButton color="primary"
+                            <BuhtaButton color="success"
                                 className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
-                                disabled={this.selectedPartId == 0 || this.ширина_error != "" || this.all_errors != ""}
+                                disabled={this.isErrors()}
                                 onClick={this.ok.bind(this)}>
-                                Ok
+                                Завершить паллету
                             </BuhtaButton>
                             <BuhtaButton
                                 className="cy-cancel"
