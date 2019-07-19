@@ -210,7 +210,7 @@ export class Информация_о_задании_Page extends React.Component
 
 
         return (
-            <div className={"app cy-task-info-page " + (this.props.visible ? "active-win" : "")} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
+            <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "cy-task-info-page" : "")} style={{ display: this.props.visible ? "" : "none", backgroundColor: "whitesmoke", padding: 10, width: "100%" }}>
 
 
                 <div className="card" style={{ marginBottom: 0 }}>

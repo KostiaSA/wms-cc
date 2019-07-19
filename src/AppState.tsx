@@ -127,6 +127,16 @@ export class AppState {
         this.forceUpdate();
     }
 
+    getActivePageId(): string {
+        if (this.modals.length > 0)
+            return this.modals.slice(-1)[0].props.pageId;
+        else if (this.pages.length > 0)
+            return this.pages.slice(-1)[0].props.pageId;
+        else
+            return "";
+
+    }
+
     modalResult: any;
 
     setModalResult<R>(res: R) {

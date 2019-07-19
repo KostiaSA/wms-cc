@@ -231,7 +231,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
         let titleStyle = { marginTop: "0.5em" };
 
         return (
-            <div className={"app cy-main-menu-page " + (this.props.visible ? "active-win" : "")} style={{ display: this.props.visible ? "" : "none", zoom: appState.zoom }}>
+            <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "cy-main-menu-page" : "")} style={{ display: this.props.visible ? "" : "none", zoom: appState.zoom }}>
                 <h5 className={"text-center"} style={titleStyle}>ОСНОВНЫЕ ОПЕРАЦИИ</h5>
                 <ul className="list-group">
                     {this.renderGroup("ОСНОВНЫЕ ОПЕРАЦИИ")}

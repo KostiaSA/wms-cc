@@ -93,7 +93,7 @@ export class ПИК_запрос_партии_Page extends React.Component<I_П�
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-win" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>Выбор партии</div>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>

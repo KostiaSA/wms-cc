@@ -59,7 +59,7 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
     render(): React.ReactNode {
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "error-message-page" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-danger"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
                     <ModalBody style={{ zoom: appState.zoom }}>
                         {this.props.message}

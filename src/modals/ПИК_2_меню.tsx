@@ -30,7 +30,7 @@ export class ПИК_1_меню_Page extends React.Component<I_ПИК_1_меню_
     render(): React.ReactNode {
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false} >
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-win" : "")} isOpen centered fade={false} >
                     <ModalHeader className={"text-danger22"} style={{ zoom: appState.zoom }}>{"выбор задания ПИК"}</ModalHeader>
                     <ModalBody className="cy-pick-2-menu-page" style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="primary" style={{ marginBottom: 10 }}

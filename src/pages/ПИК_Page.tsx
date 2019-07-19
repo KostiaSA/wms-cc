@@ -424,7 +424,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         });
 
         return (
-            <div className={"app cy-pick-page " + (this.props.visible ? "active-win" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
+            <div className={"app cy-pick-page " + (appState.getActivePageId() == this.props.pageId ? "active-win" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
 
 
                 <div className="card" style={{ marginBottom: 0, flex: "1" }}>

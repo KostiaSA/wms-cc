@@ -210,7 +210,7 @@ export class ПИК_запрос_количества_Page extends React.Compone
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-win" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom, color: "gray" }}>Ввод количества</ModalHeader>
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom }}>
                         <div className="card-body" style={{ zoom: appState.zoom, padding: 0 }}>

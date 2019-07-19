@@ -99,7 +99,7 @@ export class Выбор_задания_в_работу_Page extends React.Compon
             rowHeight *= appState.zoom;
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(this.props.visible ? "active-win" : "")} isOpen centered fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "vybor-zadainya-v-raboty" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div>Выбор задания {this.props.taskType}</div>
                     </ModalHeader>
