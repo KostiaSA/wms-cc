@@ -42,7 +42,7 @@ class InfoMessagePage extends React.Component<IInfoMessagePageProps, any> {
     render(): React.ReactNode {
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(appState.getActivePageId() == this.props.pageId ? "info-message-page" : "")} isOpen centered fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window info-message-page" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
                     <ModalBody className={"text-info"} style={{ zoom: appState.zoom }}>
                         {this.props.message}

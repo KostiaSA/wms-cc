@@ -90,7 +90,7 @@ export class Запрос_штрих_кода_Page extends React.Component<I_З�
 
         return (
 
-            <Modal className={(appState.getActivePageId() == this.props.pageId ? "zapros-shtrih-koda" : "")} isOpen centered={false} fade={false}>
+            <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window zapros-shtrih-koda" : "")} isOpen centered={false} fade={false}>
                 <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                     <div style={{ color: "steelblue" }}>Введите штрих-код</div>
                 </ModalHeader>

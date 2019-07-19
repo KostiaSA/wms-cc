@@ -328,7 +328,7 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(appState.getActivePageId() == this.props.pageId ? "cy-razgr-pallete-ok" : "")} isOpen fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-pallete-ok" : "")} isOpen fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>Завершение паллеты  <span style={{ whiteSpace: "nowrap" }}> {this.props.pallete.Название}</span></div>
                     </ModalHeader>

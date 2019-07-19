@@ -24,7 +24,7 @@ export class Help_Page extends React.Component<IHelp_PageProps> {
     render() {
 
         return (
-            <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "active-win" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, height: "100%", width: "100%" }}>
+            <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "active-window active-win" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, height: "100%", width: "100%" }}>
 
                 <div className="card help-page" style={{ flex: 1, zoom: appState.zoom, marginBottom: 0, overflow: "auto" }}>
                     {this.props.body}

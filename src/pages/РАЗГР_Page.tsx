@@ -651,7 +651,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
 
         return (
-            <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "cy-razgr-page" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
+            <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-page" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
                 <div className="card " style={{ marginBottom: 0, flex: "1" }}>
                     <div className="card-header" style={{ zoom: appState.zoom, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <div>{this.task.НазваниеЗадания}</div>

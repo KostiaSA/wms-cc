@@ -30,7 +30,7 @@ export class РАЗГР_меню_Page extends React.Component<I_РАЗГР_ме�
     render(): React.ReactNode {
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(appState.getActivePageId() == this.props.pageId ? "cy-razgr-menu-page" : "")} isOpen centered fade={false} >
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-menu-page" : "")} isOpen centered fade={false} >
                     <ModalHeader style={{ zoom: appState.zoom }}>{"выбор задания РАЗГРУЗКА"}</ModalHeader>
                     <ModalBody style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="primary" style={{ marginBottom: 10, display: "block" }}
