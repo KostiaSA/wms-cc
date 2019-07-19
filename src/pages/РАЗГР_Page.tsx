@@ -674,22 +674,56 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         if (this.svodOverflow)
             progressColorClass = "bg-danger";
 
+        let big_font_message: any = null;
+
+        if (this.intoPalleteId == 0)
+            big_font_message = (
+                <div style={{ zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }}>
+                    <div style={{ height: "100%", width: "100%", position: "absolute", display: "flex", justifyContent: "center", alignItems: "center", padding: 10 }}>
+                        <div style={{ fontSize: 18, textAlign: "center", color: "darkorange" }}>
+                            <div style={{ marginBottom: 30 }}>Паллета не выбрана!</div>
+                            <div>Отсканируйте штрих-код паллеты, на которую будете принимать товар</div>
+                        </div>
+                    </div>
+                </div>
+            )
+
+        if (this.svodPercent == 100 && this.intoPalleteId == 0)
+            big_font_message = (
+                <div style={{ zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }}>
+                    <div style={{ height: "100%", width: "100%", position: "absolute", display: "flex", justifyContent: "center", alignItems: "center", padding: 10 }}>
+                        <div style={{ fontSize: 18, textAlign: "center", color: "#4dbd74" }}>
+                            <div style={{ marginBottom: 30 }}>Задание выполнено!</div>
+                            <div>Нажмите кнопку "Завершить"</div>
+                        </div>
+                    </div>
+                </div>
+            )
+
         return (
             <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-page" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
                 <div className="card " style={{ marginBottom: 0, flex: "1" }}>
                     <div className="progress task-progress">
                         <div className={"progress-bar progress-bar-striped " + progressColorClass} style={{ width: this.svodPercent + "%" }}></div>
                     </div>
-                    <div className="card-header" style={{ zoom: appState.zoom, paddingTop: 5, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
+                    <div className="card-header" style={{ zoom: appState.zoom, padding: 5, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <table>
-                            <tr>
-                                <td>
-                                    <div>{this.task.НазваниеЗадания}</div>
-                                    {объединенная}
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div>{this.task.НазваниеЗадания}</div>
+                                        {объединенная}
+                                    </td>
+                                    <td>
+                                        <BuhtaButton
+                                            outline
+                                            color={this.svodOverflow ? "danger" : "success"}
+                                        >
+                                            <i className="fal fa-tasks"></i>
+                                        </BuhtaButton>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
 
@@ -698,7 +732,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
                             <table style={{ width: "100%" }}>
                                 <tbody>
-                                    <tr>
+                                    <tr style={{ display: this.intoPalleteId == 0 ? "none" : undefined }}>
                                         <td style={{ ...labelStyle }}>куда</td>
                                         <td className={intoInputClassName} style={{ ...textStyle }}>{this.intoName}</td>
                                         <td>
@@ -717,14 +751,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 </tbody>
                             </table>
                         </div>
-                        <div style={{ display: this.intoPalleteId > 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }}>
-                            <div style={{ height: "100%", width: "100%", position: "absolute", display: "flex", justifyContent: "center", alignItems: "center", padding: 10 }}>
-                                <div style={{ fontSize: 18, textAlign: "center", color: "darkorange" }}>
-                                    <div style={{ marginBottom: 30 }}>Паллета не выбрана!</div>
-                                    <div>Отсканируйте штрих-код паллеты, на которую будете принимать товар</div>
-                                </div>
-                            </div>
-                        </div>
+                        {big_font_message}
                         <div style={{ display: this.intoPalleteId == 0 ? "none" : undefined, zoom: appState.zoom, flex: "1", overflow: "hidden", position: "relative" }} className="ag-theme-balham">
                             <div style={{ height: "100%", width: "100%", position: "absolute" }}>
                                 <AgGridReact
@@ -888,6 +915,19 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
                     <table className="help-table">
                         <tbody>
+                            <tr>
+                                <td>
+                                    <BuhtaButton
+                                        outline
+                                        color={"success"}
+                                    >
+                                        <i className="fal fa-tasks"></i>
+                                    </BuhtaButton>
+                                </td>
+                                <td>
+                                    показать сводку по товарам (надо принять/принято)
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <BuhtaButton small outline color="success">завершить паллету</BuhtaButton>
