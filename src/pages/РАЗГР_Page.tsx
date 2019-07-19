@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание, IResult_wms_android_Паллета_инфо } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание, IResult_wms_android_Паллета_инфо, IResult_wms_android_РАЗГР_свод, _wms_android_РАЗГР_свод } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -56,6 +56,9 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     isInputOst: boolean = false; // Режим ввода начальных остатков
 
     isBrak_Checked: boolean = false;
+    svod: IResult_wms_android_РАЗГР_свод[] = [];
+    svodPercent: number = 0;
+    svodOverflow: boolean = false;
 
     tovarsGridApi: any;
     tovarsGridColumnApi: any;
@@ -67,6 +70,28 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         this.intoName = "не выбрано";
         this.loadTovarsGridData();
         this.forceUpdate();
+    }
+
+    async loadSvod() {
+        this.svod = await _wms_android_РАЗГР_свод(this.task.ДоговорКлюч, this.props.taskId);
+        this.svodOverflow = false;
+        let dogKol = 0
+        let taskKol = 0
+        let delta = 0;
+        for (let s of this.svod) {
+            dogKol += s.ДогКол;
+            taskKol += s.ЗаданиеКол;
+            delta += s.Дельта;
+            if (s.ЗаданиеКол > s.ДогКол)
+                this.svodOverflow = true;
+        }
+        this.svodPercent = 0;
+        if (dogKol > 0) {
+            this.svodPercent = Math.min(taskKol / dogKol * 100, 95);
+        }
+        if (dogKol > 0 && delta == 0) {
+            this.svodPercent = 100;
+        }
     }
 
     async setIntoPalleteId(palleteId: number, info: IResult_wms_android_Паллета_инфо) {
@@ -408,6 +433,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
         PlaySound.принято_товаров_X(newKol);
         this.loadTovarsGridData();
+        this.loadSvod().then(() => this.forceUpdate());
 
         if (this.task.Сверка.toUpperCase() == "ПРЕДУПРЕЖДЕНИЕ" || this.task.Сверка.toUpperCase() == "ЗАПРЕТ") {
             let sverkaFull = await _wms_android_РАЗГР_Сверка_с_заявкой_полная(this.props.taskId, tmcId);
@@ -506,8 +532,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             return;
         }
 
-        //this.clientInfo=
-
+        await this.loadSvod();
         this.barcodeProcessorHandler = setInterval(this.barcodeProcessor.bind(this), 100);
         this.forceUpdate();
     }
@@ -515,8 +540,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     componentWillUnmount() {
         clearInterval(this.barcodeProcessorHandler)
     }
-
-
 
     onTovarsGridReady = (params: any) => {
         this.tovarsGridApi = params.api;
@@ -647,12 +670,15 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             )
         }
 
+        let progressColorClass = "bg-success";
+        if (this.svodOverflow)
+            progressColorClass = "bg-danger";
 
         return (
             <div className={"app " + (appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-page" : "")} style={{ display: this.props.visible ? "flex" : "none", flexDirection: "column", backgroundColor: "whitesmoke", padding: 0, width: "100%" }}>
                 <div className="card " style={{ marginBottom: 0, flex: "1" }}>
                     <div className="progress task-progress">
-                        <div className="progress-bar progress-bar-striped bg-success" role="progressbar" style={{ width: "25%" }}></div>
+                        <div className={"progress-bar progress-bar-striped " + progressColorClass} style={{ width: this.svodPercent + "%" }}></div>
                     </div>
                     <div className="card-header" style={{ zoom: appState.zoom, paddingTop: 5, backgroundColor: getTaskConst(this.task.Тип).headerBackground }}>
                         <table>
@@ -685,7 +711,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                                 hidden={this.intoPalleteId == 0}
                                             >
                                                 завершить паллету
-                                                </BuhtaButton>
+                                            </BuhtaButton>
                                         </td>
                                     </tr>
                                 </tbody>
