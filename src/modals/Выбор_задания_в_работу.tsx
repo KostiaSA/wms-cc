@@ -86,7 +86,6 @@ export class Выбор_задания_в_работу_Page extends React.Compon
         playSound_ButtonClick();
         let row: IResult_wms_android_РАЗГР_выбрать_задание_список = e.data;
         this.selectedTaskId = row.Ключ;
-        console.log(row);
         this.forceUpdate();
     }
 

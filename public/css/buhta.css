@@ -118,6 +118,13 @@ body {
     padding: 5px;
 }
 
+.progress.task-progress {
+    height: 5px;
+    border-radius: 0;
+    /* background-color: transparent;
+    border: 1px solid #4dbd74; */
+}
+
 /* navbar-icon-top*/
 
 /* .navbar-icon-top .navbar-nav .nav-link {

@@ -229,7 +229,6 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         }
 
         if (res.Нужен_запрос_количества_Ok = 1) {
-            console.log("Нужен_запрос_количества_Ok", res);
             let p: any = {
                 taskId: this.props.taskId,
                 ...res

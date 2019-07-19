@@ -64,7 +64,7 @@ let mainMenuItems: IMainMenuItem[] = [
             else
                 showAppError("Неверный 'ModalResult' в РАЗГР_меню_Page_ModalResult: " + res);
 
-            console.log(res);
+            //console.log(res);
         }
     },
     {
