@@ -30,6 +30,8 @@ export class BuhtaButton extends React.Component<BuhtaButtonProps, any> {
         let className = this.props.className || "";
         if (!this.props.big)
             className += " btn-sm";
+        if (!this.props.disabled)
+            className += " enabled";
         let smallStyle: CSSProperties = {};
         if (this.props.small)
             smallStyle = {

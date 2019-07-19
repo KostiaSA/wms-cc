@@ -1842,3 +1842,47 @@ export async function _wms_android_РАЗГР_завершить_паллету(
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_РАЗГР_свод {
+    error:string;
+    Артикул: string;
+    Название: string;
+    Номер: string;
+    KolInBox: number;
+    ДогКол: number;
+    ЗаданиеКол: number;
+    БракКол: number;
+    Дельта: number
+}
+
+export async function _wms_android_РАЗГР_свод(dogId: number, taskId: number): Promise<IResult_wms_android_РАЗГР_свод[]> {
+    if (typeof dogId != "number") throw new Error("вызов '_wms_android_РАЗГР_свод': параметр 'dogId' должен быть числом");
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_РАЗГР_свод': параметр 'taskId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_свод " + dogId.toString() + "," + taskId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Артикул) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'Артикул'");
+            if (typeof row.Артикул != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'Артикул' должно быть строкой");
+            if (typeof(row.Название) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'Название'");
+            if (typeof row.Название != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'Название' должно быть строкой");
+            if (typeof(row.Номер) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'Номер'");
+            if (typeof row.Номер != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'Номер' должно быть строкой");
+            if (typeof(row.KolInBox) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'KolInBox'");
+            if (typeof row.KolInBox != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'KolInBox' должно быть числом");
+            if (typeof(row.ДогКол) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'ДогКол'");
+            if (typeof row.ДогКол != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'ДогКол' должно быть числом");
+            if (typeof(row.ЗаданиеКол) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'ЗаданиеКол'");
+            if (typeof row.ЗаданиеКол != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'ЗаданиеКол' должно быть числом");
+            if (typeof(row.БракКол) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'БракКол'");
+            if (typeof row.БракКол != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'БракКол' должно быть числом");
+            if (typeof(row.Дельта) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'Дельта'");
+            if (typeof row.Дельта != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'Дельта' должно быть числом");            
+        }
+    }
+
+    return lastRecordset;
+
+}
