@@ -1889,3 +1889,29 @@ export async function _wms_android_РАЗГР_свод(dogId: number, taskId: nu
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_Выбор_ТМЦ_список {
+    error:string;
+    Ключ: number;
+    НомерНазвание: string
+}
+
+export async function _wms_android_Выбор_ТМЦ_список(dogId: number, likeText: string): Promise<IResult_wms_android_Выбор_ТМЦ_список[]> {
+    if (typeof dogId != "number") throw new Error("вызов '_wms_android_Выбор_ТМЦ_список': параметр 'dogId' должен быть числом");
+    if (typeof likeText != "string") throw new Error("вызов '_wms_android_Выбор_ТМЦ_список': параметр 'likeText' должен быть строкой");
+    let recordsets = await executeSql("_wms_android_Выбор_ТМЦ_список " + dogId.toString() + "," + stringAsSql(likeText));
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ключ) == "undefined") throw new Error("результат выполнения '_wms_android_Выбор_ТМЦ_список': не заполнена колонка 'Ключ'");
+            if (typeof row.Ключ != "number") throw new Error("результат выполнения '_wms_android_Выбор_ТМЦ_список': значение в колонке 'Ключ' должно быть числом");
+            if (typeof(row.НомерНазвание) == "undefined") throw new Error("результат выполнения '_wms_android_Выбор_ТМЦ_список': не заполнена колонка 'НомерНазвание'");
+            if (typeof row.НомерНазвание != "string") throw new Error("результат выполнения '_wms_android_Выбор_ТМЦ_список': значение в колонке 'НомерНазвание' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset;
+
+}

@@ -33,6 +33,7 @@ import { HelpButton } from "../ui/HelpButton";
 import { get_Запрос_штрих_кода } from "../modals/Запрос_штрих_кода";
 import { get_РАЗГР_запрос_габаритов_паллеты } from "../modals/РАЗГР_запрос_габаритов_паллеты";
 import { show_РАЗГР_свод } from "../modals/РАЗГР_свод";
+import { get_Выбор_ТМЦ } from "../modals/Выбор_ТМЦ";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -785,7 +786,17 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                     <div style={{ marginTop: 10, paddingRight: 4 }}>
                         <BuhtaButton small outline color="primary" style={{ marginLeft: 3 }}>Доп.меню</BuhtaButton>
                         <BuhtaButton small outline style={{ marginLeft: 3, minWidth: 40 }} onClick={this.ШК_button_click.bind(this)}>ШК</BuhtaButton>
-                        <BuhtaButton small outline style={{ marginLeft: 3 }}>Товар</BuhtaButton>
+                        <BuhtaButton
+                            small outline style={{ marginLeft: 3 }}
+                            onClick={async () => {
+                                let res = await get_Выбор_ТМЦ(this.task);
+                                if (res.result == "Ok") {
+                                    appState.pushTestBarcode("T" + res.tmcId, "");
+                                }
+                            }}
+                        >
+                            Товар
+                        </BuhtaButton>
                         <BuhtaButton small outline color="success" style={{ marginLeft: 3 }}>Изм.кол.</BuhtaButton>
                         <BuhtaButton small outline color="danger" style={{ marginLeft: 3 }}>Откат</BuhtaButton>
 

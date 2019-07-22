@@ -62,7 +62,7 @@ export class РАЗГР_свод_Page extends React.Component<I_РАЗГР_св�
 
     };
 
-    onTovarsGridReady = (params: any) => {
+    onGridReady = (params: any) => {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
         setTimeout(this.loadGridData.bind(this), 1)
@@ -107,7 +107,7 @@ export class РАЗГР_свод_Page extends React.Component<I_РАЗГР_св�
                                 <AgGridReact
                                     suppressLoadingOverlay
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
-                                    onGridReady={this.onTovarsGridReady}
+                                    onGridReady={this.onGridReady}
                                     rowHeight={rowHeight}
                                     headerHeight={22}
                                     onRowClicked={this.onGridRowClicked.bind(this)}
