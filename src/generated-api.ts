@@ -1848,6 +1848,7 @@ export interface IResult_wms_android_РАЗГР_свод {
     Артикул: string;
     Название: string;
     Номер: string;
+    ЕдИзм: string;
     KolInBox: number;
     ДогКол: number;
     ЗаданиеКол: number;
@@ -1870,6 +1871,8 @@ export async function _wms_android_РАЗГР_свод(dogId: number, taskId: nu
             if (typeof row.Название != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'Название' должно быть строкой");
             if (typeof(row.Номер) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'Номер'");
             if (typeof row.Номер != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'Номер' должно быть строкой");
+            if (typeof(row.ЕдИзм) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'ЕдИзм'");
+            if (typeof row.ЕдИзм != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'ЕдИзм' должно быть строкой");
             if (typeof(row.KolInBox) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'KolInBox'");
             if (typeof row.KolInBox != "number") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': значение в колонке 'KolInBox' должно быть числом");
             if (typeof(row.ДогКол) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_свод': не заполнена колонка 'ДогКол'");

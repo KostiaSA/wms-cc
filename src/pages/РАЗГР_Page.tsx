@@ -32,6 +32,7 @@ import { show_Help } from "./Help_Page";
 import { HelpButton } from "../ui/HelpButton";
 import { get_Запрос_штрих_кода } from "../modals/Запрос_штрих_кода";
 import { get_РАЗГР_запрос_габаритов_паллеты } from "../modals/РАЗГР_запрос_габаритов_паллеты";
+import { show_РАЗГР_свод } from "../modals/РАЗГР_свод";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -718,6 +719,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                         <BuhtaButton
                                             outline
                                             color={this.svodOverflow ? "danger" : "success"}
+                                            onClick={async () => { await show_РАЗГР_свод(this.task) }}
                                         >
                                             <i className="fal fa-tasks"></i>
                                         </BuhtaButton>
