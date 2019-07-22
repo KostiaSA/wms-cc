@@ -125,6 +125,11 @@ body {
     border: 1px solid #4dbd74; */
 }
 
+.search-highlight {
+    background-color: #ffa50078;
+    color: black;
+}
+
 /* navbar-icon-top*/
 
 /* .navbar-icon-top .navbar-nav .nav-link {

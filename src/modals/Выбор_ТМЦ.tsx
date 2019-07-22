@@ -1,5 +1,7 @@
 import * as  React from "react";
 import { appState } from "../AppState";
+import Highlighter from "react-highlight-words";
+
 import { IAppPageProps } from "../pages/AppWindow";
 
 import Modal from "reactstrap/lib/Modal";
@@ -45,11 +47,13 @@ export async function get_Выбор_ТМЦ(task: IResult_wms_android_Инфор
         });
 }
 
+let page: Выбор_ТМЦ_Page;
 
 export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_PageProps, any> {
 
     constructor(props: I_Выбор_ТМЦ_PageProps, context: any) {
         super(props, context);
+        page = this;
     }
 
     data: IResult_wms_android_Выбор_ТМЦ_список[] = [];
@@ -60,6 +64,7 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
     fullList: boolean = false;
 
     async componentDidMount() {
+
 
     };
 
@@ -73,7 +78,7 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
         if (!this.gridApi)
             return;
 
-        this.data = await _wms_android_Выбор_ТМЦ_список(this.props.task.ДоговорКлюч, this.likeText.trim());
+        this.data = await _wms_android_Выбор_ТМЦ_список(this.fullList ? 0 : this.props.task.ДоговорКлюч, this.likeText.trim());
 
         this.gridApi.setRowData(this.data);
         this.gridApi.sizeColumnsToFit();
@@ -97,7 +102,7 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
                 <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window vybor-zadainya-v-raboty" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div>
-                            Поиск:
+                            <span style={{ paddingRight: 3 }}>Поиск</span>
                             <input
                                 required
                                 type={"string"}
@@ -112,7 +117,9 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
                             </input>
                             <BuhtaButton
                                 small outline color="primary" style={{ marginLeft: 5 }}
-                                onClick={() => { }}
+                                onClick={async () => {
+                                    await this.loadGridData();
+                                }}
                             >
                                 найти
                             </BuhtaButton>
@@ -120,9 +127,14 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
                                 <input
                                     className="form-check-input"
                                     type="checkbox"
-                                    value=""
+                                    checked={this.fullList}
                                     id="a4"
                                     style={{ transform: "scale(1.35)" }}
+                                    onChange={async (event) => {
+                                        this.fullList = event.target.checked;
+                                        await this.loadGridData();
+                                    }}
+
                                 />
                                 <label className="form-check-label" htmlFor="a4" style={{ marginLeft: 5 }}>
                                     полный список
@@ -145,7 +157,7 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
                                     <AgGridColumn
                                         headerName="Товар"
                                         field="НомерНазвание"
-                                        //cellRendererFramework={SvodCellRenderer}
+                                        cellRendererFramework={CellRenderer}
                                         cellStyle={{ whiteSpace: "normal", fontSize: 11 }}
                                         autoHeight
                                     >
@@ -205,17 +217,20 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
 //     }
 // }
 
-// class PlanCellRenderer extends React.Component<any> {
-//     render() {
-//         let row: IResult_wms_android_Выбор_ТМЦ = this.props.data;
-//         let color = ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО;
-//         if (row.ДогКол != row.ЗаданиеКол)
-//             color = "red";
-//         return (
-//             <div style={{ textAlign: "center", color }}>{getUpakKolStr(row.ДогКол, row.KolInBox, row.ЕдИзм)}</div>
-//         );
-//     }
-// }
+class CellRenderer extends React.Component<any> {
+    render() {
+        let row: IResult_wms_android_Выбор_ТМЦ_список = this.props.data;
+        console.log(this.props);
+        return (
+            <Highlighter
+                highlightClassName="search-highlight"
+                searchWords={[page.likeText]}
+                autoEscape={true}
+                textToHighlight={row.НомерНазвание}
+            />
+        );
+    }
+}
 
 // class FactCellRenderer extends React.Component<any> {
 //     render() {
