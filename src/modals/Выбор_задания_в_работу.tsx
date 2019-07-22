@@ -78,7 +78,7 @@ export class Выбор_задания_в_работу_Page extends React.Compon
         this.data = await api_func(appState.kadrId);
         this.gridApi.setRowData(this.data);
         this.gridApi.sizeColumnsToFit();
-        //this.gridApi.resetRowHeights();
+        this.gridApi.resetRowHeights();
         this.forceUpdate();
     }
 
@@ -119,6 +119,7 @@ export class Выбор_задания_в_работу_Page extends React.Compon
                                         field="Задание"
                                         cellRenderer={agGridMultiRowCellRenderer}
                                         cellStyle={{ whiteSpace: "normal", fontSize: 11 }}
+                                        autoHeight
                                     >
                                     </AgGridColumn>
 

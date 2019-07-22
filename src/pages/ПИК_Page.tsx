@@ -294,7 +294,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
         this.palletesGridData = await _wms_android_ПИК_список_паллет(this.props.taskId, this.intoId, this.fromId);
         this.palletesGridApi.setRowData(this.palletesGridData);
         this.palletesGridApi.sizeColumnsToFit();
-        //this.palletesGridApi.resetRowHeights();
+        this.palletesGridApi.resetRowHeights();
         this.forceUpdate();
 
     };
@@ -472,11 +472,12 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                         field="ТМЦ"
                                         cellRenderer={agGridMultiRowCellRendererForTMC}
                                         cellStyle={{ whiteSpace: "normal" }}
+                                        autoHeight
                                     >
                                     </AgGridColumn>
-                                    <AgGridColumn headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={140} cellRenderer={agGridMultiRowCellRendererForCellPallete} cellStyle={{ textAlign: "center" }}></AgGridColumn>
-                                    <AgGridColumn headerName="Взято/ Взять" field="ВзятоВзять" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
-                                    <AgGridColumn headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
+                                    <AgGridColumn autoHeight headerName="Ячейка/ Паллета" field="ЯчейкаПаллета" width={140} cellRenderer={agGridMultiRowCellRendererForCellPallete} cellStyle={{ textAlign: "center" }}></AgGridColumn>
+                                    <AgGridColumn autoHeight headerName="Взято/ Взять" field="ВзятоВзять" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
+                                    <AgGridColumn autoHeight headerName="Кол-во/ Ед.Изм." field="КолЕдИзм" width={80} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
 
                                 </AgGridReact>
                             </div>
@@ -499,6 +500,7 @@ export class ПИК_Page extends React.Component<IПИК_PageProps> {
                                         field="ТМЦ"
                                         cellRenderer={agGridMultiRowCellRendererForTMC}
                                         cellStyle={{ background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ, whiteSpace: "normal" }}
+                                        autoHeight
                                     >
                                     </AgGridColumn>
                                     <AgGridColumn headerName="Взять" field="Взять" width={50} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, background: ЦВЕТ_ФОНА_ПИК_СПИСОК_ТОВАРА_НА_ПАЛЛЕТЕ }}></AgGridColumn>

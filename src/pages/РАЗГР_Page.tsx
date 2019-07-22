@@ -562,9 +562,9 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         }
     }
 
-    palletesGridGetRowHeight(params: any): number {
-        return 45;
-    }
+    // palletesGridGetRowHeight(params: any): number {
+    //     return 45;
+    // }
 
     async ШК_button_click() {
         let res = await get_Запрос_штрих_кода();
@@ -759,7 +759,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                     suppressLoadingOverlay
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
                                     onGridReady={this.onTovarsGridReady}
-                                    rowHeight={70}
+                                    //rowHeight={70}
                                     onRowClicked={this.onTovarGridRowClicked.bind(this)}
                                 >
                                     <AgGridColumn
@@ -767,6 +767,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                         field="Товар"
                                         cellRenderer={tovarCellRenderer}
                                         cellStyle={{ whiteSpace: "normal" }}
+                                        autoHeight
                                     >
                                     </AgGridColumn>
                                     <AgGridColumn headerName="Кол" field="Кол" width={45} cellStyle={{ textAlign: "center", color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}></AgGridColumn>
