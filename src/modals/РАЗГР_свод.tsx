@@ -59,7 +59,7 @@ export class РАЗГР_свод_Page extends React.Component<I_РАЗГР_св�
     selectedTaskId: number = 0;
 
     async componentDidMount() {
-        PlaySound.выберите_задание();
+
     };
 
     onTovarsGridReady = (params: any) => {
