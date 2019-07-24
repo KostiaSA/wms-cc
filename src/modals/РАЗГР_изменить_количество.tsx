@@ -14,7 +14,7 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию } from "../generated-api";
+import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_ТМЦ_инфо, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
@@ -25,24 +25,20 @@ import { Moment } from 'moment';
 
 export interface I_РАЗГР_изменить_количество_PageProps extends IAppPageProps {
     task: IResult_wms_android_Информация_о_задании;
-    tmc: IResult_wms_android_ТМЦ_инфо;
-    barcodeKol: number;
+    row: IResult_wms_android_РАЗГР_Список_товара_на_паллете;
 }
 
 export interface I_РАЗГР_изменить_количество_Result {
     result: "Ok" | "Cancel";
-    selectedPartId: number;
-    selectedKol: number;
 }
 
 export async function get_РАЗГР_изменить_количество(
     task: IResult_wms_android_Информация_о_задании,
-    tmc: IResult_wms_android_ТМЦ_инфо,
-    barcodeKol: number
+    row: IResult_wms_android_РАЗГР_Список_товара_на_паллете
 ): Promise<I_РАЗГР_изменить_количество_Result> {
 
     appState.modalResult = undefined;
-    appState.openModal(РАЗГР_изменить_количество_Page, { pageId: getRandomString(), task, tmc, barcodeKol });
+    appState.openModal(РАЗГР_изменить_количество_Page, { pageId: getRandomString(), task, row });
     return new Promise<I_РАЗГР_изменить_количество_Result>(
         async (resolve: (res: I_РАЗГР_изменить_количество_Result) => void, reject: (error: string) => void) => {
             while (typeof (appState.modalResult) == "undefined")
@@ -60,11 +56,6 @@ export class РАЗГР_изменить_количество_Page extends React
         super(props, context);
     }
 
-    partList: IResult_wms_android_РАЗГР_список_партий_по_договору[] = [];
-    gridApi: any;
-    gridColumnApi: any;
-    selectedPartId: number = 0;
-
     kolInBox: number = 0;
     UpTypeEdit_Value: string = "";
     MestEdit_Value: number = 0;
@@ -73,153 +64,67 @@ export class РАЗГР_изменить_количество_Page extends React
     осталосьПринятьКоличество: number = 0;
     осталосьПринятьУпаковки: string = "";
 
-    //СрокРеализДнEdit_Value: number = 0;
-    ДатаВыпуска: Moment = moment().startOf("day");
-    СрокРеализ: Moment = moment().startOf("day");
 
     kol_error: string = "";
-    part_error: string = "";
-
+    tmc: IResult_wms_android_ТМЦ_инфо;
+    part: IResult_wms_android_Партия_ТМЦ_инфо;
     async componentDidMount() {
-        if (this.props.tmc.Весовой)
+
+        this.tmc = await _wms_android_ТМЦ_инфо(this.props.row.TMCKey);
+        if (this.props.row.PartKey > 0) {
+            this.part = await _wms_android_Партия_ТМЦ_инфо(this.props.row.PartKey);
+        }
+
+        if (this.tmc.Весовой)
             throw new Error("Весовой товар пока не работает");
 
-        this.UpTypeEdit_Value = this.props.tmc.ЕдИзм;
+        this.UpTypeEdit_Value = this.tmc.ЕдИзм;
         if (this.UpTypeEdit_Value == "")
-            this.UpTypeEdit_Value = this.props.tmc.ЕдИзм2;
+            this.UpTypeEdit_Value = this.tmc.ЕдИзм2;
 
-        this.KolEdit_Value = this.props.barcodeKol;
-        this.kolInBox = this.props.barcodeKol;
+        this.KolEdit_Value = this.props.row.Кол;
+        this.kolInBox = this.tmc.КолВУпак;
 
         this.KolEditChanged();
-        this.ДатаВыпуска_Changed();
 
-        this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.ДоговорКлюч, this.props.tmc.Ключ);
-        if (this.partList.length > 0) {
-            this.selectedPartId = 0;
-            PlaySound.выберите_партию();
-        }
-        else {
-            this.selectedPartId = -1;
-            PlaySound.новая_партия();
-        }
-
-        this.осталосьПринятьКоличество = (await _wms_android_РАЗГР_осталось_принять_ТМЦ(this.props.task.Ключ, this.props.task.ДоговорКлюч, this.props.tmc.Ключ)).Количество;
-        this.осталосьПринятьУпаковки = (await _wms_android_Партия_штуки_в_упаковки(this.props.tmc.Ключ, 0, this.осталосьПринятьКоличество)).Упаковки;
+        // this.осталосьПринятьКоличество = (await _wms_android_РАЗГР_осталось_принять_ТМЦ(this.props.task.Ключ, this.props.task.ДоговорКлюч, this.tmc.Ключ)).Количество;
+        // this.осталосьПринятьУпаковки = (await _wms_android_Партия_штуки_в_упаковки(this.tmc.Ключ, 0, this.осталосьПринятьКоличество)).Упаковки;
         this.forceUpdate();
 
     }
 
-    onTovarsGridReady = (params: any) => {
-        this.gridApi = params.api;
-        this.gridColumnApi = params.columnApi;
-        setTimeout(this.loadGridData.bind(this), 1)
-    };
-
-    async loadGridData() {
-        if (!this.gridApi)
-            return;
-
-        if (this.partList.length > 0) {
-            this.selectedPartId = this.partList[0].Ключ;
-        }
-        this.gridApi.setRowData(this.partList);
-
-        this.gridApi.sizeColumnsToFit();
-        this.gridApi.resetRowHeights();
-        this.forceUpdate();
-    }
-
-    onGridRowClicked(e: any) {
-        playSound_ButtonClick();
-        let row: IResult_wms_android_РАЗГР_список_партий_по_договору = e.data;
-        this.selectedPartId = row.Ключ;
-        //this.gridApi.refreshCells({ force: true });
-        this.gridApi.redrawRows();
-        this.gridApi.ref
-        //console.log(row);
-        this.forceUpdate();
-    }
-
-    ДатаВыпуска_Changed() {
-        if (this.props.tmc.СрокГодностиДни > 0) {
-            this.СрокРеализ = moment(this.ДатаВыпуска).add(this.props.tmc.СрокГодностиДни, "days")
-        }
-        else if (this.props.tmc.СрокГодностиМес > 0) {
-            this.СрокРеализ = moment(this.ДатаВыпуска).add(this.props.tmc.СрокГодностиМес, "months")
-        }
-
-    }
-
-    СрокРеализ_Changed() {
-        if (this.props.tmc.СрокГодностиДни > 0) {
-            this.ДатаВыпуска = moment(this.СрокРеализ).add(-this.props.tmc.СрокГодностиДни, "days")
-        }
-        else if (this.props.tmc.СрокГодностиМес > 0) {
-            this.ДатаВыпуска = moment(this.СрокРеализ).add(-this.props.tmc.СрокГодностиМес, "months")
-        }
-
-    }
 
     KolEditChanged() {
-        if (this.props.tmc.КолВУпак > 0)
-            this.MestEdit_Value = Math.trunc(this.KolEdit_Value / this.props.tmc.КолВУпак);
+        if (this.tmc.КолВУпак > 0)
+            this.MestEdit_Value = Math.trunc(this.KolEdit_Value / this.tmc.КолВУпак);
     }
 
     MestEditChanged() {
-        this.KolEdit_Value = this.MestEdit_Value * this.props.tmc.КолВУпак;
+        this.KolEdit_Value = this.MestEdit_Value * this.tmc.КолВУпак;
     }
 
     checkError() {
         this.kol_error = "";
-        // //MestEdit.DoChangeValue;
-        // //KolEdit.DoChangeValue;
         if (this.KolEdit_Value <= 0) {
             this.kol_error = "неверное количество";
         }
-
-        this.part_error = "";
-        // //MestEdit.DoChangeValue;
-        // //KolEdit.DoChangeValue;
-        if (this.СрокРеализ.diff(moment().startOf("day"), "days") < 0) {
-            this.part_error = "товар просрочен";
-        }
-        if (moment().startOf("day").diff(this.ДатаВыпуска, "days") < 0) {
-            this.part_error = "неверная дата выпуска";
-        }
-
-        // if (this.info.ShtH == 0 && this.info.PlaceID > 0) {
-        //     if (this.info.InUp > 0 && this.info.KolEdit_Value % this.info.InUp > 0) {
-        //         if (this.info.DopF == 1 && this.info.InUp2 > 0) {
-        //             if (this.info.KolEdit_Value % this.info.InUp2 > 0) {
-        //                 this.error = 'Количество д.б. кратным ' + this.info.InUp2;
-        //                 return;
-        //             }
-        //             else
-        //                 return;
-
-        //         }
-        //         this.error = 'Количество д.б. кратным ' + this.info.InUp;
-        //         return;
-        //     }
-
-        // }
     }
 
 
     async ok() {
 
-        if (this.selectedPartId == -1) {
-            this.selectedPartId = (await _wms_android_РАЗГР_создать_партию(this.props.task.ДоговорКлюч, this.props.tmc.Ключ, this.ДатаВыпуска, this.СрокРеализ, 0)).Партия;
-        }
-        appState.setModalResult<I_РАЗГР_изменить_количество_Result>({ result: "Ok", selectedPartId: this.selectedPartId, selectedKol: this.KolEdit_Value });
+        // if (this.selectedPartId == -1) {
+        //     this.selectedPartId = (await _wms_android_РАЗГР_создать_партию(this.props.task.ДоговорКлюч, this.tmc.Ключ, this.ДатаВыпуска, this.СрокРеализ, 0)).Партия;
+        // }
+        // appState.setModalResult<I_РАЗГР_изменить_количество_Result>({ result: "Ok", selectedPartId: this.selectedPartId, selectedKol: this.KolEdit_Value });
 
     }
 
     render(): React.ReactNode {
+        if (!this.tmc)
+            return null;
 
         this.checkError();
-        let overlayNoRowsTemplate = "<span class='ag-overlay-loading-center'>пустой список</span>";
 
         let labelStyle: CSSProperties = {
             color: "gray"
@@ -229,9 +134,9 @@ export class РАЗГР_изменить_количество_Page extends React
             padding: 3,
         };
 
-        let kol_disabled: boolean = !(this.props.task.РучнойВводКоличества || this.props.tmc.ТипТовара.toUpperCase() == "МЕРНЫЙ");
+        let kol_disabled: boolean = !(this.props.task.РучнойВводКоличества || this.tmc.ТипТовара.toUpperCase() == "МЕРНЫЙ");
 
-        let items = this.props.tmc.СписокУпаковок.split("\r").map((item: string, index: number) => <option key={index} value={item}>{item}</option>);
+        let items = this.tmc.СписокУпаковок.split("\r").map((item: string, index: number) => <option key={index} value={item}>{item}</option>);
         let тип_упак = (
             <tr>
                 <td style={labelStyle}>тип уп.</td>
@@ -251,7 +156,7 @@ export class РАЗГР_изменить_количество_Page extends React
                 </td>
             </tr>
         )
-        if (this.props.tmc.КолВУпак <= 1)
+        if (this.tmc.КолВУпак <= 1)
             тип_упак = null;
 
         let упак = (
@@ -294,7 +199,7 @@ export class РАЗГР_изменить_количество_Page extends React
                 </td>
             </tr>
         )
-        if (this.props.tmc.КолВУпак <= 1)
+        if (this.tmc.КолВУпак <= 1)
             упак = null;
 
         //KolEdit.Enabled := Param.Values('Разрешить ручной ввод количества') or AnsiSameText(Param.Values('ТипТовара'), 'Мерный');
@@ -335,7 +240,7 @@ export class РАЗГР_изменить_количество_Page extends React
                         >
                             <i className="fa fa-plus"></i>
                         </BuhtaButton>
-                        <span style={{ marginLeft: 3 }}> {this.props.tmc.ЕдИзм}</span>
+                        <span style={{ marginLeft: 3 }}> {this.tmc.ЕдИзм}</span>
 
 
                     </div>
@@ -344,69 +249,13 @@ export class РАЗГР_изменить_количество_Page extends React
         )
 
 
-        let срокДн: any;
-        if (this.props.tmc.СрокГодностиДни > 0)
-            срокДн = (
-                <tr>
-                    <td colSpan={2} style={{ ...textStyle, color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>срок годности {this.props.tmc.СрокГодностиДни} дн.</td>
-                </tr >
-            )
-        if (this.props.tmc.СрокГодностиМес > 0)
-            срокДн = (
-                <tr>
-                    <td colSpan={2} style={{ ...textStyle, color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>срок годности {this.props.tmc.СрокГодностиМес} мес.</td>
-                </tr >
-            )
 
-        let датаВыпуска = (
-            <tr>
-                <td style={labelStyle}>дата выпуска</td>
-                <td style={textStyle}>
-                    <div className="input-groupx">
-                        <input
-                            required
-                            type="date"
-                            className="form-control cy-production-date"
-                            style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
-                            value={this.ДатаВыпуска.format("YYYY-MM-DD")}
-                            onChange={(event) => { this.ДатаВыпуска = moment(event.target.valueAsDate); this.ДатаВыпуска_Changed(); this.forceUpdate() }}
-                        >
-                        </input>
-                    </div>
-                </td>
-            </tr >
-        )
-
-        let срокРеализ = (
-            <tr>
-                <td style={labelStyle}>срок реализ.</td>
-                <td style={textStyle}>
-                    <div className="input-groupx">
-                        <input
-                            required
-                            type="date"
-                            className="form-control cy-realize-date"
-                            style={{ width: 150, display: "inline", color: this.part_error == "" ? ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ : "red", fontWeight: "bold", textAlign: "center" }}
-                            value={this.СрокРеализ.format("YYYY-MM-DD")}
-                            onChange={(event) => { this.СрокРеализ = moment(event.target.valueAsDate); this.СрокРеализ_Changed(); this.forceUpdate() }}
-                        >
-                        </input>
-                    </div>
-                </td>
-            </tr >
-        )
-
-        let title = "Выбор партии";
-        if (this.partList.length == 0)
-            title = "Новая партия";
+        let title = "Изменение количества";
 
         let kol_error: any = null;
         if (this.kol_error != "")
             kol_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.kol_error}</div>
 
-        let part_error: any = null;
-        if (this.part_error != "")
-            part_error = <div style={{ color: "red", textAlign: "center", marginBottom: 5 }} >{this.part_error}</div>
 
         let осталосьПринять = <div style={{ textAlign: "center", marginBottom: 5 }}>Осталось принять {this.осталосьПринятьУпаковки}</div>;
         if (this.осталосьПринятьКоличество == 0) {
@@ -421,73 +270,18 @@ export class РАЗГР_изменить_количество_Page extends React
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-get-part-kol" : "")} isOpen fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
-                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>{title}</div>
-                        {/* <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА, textAlign: "left", fontSize: 11 }}>
-                            {this.partList[0] ? this.partList[0].НазваниеПаллеты : ""}
-                        </div> */}
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}>{title}</div>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, textAlign: "left", fontSize: 11 }}>
-                            {this.props.tmc.НомерНазвание}
+                            {this.tmc.НомерНазвание}
+                        </div>
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, textAlign: "left", fontSize: 11 }}>
+                            {this.part ? this.part.НомерНазвание : ""}
                         </div>
                     </ModalHeader>
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0 }}>
                         <div className="card-body" style={{ padding: 5 }}>
 
-                            <div className="ag-theme-balham" style={{ height: 160, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>
-                                <AgGridReact
-                                    suppressLoadingOverlay
-                                    overlayNoRowsTemplate={overlayNoRowsTemplate}
-                                    onGridReady={this.onTovarsGridReady}
-                                    rowHeight={28}
-                                    onRowClicked={this.onGridRowClicked.bind(this)}
-                                    headerHeight={24}
-                                >
-                                    <AgGridColumn
-                                        headerName="Выберите партию из списка"
-                                        field="Партия"
-                                        cellStyle={(param: any) => {
-                                            let row = param.data as IResult_wms_android_РАЗГР_список_партий_по_договору;
-                                            if (row.Ключ != this.selectedPartId) {
-                                                return { color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, whiteSpace: "normal" }
-                                            }
-                                            else {
-                                                return { fontWeight: "bold", color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, whiteSpace: "normal" }
-                                            }
-                                        }}
-                                    >
-                                    </AgGridColumn>
-
-                                </AgGridReact>
-                            </div>
-                            <div style={{ marginBottom: 5, minHeight: 30, display: this.partList.length > 0 ? "block" : "none" }}>
-                                <BuhtaButton
-                                    style={{ float: "right" }}
-                                    color="info"
-                                    outline
-                                    small
-                                    onClick={() => {
-                                        this.partList = [];
-                                        this.selectedPartId = -1;
-                                        this.forceUpdate();
-                                    }}>
-                                    новая партия
-                                </BuhtaButton>
-                            </div>
-
-                            <div style={{ width: "100%", marginBottom: 5, marginTop: 5, display: this.partList.length == 0 ? "block" : "none" }}>
-                                <div style={{ textAlign: "center" }}>Создание новой партии</div>
-                                <table>
-                                    <tbody>
-                                        {срокДн}
-                                        {датаВыпуска}
-                                        {срокРеализ}
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            {part_error}
-
-
-                            {осталосьПринять}
+                            {/*осталосьПринять*/}
 
                             <table style={{ marginBottom: 5 }}>
                                 <tbody>
@@ -507,7 +301,7 @@ export class РАЗГР_изменить_количество_Page extends React
                             <BuhtaButton color="primary"
                                 className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
-                                disabled={this.selectedPartId == 0 || this.kol_error != "" || this.part_error != ""}
+                                disabled={this.KolEdit_Value == this.props.row.Кол || this.kol_error != ""}
                                 onClick={this.ok.bind(this)}>
                                 Ok
                             </BuhtaButton>
@@ -516,7 +310,7 @@ export class РАЗГР_изменить_количество_Page extends React
                                 style={{ float: "right" }}
                                 color="light"
                                 onClick={() => {
-                                    appState.setModalResult<I_РАЗГР_изменить_количество_Result>({ result: "Cancel", selectedPartId: 0, selectedKol: 0 });
+                                    appState.setModalResult<I_РАЗГР_изменить_количество_Result>({ result: "Cancel" });
                                 }}>
                                 Отмена
                             </BuhtaButton>

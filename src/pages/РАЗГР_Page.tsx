@@ -34,6 +34,7 @@ import { get_Запрос_штрих_кода } from "../modals/Запрос_ш�
 import { get_РАЗГР_запрос_габаритов_паллеты } from "../modals/РАЗГР_запрос_габаритов_паллеты";
 import { show_РАЗГР_свод } from "../modals/РАЗГР_свод";
 import { get_Выбор_ТМЦ } from "../modals/Выбор_ТМЦ";
+import { get_РАЗГР_изменить_количество } from "../modals/РАЗГР_изменить_количество";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -550,6 +551,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     };
 
     async loadTovarsGridData() {
+        this.selectedRow = null;
         if (!this.tovarsGridApi)
             return;
         if (this.intoPalleteId > 0) {
@@ -562,6 +564,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             this.tovarsGridData = [];
             this.tovarsGridApi.setRowData(this.tovarsGridData);
         }
+        this.forceUpdate();
     }
 
     // palletesGridGetRowHeight(params: any): number {
@@ -796,7 +799,19 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                         >
                             Товар
                         </BuhtaButton>
-                        <BuhtaButton small outline color="success" style={{ marginLeft: 3 }}>Изм.кол.</BuhtaButton>
+                        <BuhtaButton
+                            disabled={!this.selectedRow}
+                            small outline color="success" style={{ marginLeft: 3 }}
+                            onClick={async () => {
+                                let res = await get_РАЗГР_изменить_количество(this.task, this.selectedRow);
+                                if (res.result == "Ok") {
+                                    this.loadTovarsGridData();
+                                }
+
+                            }}
+                        >
+                            Изм.кол.
+                            </BuhtaButton>
                         <BuhtaButton small outline color="danger" style={{ marginLeft: 3 }}>Откат</BuhtaButton>
 
                     </div>
@@ -879,30 +894,11 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         )
     }
 
+    selectedRow: IResult_wms_android_РАЗГР_Список_товара_на_паллете = null;
     onTovarGridRowClicked(e: any) {
-        // playSound_ButtonClick();
-        // let row: IResult_wms_android_РАЗГР_список_товара_на_паллете = e.data;
-        // let cellStyle: CSSProperties = { borderBottom: "0px solid gray", padding: 4 };
-        // let info: ReactNode = (
-        //     <table style={{ color: "gray" }}>
-        //         <tbody>
-        //             <tr>
-        //                 <td style={cellStyle}>на паллете</td>
-        //                 <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ }}> {agGridMultiRowCellRendererForTMC_for_table_cell(row.ТМЦ)}</td>
-        //             </tr>
-        //             <tr>
-        //                 <td style={cellStyle}>взять</td>
-        //                 <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}>{row.Взять}</td>
-        //             </tr>
-        //             <tr>
-        //                 <td style={cellStyle}>шт.</td>
-        //                 <td style={{ ...cellStyle, color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }} >{row.Шт}</td>
-        //             </tr>
-
-        //         </tbody>
-        //     </table>
-        // );
-        // showInfo(info);
+        playSound_ButtonClick();
+        this.selectedRow = e.data;
+        this.forceUpdate();
     }
 
     async завершить_паллету() {
