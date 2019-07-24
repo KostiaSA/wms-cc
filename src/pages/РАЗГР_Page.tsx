@@ -826,6 +826,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 let otkatInfo = await _wms_android_РАЗГР_инфо_для_отката(this.task.Ключ, this.intoPalleteInfo.Ключ);
                                 if (otkatInfo.length == 0) {
                                     showInfo("Нет товара на паллете, откат невозможен");
+                                    return;
                                 }
 
                                 let otkatTmc = await _wms_android_ТМЦ_инфо(otkatInfo[0].ТМЦ);
@@ -845,6 +846,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                     let res = await _wms_android_РАЗГР_откат(otkatInfo[0].Ключ);
                                     if (res.error) {
                                         showError(res.error);
+                                        return;
                                     }
                                     else {
                                         zebraTextToSpeech("откат выполнен");
