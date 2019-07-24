@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание, IResult_wms_android_Паллета_инфо, IResult_wms_android_РАЗГР_свод, _wms_android_РАЗГР_свод } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание, IResult_wms_android_Паллета_инфо, IResult_wms_android_РАЗГР_свод, _wms_android_РАЗГР_свод, _wms_android_РАЗГР_инфо_для_отката, _wms_android_РАЗГР_откат } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -35,6 +35,7 @@ import { get_РАЗГР_запрос_габаритов_паллеты } from ".
 import { show_РАЗГР_свод } from "../modals/РАЗГР_свод";
 import { get_Выбор_ТМЦ } from "../modals/Выбор_ТМЦ";
 import { get_РАЗГР_изменить_количество } from "../modals/РАЗГР_изменить_количество";
+import { zebraTextToSpeech } from "../zebra/ZebraApi";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -91,6 +92,9 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         this.svodPercent = 0;
         if (dogKol > 0) {
             this.svodPercent = Math.min(taskKol / dogKol * 100, 95);
+        }
+        if (this.svodPercent > 0 && this.svodPercent < 5) {
+            this.svodPercent = 5;
         }
         if (dogKol > 0 && delta == 0) {
             this.svodPercent = 100;
@@ -807,13 +811,52 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                 let res = await get_РАЗГР_изменить_количество(this.task, this.selectedRow, this.intoPalleteInfo);
                                 if (res.result == "Ok") {
                                     this.loadTovarsGridData();
+                                    this.loadSvod().then(() => this.forceUpdate());
                                 }
 
                             }}
                         >
                             Изм.кол.
-                            </BuhtaButton>
-                        <BuhtaButton small outline color="danger" style={{ marginLeft: 3 }}>Откат</BuhtaButton>
+                        </BuhtaButton>
+
+                        <BuhtaButton
+                            disabled={this.intoPalleteId == 0}
+                            small outline color="danger" style={{ marginLeft: 3 }}
+                            onClick={async () => {
+                                let otkatInfo = await _wms_android_РАЗГР_инфо_для_отката(this.task.Ключ, this.intoPalleteInfo.Ключ);
+                                if (otkatInfo.length == 0) {
+                                    showInfo("Нет товара на паллете, откат невозможен");
+                                }
+
+                                let otkatTmc = await _wms_android_ТМЦ_инфо(otkatInfo[0].ТМЦ);
+                                let otkatPart = await _wms_android_Партия_ТМЦ_инфо(otkatInfo[0].Партия);
+                                let message = (
+                                    <div>
+                                        <div style={{ color: "red", fontSize: 14, marginBottom: 7 }}>Откатить операцию приема?</div>
+                                        <div style={{ color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ }}>{otkatTmc.Название}</div>
+                                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, marginBottom: 4 }} >{otkatPart.НомерНазвание}</div>
+                                        <div style={{ color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, marginBottom: 4 }}>кол-во: {otkatInfo[0].Количество} {otkatTmc.ЕдИзм}</div>
+                                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАЛЛЕТА }}>на паллету {this.intoPalleteInfo.Название}</div>
+                                    </div>
+                                );
+                                zebraTextToSpeech("Подтвердите откат");
+                                if (await getConfirmation(message)) {
+
+                                    let res = await _wms_android_РАЗГР_откат(otkatInfo[0].Ключ);
+                                    if (res.error) {
+                                        showError(res.error);
+                                    }
+                                    else {
+                                        zebraTextToSpeech("откат выполнен");
+                                        this.loadTovarsGridData();
+                                        this.loadSvod().then(() => this.forceUpdate());
+                                    }
+                                }
+
+                            }}
+                        >
+                            Откат
+                        </BuhtaButton>
 
                     </div>
 

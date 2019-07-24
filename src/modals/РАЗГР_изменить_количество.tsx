@@ -20,6 +20,7 @@ import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
 import moment from "moment";
 import { Moment } from 'moment';
+import { showError } from "./ErrorMessagePage";
 
 
 
@@ -125,9 +126,10 @@ export class РАЗГР_изменить_количество_Page extends React
             this.KolEdit_Value
         );
         if (res.error) {
-
+            await showError(res.error);
         }
 
+        PlaySound.новое_количество(this.KolEdit_Value);
 
         appState.setModalResult<I_РАЗГР_изменить_количество_Result>({ result: "Ok" });
 

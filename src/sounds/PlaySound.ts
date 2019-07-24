@@ -2,6 +2,7 @@ import { zebraTextToSpeech } from "../zebra/ZebraApi";
 import { playSound } from "../utils/playSound";
 import { sleep } from "../utils/sleep";
 import { showSnack } from "../ui/showSnack";
+import { number } from "prop-types";
 
 function barcodeToString_00_00(barcode: string): string {
     if (!barcode || barcode == "")
@@ -163,6 +164,11 @@ export class PlaySound {
     static async введите_количество() {
         //showSnack("товар " + barcode + " подобран", "success");
         zebraTextToSpeech("введите количество");
+    }
+
+    static async новое_количество(kol: number) {
+        showSnack("новое количество " + kol, "success");
+        zebraTextToSpeech("новое количество " + kol);
     }
 
     static async принято_X_штук(edIzm: string, kol: number) {
