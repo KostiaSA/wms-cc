@@ -14,7 +14,7 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_ТМЦ_инфо, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо } from "../generated-api";
+import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_ТМЦ_инфо, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_изменить_количество, IResult_wms_android_Паллета_инфо } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
@@ -26,6 +26,7 @@ import { Moment } from 'moment';
 export interface I_РАЗГР_изменить_количество_PageProps extends IAppPageProps {
     task: IResult_wms_android_Информация_о_задании;
     row: IResult_wms_android_РАЗГР_Список_товара_на_паллете;
+    pallete: IResult_wms_android_Паллета_инфо;
 }
 
 export interface I_РАЗГР_изменить_количество_Result {
@@ -34,11 +35,12 @@ export interface I_РАЗГР_изменить_количество_Result {
 
 export async function get_РАЗГР_изменить_количество(
     task: IResult_wms_android_Информация_о_задании,
-    row: IResult_wms_android_РАЗГР_Список_товара_на_паллете
+    row: IResult_wms_android_РАЗГР_Список_товара_на_паллете,
+    pallete: IResult_wms_android_Паллета_инфо
 ): Promise<I_РАЗГР_изменить_количество_Result> {
 
     appState.modalResult = undefined;
-    appState.openModal(РАЗГР_изменить_количество_Page, { pageId: getRandomString(), task, row });
+    appState.openModal(РАЗГР_изменить_количество_Page, { pageId: getRandomString(), task, row, pallete });
     return new Promise<I_РАЗГР_изменить_количество_Result>(
         async (resolve: (res: I_РАЗГР_изменить_количество_Result) => void, reject: (error: string) => void) => {
             while (typeof (appState.modalResult) == "undefined")
@@ -112,11 +114,22 @@ export class РАЗГР_изменить_количество_Page extends React
 
 
     async ok() {
+        let res = await _wms_android_РАЗГР_изменить_количество(
+            this.props.task.Ключ,
+            this.tmc.Ключ,
+            this.props.pallete.Ключ,
+            this.part.Ключ,
+            this.props.task.КлиентКлюч,
+            appState.kadrId,
+            this.props.row.Кол,
+            this.KolEdit_Value
+        );
+        if (res.error) {
 
-        // if (this.selectedPartId == -1) {
-        //     this.selectedPartId = (await _wms_android_РАЗГР_создать_партию(this.props.task.ДоговорКлюч, this.tmc.Ключ, this.ДатаВыпуска, this.СрокРеализ, 0)).Партия;
-        // }
-        // appState.setModalResult<I_РАЗГР_изменить_количество_Result>({ result: "Ok", selectedPartId: this.selectedPartId, selectedKol: this.KolEdit_Value });
+        }
+
+
+        appState.setModalResult<I_РАЗГР_изменить_количество_Result>({ result: "Ok" });
 
     }
 

@@ -789,6 +789,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                         <BuhtaButton small outline color="primary" style={{ marginLeft: 3 }}>Доп.меню</BuhtaButton>
                         <BuhtaButton small outline style={{ marginLeft: 3, minWidth: 40 }} onClick={this.ШК_button_click.bind(this)}>ШК</BuhtaButton>
                         <BuhtaButton
+                            disabled={this.intoPalleteId == 0}
                             small outline style={{ marginLeft: 3 }}
                             onClick={async () => {
                                 let res = await get_Выбор_ТМЦ(this.task);
@@ -803,7 +804,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                             disabled={!this.selectedRow}
                             small outline color="success" style={{ marginLeft: 3 }}
                             onClick={async () => {
-                                let res = await get_РАЗГР_изменить_количество(this.task, this.selectedRow);
+                                let res = await get_РАЗГР_изменить_количество(this.task, this.selectedRow, this.intoPalleteInfo);
                                 if (res.result == "Ok") {
                                     this.loadTovarsGridData();
                                 }

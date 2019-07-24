@@ -1915,3 +1915,32 @@ export async function _wms_android_Выбор_ТМЦ_список(dogId: number,
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_РАЗГР_изменить_количество {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_РАЗГР_изменить_количество(Задание: number, ТМЦ: number, Паллета: number, Партия: number, Клиент: number, Сотрудник: number, СтароеКоличество: number, НовоеКоличество: number): Promise<IResult_wms_android_РАЗГР_изменить_количество> {
+    if (typeof Задание != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'Задание' должен быть числом");
+    if (typeof ТМЦ != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'ТМЦ' должен быть числом");
+    if (typeof Паллета != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'Паллета' должен быть числом");
+    if (typeof Партия != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'Партия' должен быть числом");
+    if (typeof Клиент != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'Клиент' должен быть числом");
+    if (typeof Сотрудник != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'Сотрудник' должен быть числом");
+    if (typeof СтароеКоличество != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'СтароеКоличество' должен быть числом");
+    if (typeof НовоеКоличество != "number") throw new Error("вызов '_wms_android_РАЗГР_изменить_количество': параметр 'НовоеКоличество' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_изменить_количество " + Задание.toString() + "," + ТМЦ.toString() + "," + Паллета.toString() + "," + Партия.toString() + "," + Клиент.toString() + "," + Сотрудник.toString() + "," + СтароеКоличество.toString() + "," + НовоеКоличество.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_изменить_количество: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_изменить_количество: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_изменить_количество': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_изменить_количество': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
