@@ -105,7 +105,7 @@ export class РАЗГР_изменить_количество_Page extends React
 
     checkError() {
         this.kol_error = "";
-        if (this.KolEdit_Value <= 0) {
+        if (this.KolEdit_Value < 0) {
             this.kol_error = "неверное количество";
         }
     }
@@ -298,6 +298,17 @@ export class РАЗГР_изменить_количество_Page extends React
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
                         <div style={{ width: "100%" }}>
+                            <BuhtaButton
+                                outline
+                                style={{ minWidth: 45, marginLeft: 5 }}
+                                disabled={this.KolEdit_Value == 0}
+                                onClick={() => {
+                                    this.KolEdit_Value = 0;
+                                    this.KolEditChanged();
+                                    this.forceUpdate();
+                                }}>
+                                Очистить
+                            </BuhtaButton>
                             <BuhtaButton color="primary"
                                 className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
