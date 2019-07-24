@@ -102,7 +102,7 @@ export class Выбор_задания_в_работу_Page extends React.Compon
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div>Выбор задания {this.props.taskType}</div>
                     </ModalHeader>
-                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 300, }}>
+                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: window.innerHeight * 0.6 / appState.zoom, }}>
                         <div className="card-body" style={{ zoom: appState.zoom, padding: 0 }}>
 
                             <div className="ag-theme-balham" style={{ height: "100%", width: "100%", position: "absolute", fontSize: 11 }}>

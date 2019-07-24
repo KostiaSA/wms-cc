@@ -94,7 +94,7 @@ export class Запрос_штрих_кода_Page extends React.Component<I_З�
                 <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                     <div style={{ color: "steelblue" }}>Введите штрих-код</div>
                 </ModalHeader>
-                <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 110, }}>
+                <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, /*height: 110,*/ }}>
                     <div className="card-body" style={{ padding: 15, textAlign: "center" }}>
                         <span style={{ fontWeight: "bold" }}>{this.mode + " "}</span>
                         <input
@@ -111,12 +111,12 @@ export class Запрос_штрих_кода_Page extends React.Component<I_З�
                         >
                         </input>
                         <div style={{ textAlign: "center", marginTop: 10 }}>
-                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "PAL"; this.forceUpdate() }}>PAL</BuhtaButton>
-                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "CEL"; this.forceUpdate() }}>CEL</BuhtaButton>
-                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "PAR"; this.forceUpdate() }}>PAR</BuhtaButton>
-                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "BRA"; this.forceUpdate() }}>BRA</BuhtaButton>
-                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "ZAK"; this.forceUpdate() }}>ZAK</BuhtaButton>
-                            <BuhtaButton small outline style={{ marginLeft: 5, minWidth: 38 }} onClick={() => { this.mode = "T"; this.forceUpdate() }}>T</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, marginBottom: 5, minWidth: 38 }} onClick={() => { this.mode = "PAL"; this.forceUpdate() }}>PAL</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, marginBottom: 5, minWidth: 38 }} onClick={() => { this.mode = "CEL"; this.forceUpdate() }}>CEL</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, marginBottom: 5, minWidth: 38 }} onClick={() => { this.mode = "PAR"; this.forceUpdate() }}>PAR</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, marginBottom: 5, minWidth: 38 }} onClick={() => { this.mode = "BRA"; this.forceUpdate() }}>BRA</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, marginBottom: 5, minWidth: 38 }} onClick={() => { this.mode = "ZAK"; this.forceUpdate() }}>ZAK</BuhtaButton>
+                            <BuhtaButton small outline style={{ marginLeft: 5, marginBottom: 5, minWidth: 38 }} onClick={() => { this.mode = "T"; this.forceUpdate() }}>T</BuhtaButton>
 
                         </div>
 

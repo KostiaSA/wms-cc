@@ -100,7 +100,7 @@ export class РАЗГР_свод_Page extends React.Component<I_РАЗГР_св�
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div>Отчет о выполнении</div>
                     </ModalHeader>
-                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: 300, }}>
+                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0, height: window.innerHeight * 0.6 / appState.zoom, }}>
                         <div className="card-body" style={{ zoom: appState.zoom, padding: 0 }}>
 
                             <div className="ag-theme-balham" style={{ height: "100%", width: "100%", position: "absolute", fontSize: 11 }}>
