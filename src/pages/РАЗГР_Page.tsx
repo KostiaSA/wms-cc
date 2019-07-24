@@ -576,7 +576,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     }
 
     render() {
-        let overlayLoadingTemplate = '<i class="fa fa-spinner fa-spin ag-overlay-loading-center" style="color:darkgray;font-size:28px;border:0px"></i>';
         let overlayNoRowsTemplate = "<span class='ag-overlay-loading-center'>паллета пустая</span>";
 
         let labelStyle: CSSProperties = {
