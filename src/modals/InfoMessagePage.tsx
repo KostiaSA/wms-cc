@@ -12,6 +12,7 @@ import { ReactNode } from "react";
 import { playSound } from "../utils/playSound";
 import { sleep } from "../utils/sleep";
 import { BuhtaButton } from "../ui/BuhtaButton";
+import { stringMessageToReactNode } from "../utils/stringMessageToReactNode";
 
 
 export async function showInfo(message: ReactNode, title: ReactNode = "Инфо") {
@@ -45,7 +46,7 @@ class InfoMessagePage extends React.Component<IInfoMessagePageProps, any> {
                 <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window info-message-page" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
                     <ModalBody className={"text-info"} style={{ zoom: appState.zoom }}>
-                        {this.props.message}
+                        {stringMessageToReactNode(this.props.message)}
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="light" className="cy-cancel cy-ok"

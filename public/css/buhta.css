@@ -130,6 +130,10 @@ body {
     color: black;
 }
 
+.text-warning {
+    color: #e5ac00 !important;
+}
+
 /* navbar-icon-top*/
 
 /* .navbar-icon-top .navbar-nav .nav-link {

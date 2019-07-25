@@ -12,6 +12,7 @@ import { getRandomString } from "../utils/getRandomString";
 import { ReactNode } from "react";
 import { BuhtaButton } from "../ui/BuhtaButton";
 import { stringMessageToReactNode } from "../utils/stringMessageToReactNode";
+import { playSound } from "../utils/playSound";
 
 
 
@@ -22,9 +23,9 @@ export interface I_Confirmation_PageProps extends IAppPageProps {
     buttonText: ReactNode;
 }
 
-export async function getConfirmation(message: ReactNode, title: ReactNode = "Подтверждение", buttonText: ReactNode = "Ok"): Promise<boolean> {
+export async function getWarningConfirmation(message: ReactNode, title: ReactNode = "Подтверждение", buttonText: ReactNode = "Ok"): Promise<boolean> {
     appState.modalResult = undefined;
-    appState.openModal(Confirmation_Page, { pageId: getRandomString(), message: message, title: title, buttonText: buttonText });
+    appState.openModal(WarningConfirmation_Page, { pageId: getRandomString(), message: message, title: title, buttonText: buttonText });
     return new Promise<any>(
         async (resolve: (res: any) => void, reject: (error: string) => void) => {
             while (typeof (appState.modalResult) == "undefined")
@@ -36,7 +37,7 @@ export async function getConfirmation(message: ReactNode, title: ReactNode = "П
 }
 
 
-export class Confirmation_Page extends React.Component<I_Confirmation_PageProps, any> {
+class WarningConfirmation_Page extends React.Component<I_Confirmation_PageProps, any> {
 
     constructor(props: any, context: any) {
         super(props, context);
@@ -44,6 +45,7 @@ export class Confirmation_Page extends React.Component<I_Confirmation_PageProps,
 
 
     componentDidMount() {
+        playSound("error-lite");
     };
 
 
@@ -51,8 +53,8 @@ export class Confirmation_Page extends React.Component<I_Confirmation_PageProps,
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
                 <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window confirmation-page" : "")} isOpen centered fade={false}>
-                    <ModalHeader className={"text-primary"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
-                    <ModalBody className={"text-primary"} style={{ zoom: appState.zoom }}>
+                    <ModalHeader className={"text-warning"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
+                    <ModalBody className={"text-warning"} style={{ zoom: appState.zoom }}>
                         {stringMessageToReactNode(this.props.message)}
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
@@ -62,7 +64,7 @@ export class Confirmation_Page extends React.Component<I_Confirmation_PageProps,
                             }}>
                             Отмена
                         </BuhtaButton>
-                        <BuhtaButton className="cy-ok" color="primary"
+                        <BuhtaButton className="cy-ok" color="warning"
                             onClick={() => {
                                 appState.setModalResult<boolean>(true);
                             }}>

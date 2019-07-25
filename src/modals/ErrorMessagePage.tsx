@@ -11,6 +11,7 @@ import { ReactNode } from "react";
 import { playSound } from "../utils/playSound";
 import { sleep } from "../utils/sleep";
 import { BuhtaButton } from "../ui/BuhtaButton";
+import { stringMessageToReactNode } from "../utils/stringMessageToReactNode";
 
 
 export async function showAppError(message: ReactNode, title: ReactNode = "Ошибка приложения") {
@@ -62,7 +63,7 @@ class ErrorMessagePage extends React.Component<IErrorMessagePageProps, any> {
                 <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window error-message-page" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-danger"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
                     <ModalBody style={{ zoom: appState.zoom }}>
-                        {this.props.message}
+                        {stringMessageToReactNode(this.props.message)}
                     </ModalBody>
                     <ModalFooter style={{ zoom: appState.zoom }}>
                         <BuhtaButton color="danger" className="cy-cancel cy-ok"

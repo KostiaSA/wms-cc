@@ -36,6 +36,8 @@ import { show_РАЗГР_свод } from "../modals/РАЗГР_свод";
 import { get_Выбор_ТМЦ } from "../modals/Выбор_ТМЦ";
 import { get_РАЗГР_изменить_количество } from "../modals/РАЗГР_изменить_количество";
 import { zebraTextToSpeech } from "../zebra/ZebraApi";
+import { checkGuid } from '../utils/guid';
+import { getWarningConfirmation } from "../modals/WarningConfirmationPage copy";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -911,9 +913,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                             style={{ marginLeft: 10 }}
                             className="btn-sm"
                             color="success"
-                            onClick={() => {
-                                //                                this.doExecuteTask();
-                            }}
+                            onClick={this.завершить_задание.bind(this)}
                         >
                             Завершить
                         </BuhtaButton>
@@ -949,6 +949,24 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
     async завершить_паллету_по_ключу(palleteId: number) {
         let palleteInfo = await _wms_android_Паллета_инфо(palleteId);
         await get_РАЗГР_запрос_габаритов_паллеты(this.task, palleteInfo, this.isInputOst, palleteInfo.Пустая);
+    }
+
+    async завершить_задание() {
+        if (this.task.Сверка == "Предупреждение" || this.task.Сверка == "Запрет") {
+            let checkResult = await _wms_android_РАЗГР_Сверка_с_заявкой_полная(this.task.Ключ, 0);
+            if (checkResult.Результат != "Ok") {
+                if (this.task.Сверка == "Запрет") {
+                    showError(checkResult.Результат);
+                    return;
+                }
+                else if (this.task.Сверка == "Предупреждение") {
+                    if (!await getWarningConfirmation(checkResult.Результат, "Внимание!", "Завершить задание"))
+                        return;
+                }
+            }
+        }
+
+        showInfo("Задание завершено");
     }
 
 
