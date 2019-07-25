@@ -2029,3 +2029,27 @@ export async function _wms_android_Список_незавершенных_па�
     return lastRecordset;
 
 }
+
+export interface IResult_wms_android_РАЗГР_завершить_задание {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_РАЗГР_завершить_задание(Задание: number, Договор: number, Сотрудник: number): Promise<IResult_wms_android_РАЗГР_завершить_задание> {
+    if (typeof Задание != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_задание': параметр 'Задание' должен быть числом");
+    if (typeof Договор != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_задание': параметр 'Договор' должен быть числом");
+    if (typeof Сотрудник != "number") throw new Error("вызов '_wms_android_РАЗГР_завершить_задание': параметр 'Сотрудник' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_завершить_задание " + Задание.toString() + "," + Договор.toString() + "," + Сотрудник.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_завершить_задание: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_завершить_задание: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_завершить_задание': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_завершить_задание': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
