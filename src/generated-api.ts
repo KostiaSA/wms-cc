@@ -1136,7 +1136,8 @@ export interface IResult_wms_android_Паллета_инфо {
     _Неперемещаемая: boolean;
     _Вес: number;
     _Напечатано: number;
-    _Паллета: number
+    _Паллета: number;
+    Пустая: boolean
 }
 
 export async function _wms_android_Паллета_инфо(palleteId: number): Promise<IResult_wms_android_Паллета_инфо> {
@@ -1184,7 +1185,9 @@ export async function _wms_android_Паллета_инфо(palleteId: number): P
             if (typeof(row._Напечатано) == "undefined") throw new Error("результат выполнения '_wms_android_Паллета_инфо': не заполнена колонка '_Напечатано'");
             if (typeof row._Напечатано != "number") throw new Error("результат выполнения '_wms_android_Паллета_инфо': значение в колонке '_Напечатано' должно быть числом");
             if (typeof(row._Паллета) == "undefined") throw new Error("результат выполнения '_wms_android_Паллета_инфо': не заполнена колонка '_Паллета'");
-            if (typeof row._Паллета != "number") throw new Error("результат выполнения '_wms_android_Паллета_инфо': значение в колонке '_Паллета' должно быть числом");            
+            if (typeof row._Паллета != "number") throw new Error("результат выполнения '_wms_android_Паллета_инфо': значение в колонке '_Паллета' должно быть числом");
+            if (typeof(row.Пустая) == "undefined") throw new Error("результат выполнения '_wms_android_Паллета_инфо': не заполнена колонка 'Пустая'");
+            if (typeof row.Пустая != "boolean") throw new Error("результат выполнения '_wms_android_Паллета_инфо': значение в колонке 'Пустая' должно быть true/false");            
         }
     }
 
@@ -1996,5 +1999,33 @@ export async function _wms_android_РАЗГР_откат(скл_Комплект
     }
 
     return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_Список_незавершенных_паллет {
+    error:string;
+    Ключ: number;
+    НомерНазвание: string;
+    ШтрихКод: string
+}
+
+export async function _wms_android_Список_незавершенных_паллет(Задание: number): Promise<IResult_wms_android_Список_незавершенных_паллет[]> {
+    if (typeof Задание != "number") throw new Error("вызов '_wms_android_Список_незавершенных_паллет': параметр 'Задание' должен быть числом");
+    let recordsets = await executeSql("_wms_android_Список_незавершенных_паллет " + Задание.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+
+
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ключ) == "undefined") throw new Error("результат выполнения '_wms_android_Список_незавершенных_паллет': не заполнена колонка 'Ключ'");
+            if (typeof row.Ключ != "number") throw new Error("результат выполнения '_wms_android_Список_незавершенных_паллет': значение в колонке 'Ключ' должно быть числом");
+            if (typeof(row.НомерНазвание) == "undefined") throw new Error("результат выполнения '_wms_android_Список_незавершенных_паллет': не заполнена колонка 'НомерНазвание'");
+            if (typeof row.НомерНазвание != "string") throw new Error("результат выполнения '_wms_android_Список_незавершенных_паллет': значение в колонке 'НомерНазвание' должно быть строкой");
+            if (typeof(row.ШтрихКод) == "undefined") throw new Error("результат выполнения '_wms_android_Список_незавершенных_паллет': не заполнена колонка 'ШтрихКод'");
+            if (typeof row.ШтрихКод != "string") throw new Error("результат выполнения '_wms_android_Список_незавершенных_паллет': значение в колонке 'ШтрихКод' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset;
 
 }
