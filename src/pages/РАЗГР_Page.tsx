@@ -66,13 +66,13 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
     tovarsGridApi: any;
     tovarsGridColumnApi: any;
-    tovarsGridData: IResult_wms_android_РАЗГР_Список_товара_на_паллете[];
+    tovarsGridData: IResult_wms_android_РАЗГР_Список_товара_на_паллете[] = [];
 
-    clearPalleteId() {
+    async clearPalleteId() {
         this.intoType = "";
         this.intoPalleteId = 0;
         this.intoName = "не выбрано";
-        this.loadTovarsGridData();
+        await this.loadTovarsGridData();
         this.forceUpdate();
     }
 
@@ -106,7 +106,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         this.intoPalleteId = palleteId;
         this.intoPalleteInfo = info;
         this.intoName = info.Название;// (await _wms_android_Название_паллеты(palleteId)).НазваниеПаллеты;
-        this.loadTovarsGridData();
+        await this.loadTovarsGridData();
         this.forceUpdate();
     }
 
@@ -449,72 +449,6 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
         }
 
-        // let res = await _wms_android_РАЗГР_обработка_шк_товара(
-        //     0,
-        //     this.props.taskId,
-        //     tmcId,
-        //     partId,
-        //     -1, // todo SkladKol
-        //     barcode.barcode,
-        //     this.fromId,
-        //     this.intoId,
-        //     this.isReplaceMode,
-        //     this.task.Клиент,
-        //     this.isЗапросКоличестваMode,
-        //     otherParty,
-        //     0, // todo @ChangePalOld
-        //     0, // todo @ChangePartOld
-        //     appState.kadrId,
-        //     0
-        // );
-
-        // if (res.error) {
-        //     PlaySound.ошибка("");
-        //     await showError(res.error);
-        //     return
-        // }
-
-        // if (res.Нужен_запрос_количества_Ok = 1) {
-        //     console.log("Нужен_запрос_количества_Ok", res);
-        //     let p: any = {
-        //         taskId: this.props.taskId,
-        //         ...res
-        //     }
-        //     let dialog_res = await get_РАЗГР_запрос_количества(p);
-
-        //     if (dialog_res.result == "Ok") {
-        //         // юзер ввел количество (dialog_res.newKol), еще раз вызываем с mode=1 
-        //         let res2 = await _wms_android_РАЗГР_обработка_шк_товара(
-        //             1,
-        //             this.props.taskId,
-        //             tmcId,
-        //             partId,
-        //             -1, // todo SkladKol
-        //             barcode.barcode,
-        //             this.fromId,
-        //             this.intoId,
-        //             this.isReplaceMode,
-        //             this.task.Клиент,
-        //             this.isЗапросКоличестваMode,
-        //             otherParty,
-        //             0, // todo @ChangePalOld
-        //             0, // todo @ChangePartOld
-        //             appState.kadrId,
-        //             dialog_res.newKol
-        //         );
-
-        //         await PlaySound.товар_подобран("");
-        //         setTimeout(this.loadTovarsGridData.bind(this), 10)
-        //         console.log(res);
-
-        //     }
-        //     return
-        // }
-        // else {
-        //     await PlaySound.товар_подобран("");
-        //     setTimeout(this.loadTovarsGridData.bind(this), 10)
-        //     console.log(res);
-        // }
 
     }
 
@@ -810,7 +744,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                             onClick={async () => {
                                 let res = await get_РАЗГР_изменить_количество(this.task, this.selectedRow, this.intoPalleteInfo);
                                 if (res.result == "Ok") {
-                                    this.loadTovarsGridData();
+                                    await this.loadTovarsGridData();
                                     this.loadSvod().then(() => this.forceUpdate());
                                 }
 
@@ -825,7 +759,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                             onClick={async () => {
                                 let otkatInfo = await _wms_android_РАЗГР_инфо_для_отката(this.task.Ключ, this.intoPalleteInfo.Ключ);
                                 if (otkatInfo.length == 0) {
-                                    showInfo("Нет товара на паллете, откат невозможен");
+                                    showError("Нет товара на паллете, откат невозможен");
                                     return;
                                 }
 
@@ -850,7 +784,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                                     }
                                     else {
                                         zebraTextToSpeech("откат выполнен");
-                                        this.loadTovarsGridData();
+                                        await this.loadTovarsGridData();
                                         this.loadSvod().then(() => this.forceUpdate());
                                     }
                                 }
@@ -951,7 +885,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         if (this.intoPalleteId == 0)
             return
 
-        let res = await get_РАЗГР_запрос_габаритов_паллеты(this.task, this.intoPalleteInfo, this.isInputOst);
+        await this.loadTovarsGridData(); // не удалять              
+        let res = await get_РАЗГР_запрос_габаритов_паллеты(this.task, this.intoPalleteInfo, this.isInputOst, this.tovarsGridData.length == 0);
         if (res.result == "Ok") {
             this.clearPalleteId();
         }

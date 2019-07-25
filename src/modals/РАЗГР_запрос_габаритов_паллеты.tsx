@@ -30,6 +30,7 @@ export interface I_РАЗГР_запрос_габаритов_паллеты_Pag
     task: IResult_wms_android_Информация_о_задании;
     pallete: IResult_wms_android_Паллета_инфо;
     isInputOst: boolean;
+    isPalleteEmpty: boolean;
 }
 
 export interface I_РАЗГР_запрос_габаритов_паллеты_Result {
@@ -39,11 +40,12 @@ export interface I_РАЗГР_запрос_габаритов_паллеты_Res
 export async function get_РАЗГР_запрос_габаритов_паллеты(
     task: IResult_wms_android_Информация_о_задании,
     pallete: IResult_wms_android_Паллета_инфо,
-    isInputOst: boolean
+    isInputOst: boolean,
+    isPalleteEmpty: boolean
 ): Promise<I_РАЗГР_запрос_габаритов_паллеты_Result> {
 
     appState.modalResult = undefined;
-    appState.openModal(РАЗГР_запрос_габаритов_паллеты_Page, { pageId: getRandomString(), task, pallete, isInputOst });
+    appState.openModal(РАЗГР_запрос_габаритов_паллеты_Page, { pageId: getRandomString(), task, pallete, isInputOst, isPalleteEmpty });
     return new Promise<I_РАЗГР_запрос_габаритов_паллеты_Result>(
         async (resolve: (res: I_РАЗГР_запрос_габаритов_паллеты_Result) => void, reject: (error: string) => void) => {
             while (typeof (appState.modalResult) == "undefined")
@@ -220,6 +222,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                 </td>
             </tr >
         )
+        if (this.props.isPalleteEmpty)
+            ширина = null;
 
         let высота: ReactNode = (
             <tr>
@@ -248,6 +252,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                 </td>
             </tr >
         )
+        if (this.props.isPalleteEmpty)
+            высота = null;
 
         let глубина: ReactNode = (
             <tr>
@@ -276,6 +282,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                 </td>
             </tr >
         )
+        if (this.props.isPalleteEmpty)
+            глубина = null;
 
         let items = this.palleteTypes.map((item: IResult_wms_android_Типы_паллет, index: number) => <option key={index} value={item.Ключ}>{item.Название}</option>);
         let тип_паллеты = (
@@ -298,6 +306,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                 </td>
             </tr>
         )
+        if (this.props.isPalleteEmpty)
+            тип_паллеты = null;
 
         let печатать_А4 = (
             <tr>
@@ -318,6 +328,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                 </td>
             </tr>
         )
+        if (this.props.isPalleteEmpty)
+            печатать_А4 = null;
 
 
 
@@ -345,6 +357,8 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                                 </tbody>
                             </table>
 
+                            <div style={{ textAlign: "center", marginBottom: 10, marginTop: 10, }}>{this.props.isPalleteEmpty ? "Паллета пустая" : ""}</div>
+
                         </div>
 
                     </ModalBody>
@@ -353,7 +367,7 @@ export class РАЗГР_запрос_габаритов_паллеты_Page exte
                             <BuhtaButton color="success"
                                 className="cy-ok"
                                 style={{ float: "right", minWidth: 45, marginLeft: 5 }}
-                                disabled={this.isErrors()}
+                                disabled={this.isErrors() && !this.props.isPalleteEmpty}
                                 onClick={this.ok.bind(this)}>
                                 Завершить паллету
                             </BuhtaButton>

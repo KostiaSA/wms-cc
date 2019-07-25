@@ -9,7 +9,12 @@ export function playSound(soundFileName: string) {
     if (!audio[fileName])
         audio[fileName] = new Audio(fileName);
 
-    audio[fileName].play();
+    try {
+        audio[fileName].play();
+    }
+    catch{
+
+    }
 
 }
 
