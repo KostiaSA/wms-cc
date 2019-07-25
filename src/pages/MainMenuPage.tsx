@@ -174,8 +174,10 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
     private timer_новыеЗадания: any;
     componentDidMount() {
         this.timer_новыеЗадания = setInterval(async () => {
-            appState.новыеЗадания = await _wms_android_Главное_меню_Список_Новых_Заданий(appState.kadrId, appState.podrId);
-            this.forceUpdate();
+            if (this.props.visible) {
+                appState.новыеЗадания = await _wms_android_Главное_меню_Список_Новых_Заданий(appState.kadrId, appState.podrId);
+                this.forceUpdate();
+            }
         }, ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ);
 
     }
@@ -184,8 +186,15 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
         clearInterval(this.timer_новыеЗадания);
     }
 
-
-
+    shouldComponentUpdate(nextProps: IMainMenuPageProps) {
+        if (nextProps.visible && !this.props.visible) {
+            setTimeout(async () => {
+                appState.новыеЗадания = await _wms_android_Главное_меню_Список_Новых_Заданий(appState.kadrId, appState.podrId);
+                this.forceUpdate();
+            }, 10)
+        }
+        return true;
+    }
 
     renderGroup(group: string): ReactNode[] {
         let ret: ReactNode[] = [];

@@ -50,7 +50,7 @@ export class Confirmation_Page extends React.Component<I_Confirmation_PageProps,
     render(): React.ReactNode {
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window confirmation-page" : "")} isOpen centered fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-dialog-confirm confirmation-page" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-primary"} style={{ zoom: appState.zoom }}>{this.props.title}</ModalHeader>
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom }}>
                         {stringMessageToReactNode(this.props.message)}

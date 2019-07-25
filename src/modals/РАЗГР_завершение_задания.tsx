@@ -107,7 +107,7 @@ export class РАЗГР_завершение_задания_Page extends React.C
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal centered className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-pallete-ok" : "")} isOpen fade={false}>
+                <Modal centered className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-finish-dialog" : "")} isOpen fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div className={"text-primary"}>Завершение задания</div>
                     </ModalHeader>
