@@ -72,6 +72,7 @@ export class РАЗГР_изменить_количество_Page extends React
     tmc: IResult_wms_android_ТМЦ_инфо;
     part: IResult_wms_android_Партия_ТМЦ_инфо;
     async componentDidMount() {
+        this.KolEdit_Value = this.props.row.Кол;
 
         this.tmc = await _wms_android_ТМЦ_инфо(this.props.row.TMCKey);
         if (this.props.row.PartKey > 0) {
@@ -85,7 +86,6 @@ export class РАЗГР_изменить_количество_Page extends React
         if (this.UpTypeEdit_Value == "")
             this.UpTypeEdit_Value = this.tmc.ЕдИзм2;
 
-        this.KolEdit_Value = this.props.row.Кол;
         this.kolInBox = this.tmc.КолВУпак;
 
         this.KolEditChanged();
@@ -283,7 +283,7 @@ export class РАЗГР_изменить_количество_Page extends React
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-get-part-kol" : "")} isOpen fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-razgr-change-kol" : "")} isOpen fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО }}>{title}</div>
                         <div style={{ color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, textAlign: "left", fontSize: 11 }}>

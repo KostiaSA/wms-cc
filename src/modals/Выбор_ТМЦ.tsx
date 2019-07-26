@@ -99,7 +99,7 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
 
         return (
             <div className="app" style={{ display: this.props.visible ? "" : "none" }}>
-                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window vybor-zadainya-v-raboty" : "")} isOpen centered fade={false}>
+                <Modal className={(appState.getActivePageId() == this.props.pageId ? "active-window cy-find-tmc" : "")} isOpen centered fade={false}>
                     <ModalHeader className={"text-secondary"} style={{ zoom: appState.zoom }}>
                         <div>
                             <span style={{ paddingRight: 3 }}>Поиск</span>
