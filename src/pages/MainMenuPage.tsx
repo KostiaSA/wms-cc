@@ -201,6 +201,7 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
 
         for (let item of mainMenuItems) {
             if (item.group == group && appState.isUsersHasAccessToRasdel(item.code)) {
+
                 let новыеЗадания = appState.новыеЗадания.find((x) => x.Тип == item.code);
                 let newStr = "";
                 if (новыеЗадания && (новыеЗадания.Новых > 0 || новыеЗадания.ВРаботе > 0)) {
