@@ -632,9 +632,10 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
         let big_font_message: any = null;
 
         if (this.intoPalleteId == 0) {
-            let buttons: any = this.palletesInTask.map((pal: IResult_wms_android_Список_незавершенных_паллет) => {
+            let buttons: any = this.palletesInTask.map((pal: IResult_wms_android_Список_незавершенных_паллет, index: number) => {
                 return (
                     <BuhtaButton
+                        key={index}
                         outline
                         color={"warning"}
                         onClick={async () => {
@@ -664,9 +665,10 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
 
         if (this.svodPercent == 100 && this.intoPalleteId == 0) {
 
-            let buttons: any = this.palletesInTask.map((pal: IResult_wms_android_Список_незавершенных_паллет) => {
+            let buttons: any = this.palletesInTask.map((pal: IResult_wms_android_Список_незавершенных_паллет, index: number) => {
                 return (
                     <BuhtaButton
+                        key={index}
                         outline
                         color={"success"}
                         onClick={async () => {
