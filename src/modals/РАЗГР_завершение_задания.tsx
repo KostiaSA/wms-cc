@@ -28,6 +28,7 @@ export interface I_РАЗГР_завершение_задания_PageProps exte
 
 export interface I_РАЗГР_завершение_задания_Result {
     result: "Ok" | "Cancel";
+    isPrintAkt: boolean;
 }
 
 export async function get_РАЗГР_завершение_задания(
@@ -54,6 +55,7 @@ export class РАЗГР_завершение_задания_Page extends React.C
         super(props, context);
     }
 
+    isPrintAkt: boolean;
 
     async componentDidMount() {
 
@@ -64,8 +66,7 @@ export class РАЗГР_завершение_задания_Page extends React.C
     async ok() {
 
 
-
-        appState.setModalResult<I_РАЗГР_завершение_задания_Result>({ result: "Ok" });
+        appState.setModalResult<I_РАЗГР_завершение_задания_Result>({ result: "Ok", isPrintAkt: this.isPrintAkt });
 
     }
 
@@ -89,12 +90,18 @@ export class РАЗГР_завершение_задания_Page extends React.C
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            value=""
+                            checked={this.isPrintAkt}
                             id="a4"
                             style={{ transform: "scale(1.35)" }}
+                            onChange={async (event) => {
+                                this.isPrintAkt = event.target.checked;
+                                //await this.loadGridData();
+                            }}
+
                         />
+
                         <label className="form-check-label" htmlFor="a4" style={{ marginLeft: 5 }}>
-                            печатать Акт
+                            печатать Акт о расхождениях
                         </label>
                     </div>
                 </td>
@@ -136,7 +143,7 @@ export class РАЗГР_завершение_задания_Page extends React.C
                                 style={{ float: "right" }}
                                 color="light"
                                 onClick={() => {
-                                    appState.setModalResult<I_РАЗГР_завершение_задания_Result>({ result: "Cancel" });
+                                    appState.setModalResult<I_РАЗГР_завершение_задания_Result>({ result: "Cancel", isPrintAkt: false });
                                 }}>
                                 Отмена
                             </BuhtaButton>

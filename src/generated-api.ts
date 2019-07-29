@@ -2053,3 +2053,52 @@ export async function _wms_android_РАЗГР_завершить_задание(
     return lastRecordset[0];
 
 }
+
+export interface IResult_wms_android_Печать_на_принтер {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_Печать_на_принтер(Отчет: string, Копий: number, КлючЗаписи: number, Принтер: string, UserName: string): Promise<IResult_wms_android_Печать_на_принтер> {
+    if (typeof Отчет != "string") throw new Error("вызов '_wms_android_Печать_на_принтер': параметр 'Отчет' должен быть строкой");
+    if (typeof Копий != "number") throw new Error("вызов '_wms_android_Печать_на_принтер': параметр 'Копий' должен быть числом");
+    if (typeof КлючЗаписи != "number") throw new Error("вызов '_wms_android_Печать_на_принтер': параметр 'КлючЗаписи' должен быть числом");
+    if (typeof Принтер != "string") throw new Error("вызов '_wms_android_Печать_на_принтер': параметр 'Принтер' должен быть строкой");
+    if (typeof UserName != "string") throw new Error("вызов '_wms_android_Печать_на_принтер': параметр 'UserName' должен быть строкой");
+    let recordsets = await executeSql("_wms_android_Печать_на_принтер " + stringAsSql(Отчет) + "," + Копий.toString() + "," + КлючЗаписи.toString() + "," + stringAsSql(Принтер) + "," + stringAsSql(UserName));
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Печать_на_принтер: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Печать_на_принтер: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_Печать_на_принтер': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_Печать_на_принтер': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
+export interface IResult_wms_android_РАЗГР_Печать_акта_о_расхождениях {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_РАЗГР_Печать_акта_о_расхождениях(taskId: number, kadrId: number): Promise<IResult_wms_android_РАЗГР_Печать_акта_о_расхождениях> {
+    if (typeof taskId != "number") throw new Error("вызов '_wms_android_РАЗГР_Печать_акта_о_расхождениях': параметр 'taskId' должен быть числом");
+    if (typeof kadrId != "number") throw new Error("вызов '_wms_android_РАЗГР_Печать_акта_о_расхождениях': параметр 'kadrId' должен быть числом");
+    let recordsets = await executeSql("_wms_android_РАЗГР_Печать_акта_о_расхождениях " + taskId.toString() + "," + kadrId.toString());
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_РАЗГР_Печать_акта_о_расхождениях: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_РАЗГР_Печать_акта_о_расхождениях: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_РАЗГР_Печать_акта_о_расхождениях': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_РАЗГР_Печать_акта_о_расхождениях': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}

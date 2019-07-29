@@ -5,7 +5,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { getTaskConst } from '../taskConst';
 import { BuhtaButton } from '../ui/BuhtaButton';
 import { showError } from "../modals/ErrorMessagePage";
-import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание, IResult_wms_android_Паллета_инфо, IResult_wms_android_РАЗГР_свод, _wms_android_РАЗГР_свод, _wms_android_РАЗГР_инфо_для_отката, _wms_android_РАЗГР_откат, IResult_wms_android_Список_незавершенных_паллет, _wms_android_Список_незавершенных_паллет, _wms_android_РАЗГР_завершить_задание } from "../generated-api";
+import { IResult_wms_android_Информация_о_задании, _wms_android_Информация_о_задании, _wms_android_Штрихкод_запрещен, _wms_android_Получить_ТМЦ_по_штрих_коду, _wms_android_Получить_Партию_по_штрих_коду, _wms_android_Название_паллеты, _wms_android_Название_ячейки_где_паллета, _wms_android_Получить_Партию_с_паллеты, _wms_android_Паллета_инфо, _wms_android_РАЗГР_Создать_партию_из_штрих_кода, _wms_android_Получить_паллету_по_шк_беспаллетной_ячейки, _wms_android_ПИК_обработка_шк_партии, _wms_android_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_способ_хранения, IResult_wms_android_Партия_ТМЦ_инфо, _wms_android_Партия_ТМЦ_инфо, _wms_android_РАЗГР_Проверить_товар_на_других_паллетах, _wms_android_РАЗГР_Сверка_с_заявкой, _wms_android_РАЗГР_INSERT_скл_Комплектация, _wms_android_РАЗГР_Сверка_с_заявкой_полная, _wms_android_РАЗГР_Список_товара_на_паллете, IResult_wms_android_РАЗГР_Список_товара_на_паллете, _wms_android_РАЗГР_Проверить_паллету, _wms_android_РАЗГР_Взять_паллету_в_задание, IResult_wms_android_Паллета_инфо, IResult_wms_android_РАЗГР_свод, _wms_android_РАЗГР_свод, _wms_android_РАЗГР_инфо_для_отката, _wms_android_РАЗГР_откат, IResult_wms_android_Список_незавершенных_паллет, _wms_android_Список_незавершенных_паллет, _wms_android_РАЗГР_завершить_задание, _wms_android_РАЗГР_Печать_акта_о_расхождениях } from "../generated-api";
 import classNames from "classnames";
 import { getSubcontoTextColorClass } from '../utils/getSubcontoTextColorClass';
 import { TestBarcodesPage } from "./TestBarcodesPage";
@@ -39,6 +39,7 @@ import { zebraTextToSpeech } from "../zebra/ZebraApi";
 import { checkGuid } from '../utils/guid';
 import { getWarningConfirmation } from "../modals/WarningConfirmationPage copy";
 import { get_РАЗГР_завершение_задания } from "../modals/РАЗГР_завершение_задания";
+import { sleep } from "../utils/sleep";
 
 export interface IРАЗГР_PageProps extends IAppPageProps {
     taskId: number;
@@ -990,9 +991,22 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 return
             }
 
-            zebraTextToSpeech("задание завершено");
 
-            await showInfo("Задание завершено");
+            if (res.isPrintAkt) {
+                let print_res = await _wms_android_РАЗГР_Печать_акта_о_расхождениях(this.task.Ключ, appState.kadrId);
+                if (print_res.error) {
+                    showError(sqlRes.error);
+                }
+                else {
+                    zebraTextToSpeech("акты отправлены на печать, задание завершено");
+                    await showInfo("Aкты отправлены на печать, задание завершено");
+                }
+            }
+            else {
+                zebraTextToSpeech("задание завершено");
+                await showInfo("Задание завершено");
+            }
+
             appState.closeActivePage();
         }
 
