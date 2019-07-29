@@ -233,9 +233,8 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 }
                 tmcId = res.FindedTMC;
                 partId = res.CreateedPartID;
-                if (tmcRes.Количество > 0)
-                    barCodeKol = tmcRes.Количество;
-
+                if (res.Количество > 0)
+                    barCodeKol = res.Количество;
             }
         }
 
@@ -396,7 +395,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
                 flag = true;
             }
             else {
-                let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, barcodeKol);
+                let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, partInfo, barcodeKol);
                 if (res.result == "Ok") {
                     barcodeKol = res.selectedKol;
                     partId = res.selectedPartId;
@@ -415,7 +414,7 @@ export class РАЗГР_Page extends React.Component<IРАЗГР_PageProps> {
             }
         }
         else {
-            let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, barcodeKol);
+            let res = await get_РАЗГР_запрос_партии_и_количества(this.task, tmcInfo, partInfo, barcodeKol);
             if (res.result == "Ok") {
                 barcodeKol = res.selectedKol;
                 partId = res.selectedPartId;

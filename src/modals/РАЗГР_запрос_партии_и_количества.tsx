@@ -14,7 +14,7 @@ import { BuhtaButton } from "../ui/BuhtaButton";
 
 import { ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ, ЦВЕТ_ТЕКСТА_КОЛИЧЕСТВО, ЦВЕТ_ТЕКСТА_ПАЛЛЕТА } from "../const";
 import { PlaySound } from '../sounds/PlaySound';
-import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию } from "../generated-api";
+import { IResult_wms_android_ТМЦ_инфо, IResult_wms_android_Информация_о_задании, IResult_wms_android_РАЗГР_список_партий_по_договору, _wms_android_РАЗГР_список_партий_по_договору, _wms_android_Партия_штуки_в_упаковки, _wms_android_РАЗГР_осталось_принять_ТМЦ, _wms_android_РАЗГР_создать_партию, IResult_wms_android_Партия_ТМЦ_инфо } from "../generated-api";
 import { AgGridReact } from "ag-grid-react/lib/agGridReact";
 import { AgGridColumn } from "ag-grid-react/lib/agGridColumn";
 import { playSound_ButtonClick } from "../utils/playSound";
@@ -26,6 +26,7 @@ import { Moment } from 'moment';
 export interface I_РАЗГР_запрос_партии_и_количества_PageProps extends IAppPageProps {
     task: IResult_wms_android_Информация_о_задании;
     tmc: IResult_wms_android_ТМЦ_инфо;
+    part: IResult_wms_android_Партия_ТМЦ_инфо;
     barcodeKol: number;
 }
 
@@ -38,11 +39,12 @@ export interface I_РАЗГР_запрос_партии_и_количества_
 export async function get_РАЗГР_запрос_партии_и_количества(
     task: IResult_wms_android_Информация_о_задании,
     tmc: IResult_wms_android_ТМЦ_инфо,
+    part: IResult_wms_android_Партия_ТМЦ_инфо,
     barcodeKol: number
 ): Promise<I_РАЗГР_запрос_партии_и_количества_Result> {
 
     appState.modalResult = undefined;
-    appState.openModal(РАЗГР_запрос_партии_и_количества_Page, { pageId: getRandomString(), task, tmc, barcodeKol });
+    appState.openModal(РАЗГР_запрос_партии_и_количества_Page, { pageId: getRandomString(), task, tmc, part, barcodeKol });
     return new Promise<I_РАЗГР_запрос_партии_и_количества_Result>(
         async (resolve: (res: I_РАЗГР_запрос_партии_и_количества_Result) => void, reject: (error: string) => void) => {
             while (typeof (appState.modalResult) == "undefined")
@@ -80,6 +82,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     kol_error: string = "";
     part_error: string = "";
 
+    партияПришлаИз_GS1: boolean = typeof this.props.part == "object";
+
     async componentDidMount() {
         if (this.props.tmc.Весовой)
             throw new Error("Весовой товар пока не работает");
@@ -94,16 +98,22 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         this.KolEditChanged();
         this.ДатаВыпуска_Changed();
 
-        this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.ДоговорКлюч, this.props.tmc.Ключ);
-        if (this.partList.length > 0) {
-            this.selectedPartId = 0;
-            PlaySound.выберите_партию();
+        if (this.партияПришлаИз_GS1) { // партия пришла из GS1
+            this.partList = [];
+            this.selectedPartId = this.props.part.Ключ;
+            PlaySound.партия_в_штрихкоде();
         }
         else {
-            this.selectedPartId = -1;
-            PlaySound.новая_партия();
+            this.partList = await _wms_android_РАЗГР_список_партий_по_договору(this.props.task.ДоговорКлюч, this.props.tmc.Ключ);
+            if (this.partList.length > 0) {
+                this.selectedPartId = 0;
+                PlaySound.выберите_партию();
+            }
+            else {
+                this.selectedPartId = -1;
+                PlaySound.новая_партия();
+            }
         }
-
         this.осталосьПринятьКоличество = (await _wms_android_РАЗГР_осталось_принять_ТМЦ(this.props.task.Ключ, this.props.task.ДоговорКлюч, this.props.tmc.Ключ)).Количество;
         this.осталосьПринятьУпаковки = (await _wms_android_Партия_штуки_в_упаковки(this.props.tmc.Ключ, 0, this.осталосьПринятьКоличество)).Упаковки;
         this.forceUpdate();
@@ -117,7 +127,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
     };
 
     async loadGridData() {
-        if (!this.gridApi)
+        if (!this.gridApi || this.партияПришлаИз_GS1)
             return;
 
         if (this.partList.length > 0) {
@@ -399,6 +409,8 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         let title = "Выбор партии";
         if (this.partList.length == 0)
             title = "Новая партия";
+        if (this.партияПришлаИз_GS1)
+            title = "Партия в штрих-коде";
 
         let kol_error: any = null;
         if (this.kol_error != "")
@@ -428,11 +440,12 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                         <div style={{ color: ЦВЕТ_ТЕКСТА_НАЗВАНИЕ_ТМЦ, textAlign: "left", fontSize: 11 }}>
                             {this.props.tmc.НомерНазвание}
                         </div>
+                        <div style={{ color: ЦВЕТ_ТЕКСТА_ПАРТИЯ_ТМЦ }}>{this.партияПришлаИз_GS1 ? this.props.part.НомерНазвание : ""}</div>
                     </ModalHeader>
                     <ModalBody className={"text-primary"} style={{ zoom: appState.zoom, padding: 0 }}>
                         <div className="card-body" style={{ padding: 5 }}>
 
-                            <div className="ag-theme-balham" style={{ height: 160, width: "100%", marginBottom: 5, display: this.partList.length > 0 ? "block" : "none" }}>
+                            <div className="ag-theme-balham" style={{ height: 160, width: "100%", marginBottom: 5, display: !this.партияПришлаИз_GS1 && this.partList.length > 0 ? "block" : "none" }}>
                                 <AgGridReact
                                     suppressLoadingOverlay
                                     overlayNoRowsTemplate={overlayNoRowsTemplate}
@@ -458,7 +471,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
 
                                 </AgGridReact>
                             </div>
-                            <div style={{ marginBottom: 5, minHeight: 30, display: this.partList.length > 0 ? "block" : "none" }}>
+                            <div style={{ marginBottom: 5, minHeight: 30, display: !this.партияПришлаИз_GS1 && this.partList.length > 0 ? "block" : "none" }}>
                                 <BuhtaButton
                                     style={{ float: "right" }}
                                     color="info"
@@ -473,7 +486,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
                                 </BuhtaButton>
                             </div>
 
-                            <div style={{ width: "100%", marginBottom: 5, marginTop: 5, display: this.partList.length == 0 ? "block" : "none" }}>
+                            <div style={{ width: "100%", marginBottom: 5, marginTop: 5, display: !this.партияПришлаИз_GS1 && this.partList.length == 0 ? "block" : "none" }}>
                                 <div style={{ textAlign: "center" }}>Создание новой партии</div>
                                 <table>
                                     <tbody>

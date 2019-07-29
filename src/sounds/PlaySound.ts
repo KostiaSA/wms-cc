@@ -232,6 +232,11 @@ export class PlaySound {
         zebraTextToSpeech("выберите партию");
     }
 
+    static async партия_в_штрихкоде() {
+        //showSnack("товар " + barcode + " подобран", "success");
+        zebraTextToSpeech("партия в штрих коде");
+    }
+
     static async новая_партия() {
         //showSnack("товар " + barcode + " подобран", "success");
         zebraTextToSpeech("новая партия");
