@@ -12,9 +12,25 @@ interface IExecuteSqlReq {
 
 export async function executeSql(sql: string): Promise<any[]> {
 
+
     while (appState.sqlWaitPanelVisible) {
         await sleep(10);
     }
+
+    while (true) {
+        let pinkOk = await ping();
+        if (pinkOk)
+            break;
+        else {
+            if (!appState.sqlWaitPanelVisible) {
+                appState.sqlWaitPanelVisible = true;
+                if (appState.appWindow)
+                    appState.appWindow.forceUpdate();
+            }
+            await sleep(1000);
+        }
+    }
+
 
     return new Promise<any>(
         (resolve: (obj: any) => void, reject: (error: string) => void) => {
@@ -89,6 +105,61 @@ export async function executeSql(sql: string): Promise<any[]> {
             if (appState.appWindow)
                 appState.appWindow.forceUpdate();
 
+            xhr.send(JSON.stringify(fullReq));
+
+        });
+
+
+}
+
+
+export async function ping(): Promise<boolean> {
+
+    return new Promise<any>(
+        (resolve: (obj: any) => void, reject: (error: string) => void) => {
+
+            console.log("ping");
+
+            var xhr = new XMLHttpRequest();
+            let url = "executeSql";
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader('Content-type', "application/json;charset=UTF-8");
+
+            xhr.onload = function () {
+
+                if (this.status != 200) {
+                    //reject(this.statusText + " " + this.status);
+                    resolve(false);
+                    return
+                }
+                let ansBody = XJSON_parse((this as XMLHttpRequest).responseText) as any;
+                if (ansBody.pong != "Ok")
+                    resolve(false);
+                else {
+                    resolve(true);
+                }
+            };
+
+            // xhr.onreadystatechange = function () {
+            //     if (xhr.readyState == 4) {
+            //         if (xhr.status != 200) {
+            //             reject("ошибка сервера " + xhr.status);
+            //         }
+            //     }
+            // };
+
+            xhr.onerror = function (ev: Event) {
+                console.log("ping xhr.onerror", ev);
+                //reject("нет связи с сервером");
+                resolve(false);
+
+            };
+
+            let fullReq: IExecuteSqlReq = {
+                tsdKey: 0,
+                userName: "",
+                sqlBatch: "ping"
+            };
             xhr.send(JSON.stringify(fullReq));
 
         });

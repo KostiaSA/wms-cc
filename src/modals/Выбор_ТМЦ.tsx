@@ -220,7 +220,6 @@ export class Выбор_ТМЦ_Page extends React.Component<I_Выбор_ТМЦ_
 class CellRenderer extends React.Component<any> {
     render() {
         let row: IResult_wms_android_Выбор_ТМЦ_список = this.props.data;
-        console.log(this.props);
         return (
             <Highlighter
                 highlightClassName="search-highlight"

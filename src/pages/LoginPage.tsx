@@ -58,11 +58,17 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
 
     loginButtonDisabled: boolean = false;
     info: IResult_wms_android_Логин_инфо;
+    error: string;
 
     async componentDidMount() {
         this.password = "";
         zebraTextToSpeech("введите пароль");
-        this.info = await _wms_android_Логин_инфо();
+        try {
+            this.info = await _wms_android_Логин_инфо();
+        }
+        catch (e) {
+            this.error = e.toString();
+        }
         this.forceUpdate();
     };
 
@@ -110,6 +116,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
     };
 
     render(): React.ReactNode {
+
         let style1: CSSProperties = { verticalAlign: "top", textAlign: "right", width: 100, paddingRight: 5, paddingTop: 3, };
         let style2: CSSProperties = { paddingTop: 3, fontWeight: "bold" };
         let infoTable: any = null;
@@ -158,6 +165,17 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                 </table>
             );
         }
+        else {
+
+            infoTable = (
+                <div style={{ color: "red", textAlign: "center" }}>
+                    <div>Нет связи с сервером!</div>
+                    <div>{this.error}</div>
+                </div>
+            );
+
+
+        }
         return (
             <div className="app flex-row align-items-top cy-login-page" style={{ display: this.props.visible ? "" : "none" }}>
                 <Container style={{ backgroundColor: "ALICEBLUE", zoom: 1.15 }}>
@@ -175,7 +193,7 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                             <i className="fa fa-user"></i>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input type="text" placeholder="логин" className="cy-login" />
+                                    <Input disabled={!this.info} type="text" placeholder="логин" className="cy-login" />
                                 </InputGroup>
                                 <InputGroup className="mb-4">
                                     <InputGroupAddon addonType="prepend">
@@ -183,11 +201,11 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                                             <i className="fa fa-unlock"></i>
                                         </InputGroupText>
                                     </InputGroupAddon>
-                                    <Input type="password" placeholder="пароль" className="cy-password" />
+                                    <Input disabled={!this.info} type="password" placeholder="пароль" className="cy-password" />
                                 </InputGroup>
                                 <Row>
                                     <Col xs="6">
-                                        <BuhtaButton color="primary" disabled={this.loginButtonDisabled}
+                                        <BuhtaButton color="primary" disabled={!this.info || this.loginButtonDisabled}
                                             className="px-4 cy-ok"
                                             onClick={
                                                 this.loginButtonHandler
