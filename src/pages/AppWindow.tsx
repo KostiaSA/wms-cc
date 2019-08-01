@@ -32,7 +32,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
 
             let sqlWaitPanelIcon: HTMLElement;
             sqlWaitPanel = (
-                <div style={{ zIndex: 100000, border: "0px solid red", left: 0, top: 0, right: 0, bottom: 0, position: "absolute", background: "#ffffff3b", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ zIndex: 100000, border: "0px solid red", left: 0, top: 0, right: 0, bottom: 0, position: "absolute", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <span ref={(e) => sqlWaitPanelIcon = e} style={{ display: "none" }}>
                         <i className="fas fa-spinner fa-spin" style={{ fontSize: 30, color: "brown" }}></i>
                     </span>
@@ -40,6 +40,21 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
             );
 
             setTimeout(() => { if (sqlWaitPanelIcon) sqlWaitPanelIcon.style.display = "initial" }, 1000);
+            console.log("sqlWaitPanel-sqlWaitPanel-sqlWaitPanel");
+        }
+        let pingWaitPanel = null;
+        if (appState.pingWaitPanelVisible) {
+
+            let pingWaitPanelIcon: HTMLElement;
+            sqlWaitPanel = (
+                <div style={{ zIndex: 200000, border: "0px solid red", left: 0, top: 0, right: 0, bottom: 0, position: "absolute", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <span ref={(e) => pingWaitPanelIcon = e} style={{ display: "none" }}>
+                        <i className="fas fa-spinner fa-spin" style={{ fontSize: 45, color: "red" }}></i>
+                    </span>
+                </div>
+            );
+
+            setTimeout(() => { if (pingWaitPanelIcon) pingWaitPanelIcon.style.display = "initial" }, 1000);
         }
 
         return (
@@ -65,6 +80,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
                 })}
                 <ToastContainer autoClose={2000} />
                 {sqlWaitPanel}
+                {pingWaitPanel}
             </div>
 
 

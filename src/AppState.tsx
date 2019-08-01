@@ -14,6 +14,7 @@ import { registerBuhtaObject } from "./registerBuhtaObject";
 import { showAppError } from "./modals/ErrorMessagePage";
 import { IResult_wms_android_Доступы, IResult_wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_Получить_настройки_ТСД, _wms_android_Сохранить_настройки_ТСД, IResult_wms_android_Список_настроек_WMS } from "./generated-api";
 import { sleep } from "./utils/sleep";
+import { ping } from "./utils/executeSql";
 
 
 // import {IAppPage} from "./zebra-ui/AppWindow";
@@ -58,6 +59,7 @@ export class AppState {
     //snack: SnackbarProps | null = null;
 
     sqlWaitPanelVisible: boolean = false;
+    pingWaitPanelVisible: boolean = false;
 
     private _настройки_ТСД: { [параметр: string]: any } = {};
 
@@ -107,8 +109,31 @@ export class AppState {
         this.pages.push({ props: { pageId: LoginPage.PAGE_ID }, content: LoginPage });
         this.activePageId.push(LoginPage.PAGE_ID);
 
+        setInterval(() => {
+            this.checkPing();
+        }, 15000);
 
     }
+
+    //lastCheckPingTime
+    async checkPing() {
+        let oldVisible = this.pingWaitPanelVisible;
+        let pinkOk = await ping();
+        if (pinkOk) {
+            console.log("ping Ok");
+            this.pingWaitPanelVisible = false;
+            // if (this.appWindow && oldVisible != this.pingWaitPanelVisible)
+            //     this.appWindow.forceUpdate();
+        }
+        else {
+            console.log("ping Cancel");
+            appState.pingWaitPanelVisible = true;
+            // if (this.appWindow && oldVisible != this.pingWaitPanelVisible)
+            //     appState.appWindow.forceUpdate();
+        }
+    }
+
+
 
     openModal<AppPageProps extends IAppPageProps>(content: any /*ComponentType<AppPageProps>*/, props: AppPageProps) {
         let page: IOpenedPage = {
@@ -322,10 +347,10 @@ export class AppState {
         localStorage.setItem("buhta-authToken", "none");
     }
 
-    async start() {
-        //registerSqlDataTypes();
-        //registerSchemaObjectTypes();
-    }
+    // async start() {
+    //     //registerSqlDataTypes();
+    //     //registerSchemaObjectTypes();
+    // }
 }
 
 

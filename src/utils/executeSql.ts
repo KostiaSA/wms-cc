@@ -12,25 +12,11 @@ interface IExecuteSqlReq {
 
 export async function executeSql(sql: string): Promise<any[]> {
 
+    await appState.checkPing();
 
-    while (appState.sqlWaitPanelVisible) {
+    while (appState.sqlWaitPanelVisible || appState.pingWaitPanelVisible) {
         await sleep(10);
     }
-
-    while (true) {
-        let pinkOk = await ping();
-        if (pinkOk)
-            break;
-        else {
-            if (!appState.sqlWaitPanelVisible) {
-                appState.sqlWaitPanelVisible = true;
-                if (appState.appWindow)
-                    appState.appWindow.forceUpdate();
-            }
-            await sleep(1000);
-        }
-    }
-
 
     return new Promise<any>(
         (resolve: (obj: any) => void, reject: (error: string) => void) => {
@@ -118,7 +104,7 @@ export async function ping(): Promise<boolean> {
     return new Promise<any>(
         (resolve: (obj: any) => void, reject: (error: string) => void) => {
 
-            console.log("ping");
+            //console.log("ping");
 
             var xhr = new XMLHttpRequest();
             let url = "executeSql";

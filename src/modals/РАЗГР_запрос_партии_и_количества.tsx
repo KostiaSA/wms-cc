@@ -116,7 +116,7 @@ export class РАЗГР_запрос_партии_и_количества_Page e
         }
         this.осталосьПринятьКоличество = (await _wms_android_РАЗГР_осталось_принять_ТМЦ(this.props.task.Ключ, this.props.task.ДоговорКлюч, this.props.tmc.Ключ)).Количество;
         this.осталосьПринятьУпаковки = (await _wms_android_Партия_штуки_в_упаковки(this.props.tmc.Ключ, 0, this.осталосьПринятьКоличество)).Упаковки;
-        this.forceUpdate();
+        this.loadGridData();
 
     }
 

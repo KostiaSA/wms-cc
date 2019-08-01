@@ -8,8 +8,6 @@ import {
     zebraReloadWebView
 } from "../zebra/ZebraApi";
 import { appState } from '../AppState';
-import { executeSql } from "../utils/executeSql";
-import { stringAsSql } from "../utils/stringAsSql";
 import { IAppPageProps } from "./AppWindow";
 //import {MainMenuPage} from "./MainMenuPage";
 import { playSound_ButtonClick } from "../utils/playSound";
