@@ -79,8 +79,11 @@ export class AppState {
     }
 
     настройки_ТСД(параметр: НастройкиТСД): any {
-        if (typeof this._настройки_ТСД[параметр] == "undefined")
+        if (typeof this._настройки_ТСД[параметр] == "undefined") {
+            if (параметр == "zoom")
+                return 1.1;
             throw new Error("нет такой настройки ТСД: " + параметр);
+        }
 
         return this._настройки_ТСД[параметр];
     }

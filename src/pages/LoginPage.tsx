@@ -81,7 +81,6 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
         try {
 
             let row = await _wms_android_Логин(this.login, '', zebraGetDeviceId(), zebraGetDeviceNum());
-
             if (row.error) {
                 console.error(row.error);
                 showAppError(row.error);
