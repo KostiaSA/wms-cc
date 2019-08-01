@@ -38,9 +38,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
                     </span>
                 </div>
             );
-
             setTimeout(() => { if (sqlWaitPanelIcon) sqlWaitPanelIcon.style.display = "initial" }, 1000);
-            console.log("sqlWaitPanel-sqlWaitPanel-sqlWaitPanel");
         }
         let pingWaitPanel = null;
         if (appState.pingWaitPanelVisible) {
@@ -53,8 +51,7 @@ export class AppWindow extends React.Component<IAppWindowProps, any> {
                     </span>
                 </div>
             );
-
-            setTimeout(() => { if (pingWaitPanelIcon) pingWaitPanelIcon.style.display = "initial" }, 1000);
+            setTimeout(() => { if (pingWaitPanelIcon) pingWaitPanelIcon.style.display = "initial" }, 500);
         }
 
         return (

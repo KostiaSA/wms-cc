@@ -115,21 +115,18 @@ export class AppState {
 
     }
 
-    //lastCheckPingTime
     async checkPing() {
         let oldVisible = this.pingWaitPanelVisible;
         let pinkOk = await ping();
         if (pinkOk) {
-            console.log("ping Ok");
             this.pingWaitPanelVisible = false;
-            // if (this.appWindow && oldVisible != this.pingWaitPanelVisible)
-            //     this.appWindow.forceUpdate();
+            if (this.appWindow && oldVisible != this.pingWaitPanelVisible)
+                this.appWindow.forceUpdate();
         }
         else {
-            console.log("ping Cancel");
             appState.pingWaitPanelVisible = true;
-            // if (this.appWindow && oldVisible != this.pingWaitPanelVisible)
-            //     appState.appWindow.forceUpdate();
+            if (this.appWindow && oldVisible != this.pingWaitPanelVisible)
+                appState.appWindow.forceUpdate();
         }
     }
 
