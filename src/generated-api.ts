@@ -1065,7 +1065,9 @@ export interface IResult_wms_android_Логин_инфо {
     ВремяСервера: Moment;
     ВерсияСервера: string;
     ИмяСервера: string;
-    БазаДанных: string
+    БазаДанных: string;
+    maxDevices: number;
+    runDevices: number
 }
 
 export async function _wms_android_Логин_инфо(): Promise<IResult_wms_android_Логин_инфо> {
@@ -1085,7 +1087,11 @@ export async function _wms_android_Логин_инфо(): Promise<IResult_wms_an
             if (typeof(row.ИмяСервера) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'ИмяСервера'");
             if (typeof row.ИмяСервера != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'ИмяСервера' должно быть строкой");
             if (typeof(row.БазаДанных) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'БазаДанных'");
-            if (typeof row.БазаДанных != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'БазаДанных' должно быть строкой");            
+            if (typeof row.БазаДанных != "string") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'БазаДанных' должно быть строкой");
+            if (typeof(row.maxDevices) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'maxDevices'");
+            if (typeof row.maxDevices != "number") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'maxDevices' должно быть числом");
+            if (typeof(row.runDevices) == "undefined") throw new Error("результат выполнения '_wms_android_Логин_инфо': не заполнена колонка 'runDevices'");
+            if (typeof row.runDevices != "number") throw new Error("результат выполнения '_wms_android_Логин_инфо': значение в колонке 'runDevices' должно быть числом");            
         }
     }
 

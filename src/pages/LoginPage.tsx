@@ -131,6 +131,10 @@ export class LoginPage extends React.Component<ILoginPageProps, any> {
                             <td style={style2}>версия {VERSION}</td>
                         </tr>
                         <tr>
+                            <td style={style1}>Лицензии</td>
+                            <td style={style2}>занято {this.info.runDevices} из {this.info.maxDevices}</td>
+                        </tr>
+                        <tr>
                             <td style={style1}>Компания</td>
                             <td style={style2}>{this.info.Компания}</td>
                         </tr>

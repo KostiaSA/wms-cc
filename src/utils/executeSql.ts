@@ -2,12 +2,13 @@ import { XJSON_clone, XJSON_parse } from "./xjson";
 import * as moment from "moment";
 import { appState } from '../AppState';
 import { sleep } from "./sleep";
+import { zebraGetDeviceId } from '../zebra/ZebraApi';
 
 interface IExecuteSqlReq {
     tsdKey: number,
     userName: string,
-    sqlBatch: string
-
+    deviceId: string,
+    sqlBatch: string,
 }
 
 export async function executeSql(sql: string): Promise<any[]> {
@@ -83,7 +84,8 @@ export async function executeSql(sql: string): Promise<any[]> {
             let fullReq: IExecuteSqlReq = {
                 tsdKey: appState.tsdKey || -1,  // -1 в случае логина
                 userName: appState.userName || "login",
-                sqlBatch: sql
+                deviceId: zebraGetDeviceId(),
+                sqlBatch: sql,
             };
 
 
@@ -142,9 +144,10 @@ export async function ping(): Promise<boolean> {
             };
 
             let fullReq: IExecuteSqlReq = {
-                tsdKey: 0,
-                userName: "",
-                sqlBatch: "ping"
+                tsdKey: appState.tsdKey || -1,
+                userName: appState.userName || "?",
+                sqlBatch: "ping",
+                deviceId: zebraGetDeviceId()
             };
             xhr.send(JSON.stringify(fullReq));
 

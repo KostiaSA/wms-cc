@@ -292,6 +292,10 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                             playSound_ButtonClick();
                             appState.closeActivePage();
                             await _wms_android_Выход(zebraGetDeviceId());
+                            appState.tsdKey = -1;
+                            appState.userName = "";
+                            appState.kadrId = -1;
+                            appState.podrId = -1;
                         }}
 
                     ><i className="fa fa-user" style={{ marginRight: 5 }}></i>Выход
