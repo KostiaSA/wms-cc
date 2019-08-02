@@ -5,7 +5,7 @@ import { playSound_ButtonClick } from "../utils/playSound";
 import { PeakPage } from "./Peak/PeakPage";
 import { showAppError, showError } from "../modals/ErrorMessagePage";
 import { ReactNode } from "react";
-import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание, _wms_android_РАЗГР_получить_задание } from "../generated-api";
+import { _wms_android_Главное_меню_Список_Новых_Заданий, _wms_android_ПИК_получить_задание, _wms_android_РАЗГР_получить_задание, _wms_android_Выход } from "../generated-api";
 import { ИНТЕРВАЛ_ОБНОВЛЕНИЯ_ГЛАВНОГО_МЕНЮ } from "../const";
 
 import { getRandomString } from "../utils/getRandomString";
@@ -17,6 +17,7 @@ import { show_НастройкаТСД } from "./НастройкаТСД_Page";
 import { I_РАЗГР_меню_PageProps, РАЗГР_меню_Page_ModalResult, РАЗГР_меню_Page } from "../modals/РАЗГР_меню";
 import { get_Выбор_задания_в_работу } from "../modals/Выбор_задания_в_работу";
 import { show_Help } from "./Help_Page";
+import { zebraGetDeviceId } from "../zebra/ZebraApi";
 
 export interface IMainMenuPageProps extends IAppPageProps {
 
@@ -287,9 +288,10 @@ export class MainMenuPage extends React.Component<IMainMenuPageProps> {
                 <h5 className={"text-center"} style={titleStyle}>КОНЕЦ РАБОТЫ</h5>
                 <ul className="list-group">
                     <li className="list-group-item"
-                        onClick={() => {
+                        onClick={async () => {
                             playSound_ButtonClick();
-                            appState.closeActivePage()
+                            appState.closeActivePage();
+                            await _wms_android_Выход(zebraGetDeviceId());
                         }}
 
                     ><i className="fa fa-user" style={{ marginRight: 5 }}></i>Выход

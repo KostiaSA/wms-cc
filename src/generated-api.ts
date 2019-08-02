@@ -38,6 +38,28 @@ export async function _wms_android_Логин(userName: string, password: string
 
 }
 
+export interface IResult_wms_android_Выход {
+    error:string;
+    Ok: string
+}
+
+export async function _wms_android_Выход(deviceId: string): Promise<IResult_wms_android_Выход> {
+    if (typeof deviceId != "string") throw new Error("вызов '_wms_android_Выход': параметр 'deviceId' должен быть строкой");
+    let recordsets = await executeSql("_wms_android_Выход " + stringAsSql(deviceId));
+    let lastRecordset = recordsets[recordsets.length - 1];
+    if (!lastRecordset) return { error: "_wms_android_Выход: не вернула результатов" } as any;
+    if (lastRecordset.length > 1) return { error: "_wms_android_Выход: вернула " + lastRecordset.length + " записей вместо 1-ой" } as any;
+    for (let row of lastRecordset) {
+        if (!row.error) {
+            if (typeof(row.Ok) == "undefined") throw new Error("результат выполнения '_wms_android_Выход': не заполнена колонка 'Ok'");
+            if (typeof row.Ok != "string") throw new Error("результат выполнения '_wms_android_Выход': значение в колонке 'Ok' должно быть строкой");            
+        }
+    }
+
+    return lastRecordset[0];
+
+}
+
 export interface IResult_wms_android_Главное_меню_Список_Новых_Заданий {
     error:string;
     Тип: string;
