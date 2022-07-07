@@ -21,7 +21,7 @@
     "classnames": "^2.2.6",
     "font-awesome": "^4.7.0",
     "gs1-barcode-parser": "^1.0.1",
-    "moment": "^2.23.0",
+    "moment": "^2.29.4",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-highlight-words": "^0.16.0",
